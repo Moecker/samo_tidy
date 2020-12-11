@@ -3,60 +3,71 @@ from unittest import skip
 import logging
 import os
 import shutil
-
-
-from samo_tidy.core.clang import (
-    foo,
-    setup,
-    load_compilation_db,
-    parse_compilation_database,
-)
-
-
 import tempfile
 
 
-def create_temp_file_for(compilation_database_string, dir):
+from samo_tidy.core.clang import (
+    load_compilation_db,
+    parse_compdb,
+)
+
+
+def debug_file_content(file_path):
+    with open(file_path) as f:
+        logging.debug("File looks like: %s", f.readline())
+
+
+def create_temp_file_for(compdb_string, dir, name):
+    desired_path = os.path.join(dir, name)
     with tempfile.NamedTemporaryFile(dir=dir, delete=False) as tmp:
-        print(tmp.name)
-        shutil.copy(tmp.name, dir + "/compile_commands.json")
-        print(os.listdir(dir))
-        compilation_database_string_as_bytes = bytes(
-            compilation_database_string, "utf-8"
-        )
-        tmp.write(compilation_database_string_as_bytes)
+        logging.debug("Writing compilation database to: %s", desired_path)
+        with open(tmp.name, "w") as f:
+            f.write(compdb_string)
+        shutil.copy(tmp.name, desired_path)
+        debug_file_content(desired_path)
 
 
-def create_compilation_database_string(directory, command, file):
-    inner = f'["directory": "{directory}", "command": "{command}", "file": "{file}"]'
-    return "{" + inner + "}"
+def create_compdb_string(directory, command, the_file):
+    inner = f'"directory": "{directory}", "command": "{command}", "file": "{the_file}"'
+    return "[{" + inner + "}]"
 
 
 class TestClang(unittest.TestCase):
     def setUp(self):
         self.test_data_dir = os.path.join(os.path.dirname(__file__), "data")
+        self.temporary_dir = "/tmp"
+        self.compdb_name = "compile_commands.json"
+        self.compdb_full_path = os.path.join(self.temporary_dir, self.compdb_name)
 
-    def test_foo(self):
-        self.assertEqual("foo", foo())
+    def tearDown(self):
+        if os.path.exists(self.compdb_full_path):
+            os.remove(self.compdb_full_path)
 
-    def test_setup(self):
-        setup()
-        compilation_database = load_compilation_db(
-            "/Users/q367607/Github/samo_tidy/cpp_sources/build"
-        )
-        parse_compilation_database(compilation_database)
+    def create_temporary_compdb_file(self, file_name):
+        file_name = os.path.join(self.test_data_dir, file_name)
+        compdb = create_compdb_string(self.test_data_dir, "c++", file_name)
+        create_temp_file_for(compdb, self.temporary_dir, self.compdb_name)
 
-    def test_compilation_commands_parsing(self):
-        setup()
-        dir = "/tmp"
-        compilation_database = create_compilation_database_string("foo", "bar", "blub")
-        file_name = os.path.join(self.test_data_dir, "foo.cpp")
-        compilation_database = create_compilation_database_string(
-            self.test_data_dir, "c++", file_name
-        )
-        create_temp_file_for(compilation_database, dir)
-        print(compilation_database)
-        compilation_database = load_compilation_db(directory=dir)
+    def test_load_load_compilation_db_success(self):
+        self.create_temporary_compdb_file("source_id1.cpp")
+        compdb = load_compilation_db(directory=self.temporary_dir)
+        self.assertTrue(compdb != None)
+
+    def test_load_load_compilation_db_fail(self):
+        compdb = load_compilation_db(directory=self.temporary_dir)
+        self.assertTrue(compdb == None)
+
+    def test_parse_compdb(self):
+        self.create_temporary_compdb_file("source_id1.cpp")
+        compdb = load_compilation_db(directory=self.temporary_dir)
+        translation_units = parse_compdb(compdb)
+        self.assertEqual(len(translation_units), 1)
+        self.assertIn("source_id1.cpp", translation_units[0].spelling)
+
+
+#' codeComplete', 'cursor', 'diagnostics', 'from_ast_file', 'from_param',
+# 'from_source', 'get_extent', 'get_file', 'get_includes', 'get_location',
+# 'get_tokens', 'index', 'obj', 'reparse', 'save', 'spelling']
 
 
 if __name__ == "__main__":

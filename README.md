@@ -1,12 +1,14 @@
-# samo_tidy
+# SAMO TIDY
 A python based static code analysis engine
 
 # Installation
 ## Mac
-brew install llvm
+Get LLVM libraries `brew install llvm`
 
-# Cpp
-## Create compilation database
+The library can be found in `/usr/local/opt/llvm/lib/libclang.dylib`
+
+# Compilation Database
+## Create compilation database for example CMake project
 ````
 cd cpp_sources
 mkdir build

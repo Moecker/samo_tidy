@@ -1,9 +1,4 @@
-def foo():
-    return "foo"
-
-
 import clang
-
 from clang.cindex import CursorKind, Config
 import sys
 import argparse

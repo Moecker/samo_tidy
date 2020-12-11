@@ -10,9 +10,7 @@ py_test(
 py_test(
     name = "test_clang",
     srcs = glob(["**/*.py"]),
-    data = [
-        "data/foo.cpp",
-    ],
+    data = ["data/source_id1.cpp"],
     visibility = ["//samo_tidy/test:__pkg__"],
     deps = ["//samo_tidy/core"],
 )

@@ -1,4 +1,4 @@
-int foo()
+int Function()
 {
     return 0;
 }
