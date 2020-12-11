@@ -2,11 +2,17 @@ load("@rules_python//python:defs.bzl", "py_test")
 
 py_test(
     name = "test_run",
-    srcs = glob([
-        "**/*.py",
-    ]),
-    visibility = [
-        "//samo_tidy/test:__pkg__",
+    srcs = glob(["**/*.py"]),
+    visibility = ["//samo_tidy/test:__pkg__"],
+    deps = ["//samo_tidy/core"],
+)
+
+py_test(
+    name = "test_clang",
+    srcs = glob(["**/*.py"]),
+    data = [
+        "data/foo.cpp",
     ],
+    visibility = ["//samo_tidy/test:__pkg__"],
     deps = ["//samo_tidy/core"],
 )
