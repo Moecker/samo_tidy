@@ -1,6 +1,10 @@
 # SAMO TIDY
 A python based static code analysis engine
 
+# Examples
+## Example run
+`bazel run //samo_tidy/core:run -- --compdb ~/Github/samo_tidy/samo_tidy/test/data --verbose`
+
 # Installation
 ## Mac
 Get LLVM libraries `brew install llvm`

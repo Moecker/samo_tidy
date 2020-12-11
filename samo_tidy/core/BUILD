@@ -11,5 +11,8 @@ py_library(
 py_binary(
     name = "run",
     srcs = ["run.py"],
-    deps = [":core"],
+    deps = [
+        "//samo_tidy/checker",
+        "//samo_tidy/core",
+    ],
 )

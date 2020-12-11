@@ -8,7 +8,7 @@ py_test(
 )
 
 py_test(
-    name = "test_clang",
+    name = "test_compdb_parser",
     srcs = glob(["**/*.py"]),
     data = ["data/source_id1.cpp"],
     visibility = ["//samo_tidy/test:__pkg__"],

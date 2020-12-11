@@ -6,8 +6,8 @@ import shutil
 import tempfile
 
 
-from samo_tidy.core.clang import (
-    load_compilation_db,
+from samo_tidy.core.compdb_parser import (
+    load_compdb,
     parse_compdb,
 )
 
@@ -48,23 +48,24 @@ class TestClang(unittest.TestCase):
         compdb = create_compdb_string(self.test_data_dir, "c++", file_name)
         create_temp_file_for(compdb, self.temporary_dir, self.compdb_name)
 
-    def test_load_load_compilation_db_success(self):
+    def test_load_load_compdb_success(self):
         self.create_temporary_compdb_file("source_id1.cpp")
-        compdb = load_compilation_db(directory=self.temporary_dir)
+        compdb = load_compdb(directory=self.temporary_dir)
         self.assertTrue(compdb != None)
 
-    def test_load_load_compilation_db_fail(self):
-        compdb = load_compilation_db(directory=self.temporary_dir)
+    def test_load_load_compdb_fail(self):
+        compdb = load_compdb(directory=self.temporary_dir)
         self.assertTrue(compdb == None)
 
     def test_parse_compdb(self):
         self.create_temporary_compdb_file("source_id1.cpp")
-        compdb = load_compilation_db(directory=self.temporary_dir)
+        compdb = load_compdb(directory=self.temporary_dir)
         translation_units = parse_compdb(compdb)
         self.assertEqual(len(translation_units), 1)
         self.assertIn("source_id1.cpp", translation_units[0].spelling)
 
 
+# dir(translation_unit)
 #' codeComplete', 'cursor', 'diagnostics', 'from_ast_file', 'from_param',
 # 'from_source', 'get_extent', 'get_file', 'get_includes', 'get_location',
 # 'get_tokens', 'index', 'obj', 'reparse', 'save', 'spelling']

@@ -1,4 +1,6 @@
-int Function()
+#include <cstdint>
+
+uint8_t Function()
 {
-    return 0;
+    return 0u;
 }
