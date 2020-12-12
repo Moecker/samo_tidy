@@ -1,0 +1,1 @@
+int Error() { return 0 }

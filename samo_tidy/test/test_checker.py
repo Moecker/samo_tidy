@@ -14,7 +14,6 @@ def create_translation_unit(source_file):
     index = cindex.Index.create()
     tu = index.parse(source_file, args=[])
     logging.info(pformat(("diags", [get_diag_info(d) for d in tu.diagnostics])))
-    pformat(("diags", [get_diag_info(d) for d in tu.diagnostics]))
     return tu
 
 
@@ -30,19 +29,27 @@ class TestChecker(unittest.TestCase):
     def check_ints(self, source_file):
         tu = create_translation_unit(source_file)
         violations = check_for_ints(tu)
-        return violations
+        return violations, tu.diagnostics
 
     def test_check_for_ints_id1(self):
         source_file = self.get_source_file_path("source_id1.cpp")
-        violations = self.check_ints(source_file)
+        violations, diagnostics = self.check_ints(source_file)
         self.assertEqual(len(violations), 1)
+        self.assertEqual(len(diagnostics), 0)
         self.assertIn("source_id1.cpp", violations[0].file)
         self.assertEqual("TIDY_SUFFIX_CASE", violations[0].id)
 
     def test_check_for_ints_id2(self):
         source_file = self.get_source_file_path("source_id2.cpp")
-        violations = self.check_ints(source_file)
+        violations, diagnostics = self.check_ints(source_file)
         self.assertEqual(len(violations), 0)
+        self.assertEqual(len(diagnostics), 0)
+
+    def test_check_for_ints_id3(self):
+        source_file = self.get_source_file_path("source_id3.cpp")
+        tu = create_translation_unit(source_file)
+        self.assertEqual(len(tu.diagnostics), 1)
+        self.assertIn("expected ';'", tu.diagnostics[0].spelling)
 
 
 if __name__ == "__main__":
