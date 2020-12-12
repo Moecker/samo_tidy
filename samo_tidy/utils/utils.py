@@ -14,6 +14,10 @@ def setup_clang():
     )
 
 
+def get_diagnostics_info(translation_unit):
+    return pformat(("diags", [get_diag_info(d) for d in translation_unit.diagnostics]))
+
+
 def get_diag_info(diag):
     return {
         "severity": diag.severity,

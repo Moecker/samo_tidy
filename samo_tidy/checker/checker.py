@@ -8,13 +8,16 @@ from pprint import pprint, pformat
 from samo_tidy.checker.violation import Violation
 
 
+def debug_token_contains(token):
+    for child_token in token.get_tokens():
+        logging.debug("Token contains: %s", child_token.spelling)
+
+
 def check_for_ints(translation_unit):
     violations = []
     for token in translation_unit.cursor.walk_preorder():
         if token.kind == cindex.CursorKind.INTEGER_LITERAL:
             logging.debug("Token spelling is %s:", pformat(token.type.spelling))
-            for child_token in token.get_tokens():
-                logging.debug("Token contains: %s", child_token.spelling)
             if token.type.spelling == "unsigned int":
                 for child_token in token.get_tokens():
                     if "u" in child_token.spelling:

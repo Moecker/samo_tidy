@@ -1,0 +1,1 @@
+int CallFunction() { return 0; }

@@ -1,0 +1,1 @@
+int MyHeaderFunction() { return 5; }
