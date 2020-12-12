@@ -1,4 +1,5 @@
 import logging
+import platform
 from pprint import pformat
 import clang
 from clang import cindex
@@ -6,12 +7,12 @@ import os
 
 
 def setup_clang():
-    # LINUX
-    cindex.Config.set_library_path("/usr/local/opt/llvm/lib")
-    # MAC
-    cindex.Config.set_library_path(
-        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib"
-    )
+    if platform.system() == "Linux":
+        cindex.Config.set_library_file("/usr/lib/llvm-10/lib/libclang-10.so")
+    if platform.system() == "Darwin":
+        cindex.Config.set_library_path(
+            "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib"
+        )
 
 
 def get_diagnostics_info(translation_unit):
