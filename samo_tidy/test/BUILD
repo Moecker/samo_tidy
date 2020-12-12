@@ -11,7 +11,7 @@ py_test(
 py_test(
     name = "test_checker",
     srcs = glob(["**/*.py"]),
-    data = ["data/source_id1.cpp"],
+    data = glob(["data/*.cpp"]),
     visibility = ["//samo_tidy/test:__pkg__"],
     deps = [
         "//samo_tidy/checker",

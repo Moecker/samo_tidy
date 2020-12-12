@@ -4,6 +4,7 @@ import traceback
 
 import clang
 from clang import cindex
+from pprint import pformat
 
 
 def load_compdb(directory):

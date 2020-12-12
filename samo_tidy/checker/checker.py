@@ -5,7 +5,11 @@ from clang import cindex
 from pprint import pprint, pformat
 
 
+from samo_tidy.checker.violation import Violation
+
+
 def check_for_ints(translation_unit):
+    violations = []
     for token in translation_unit.cursor.walk_preorder():
         if token.kind == cindex.CursorKind.INTEGER_LITERAL:
             logging.debug("Token spelling is %s:", pformat(token.type.spelling))
@@ -14,9 +18,13 @@ def check_for_ints(translation_unit):
             if token.type.spelling == "unsigned int":
                 for child_token in token.get_tokens():
                     if "u" in child_token.spelling:
-                        logging.warning(
-                            "TIDY_SUFFIX_CASE:%s:%s:%s",
-                            child_token.location.file.name,
-                            child_token.location.line,
-                            child_token.location.column,
+                        location = child_token.location
+                        violation = Violation(
+                            "TIDY_SUFFIX_CASE",
+                            location.file.name,
+                            location.line,
+                            location.column,
                         )
+                        violations.append(violation)
+                        logging.warning(violation)
+    return violations

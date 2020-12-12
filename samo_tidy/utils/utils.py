@@ -14,6 +14,16 @@ def setup_clang():
     )
 
 
+def get_diag_info(diag):
+    return {
+        "severity": diag.severity,
+        "location": diag.location,
+        "spelling": diag.spelling,
+        "ranges": diag.ranges,
+        "fixits": diag.fixits,
+    }
+
+
 def debug_file_content(file_path):
     with open(file_path) as f:
         logging.debug("File %s looks like: %s", file_path, pformat(f.readlines()))
