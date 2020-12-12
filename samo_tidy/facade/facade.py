@@ -4,6 +4,7 @@ import sys
 
 from samo_tidy.core.compdb_parser import load_compdb, parse_compdb
 from samo_tidy.checker.checker import check_for_ints
+from samo_tidy.utils.utils import setup_clang
 
 
 def apply_checkers_for_translation_units(translation_units):
@@ -40,4 +41,5 @@ def main():
 
 
 if __name__ == "__main__":
+    setup_clang()
     main()

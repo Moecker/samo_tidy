@@ -4,15 +4,10 @@ load("@pip//:requirements.bzl", "requirement")
 py_library(
     name = "core",
     srcs = glob(["**/*.py"]),
-    visibility = ["//samo_tidy/test:__pkg__"],
+    visibility = [
+        "//samo_tidy/facade:__pkg__",
+        "//samo_tidy/test:__pkg__",
+    ],
     deps = [requirement("clang")],
 )
 
-py_binary(
-    name = "run",
-    srcs = ["run.py"],
-    deps = [
-        "//samo_tidy/checker",
-        "//samo_tidy/core",
-    ],
-)

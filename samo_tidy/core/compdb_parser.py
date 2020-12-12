@@ -5,8 +5,6 @@ import traceback
 import clang
 from clang import cindex
 
-cindex.Config.set_library_file("/usr/local/opt/llvm/lib/libclang.dylib")
-
 
 def load_compdb(directory):
     try:
@@ -26,9 +24,7 @@ def parse_compdb(compdb):
     for command in commands:
         logging.debug("Got file name %s", command.filename)
         logging.debug("Got arguments %s", list(command.arguments))
-        translation_unit = create_translation_unit(
-            command.filename, list(command.arguments)
-        )
+        translation_unit = create_translation_unit(command.filename, list(command.arguments))
         translation_units.append(translation_unit)
     return translation_units
 

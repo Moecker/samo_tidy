@@ -6,15 +6,8 @@ import shutil
 import tempfile
 
 
-from samo_tidy.core.compdb_parser import (
-    load_compdb,
-    parse_compdb,
-)
-
-
-def debug_file_content(file_path):
-    with open(file_path) as f:
-        logging.debug("File looks like: %s", f.readline())
+from samo_tidy.core.compdb_parser import load_compdb, parse_compdb
+from samo_tidy.utils.utils import debug_file_content, setup_clang
 
 
 def create_temp_file_for(compdb_string, dir, name):
@@ -73,4 +66,5 @@ class TestClang(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
+    setup_clang()
     unittest.main()
