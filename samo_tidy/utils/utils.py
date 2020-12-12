@@ -15,6 +15,11 @@ def setup_clang():
         )
 
 
+def log_diagnostics_info_summary(translation_unit):
+    for d in translation_unit.diagnostics:
+        logging.warn("Clang warnings in file: %s", d.spelling)
+
+
 def get_diagnostics_info(translation_unit):
     return pformat(("diags", [get_diag_info(d) for d in translation_unit.diagnostics]))
 

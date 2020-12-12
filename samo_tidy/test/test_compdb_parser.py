@@ -37,7 +37,6 @@ class TestClang(unittest.TestCase):
             os.remove(self.compdb_full_path)
 
     def create_temporary_compdb_file(self, file_name):
-        file_name = os.path.join(self.test_data_dir, file_name)
         compdb = create_compdb_string(self.test_data_dir, "c++", file_name)
         create_temp_file_for(compdb, self.temporary_dir, self.compdb_name)
 
@@ -58,10 +57,7 @@ class TestClang(unittest.TestCase):
         self.assertIn("source_id1.cpp", translation_units[0].spelling)
 
 
-# dir(translation_unit)
-#' codeComplete', 'cursor', 'diagnostics', 'from_ast_file', 'from_param',
-# 'from_source', 'get_extent', 'get_file', 'get_includes', 'get_location',
-# 'get_tokens', 'index', 'obj', 'reparse', 'save', 'spelling']
+# TODO Test multiple translation units
 
 
 if __name__ == "__main__":
