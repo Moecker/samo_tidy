@@ -22,3 +22,7 @@ mkdir build && cd build
 cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
 make
 ````
+
+# Ressource
+* https://github.com/pybee/seasnake/tree/master/seasnake
+* https://github.com/jbcoe/clang_cpp_code_model

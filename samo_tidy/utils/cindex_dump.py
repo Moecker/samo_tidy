@@ -27,9 +27,6 @@ def get_diag_info(diag):
 
 
 def get_cursor_id(cursor, cursor_list=[]):
-    if not opts.showIDs:
-        return None
-
     if cursor is None:
         return None
 
@@ -42,14 +39,14 @@ def get_cursor_id(cursor, cursor_list=[]):
     return len(cursor_list) - 1
 
 
-def get_info(node, depth=0):
-    if opts.maxDepth is not None and depth >= opts.maxDepth:
+def get_info(node, max_depth=None, depth=0):
+    if max_depth is not None and depth >= max_depth:
         children = None
     else:
         if node.location.file and "/usr" in node.location.file.name:
             children = None
         else:
-            children = [get_info(c, depth + 1) for c in node.get_children()]
+            children = [get_info(c, max_depth, depth + 1) for c in node.get_children()]
     if node.location.file and "/usr" in node.location.file.name:
         return {
             "location": node.location,
@@ -77,19 +74,15 @@ def main():
 
     from optparse import OptionParser, OptionGroup
 
-    global opts
-
     parser = OptionParser("usage: %prog [options] {filename} [clang-args*]")
-    parser.add_option(
-        "", "--show-ids", dest="showIDs", help="Compute cursor IDs (very slow)", action="store_true", default=False
-    )
+
     parser.add_option(
         "", "--diagnosis_only", dest="diagnosis_only", help="Only show diagnosis", action="store_true", default=False
     )
     parser.add_option(
         "",
         "--max-depth",
-        dest="maxDepth",
+        dest="max_depth",
         help="Limit cursor expansion to depth N",
         metavar="N",
         type=int,
@@ -108,7 +101,7 @@ def main():
 
     pprint(("diags", [get_diag_info(d) for d in tu.diagnostics]))
     if not opts.diagnosis_only:
-        pprint(("nodes", get_info(tu.cursor)))
+        pprint(("nodes", get_info(tu.cursor, opts.max_depth)))
 
 
 if __name__ == "__main__":
