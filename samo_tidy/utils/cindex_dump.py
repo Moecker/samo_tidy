@@ -13,7 +13,7 @@ A simple command line tool for dumping a source file using the Clang Index
 Library.
 """
 
-from samo_tidy.utils.utils import setup_clang
+from samo_tidy.utils.utils import setup_clang, traverse
 
 
 def get_diag_info(diag):
@@ -47,6 +47,7 @@ def get_info(node, depth=0):
         children = None
     else:
         children = [get_info(c, depth + 1) for c in node.get_children()]
+    traverse(node, depth)
     return {
         "id": get_cursor_id(node),
         "kind": node.kind,
@@ -58,6 +59,7 @@ def get_info(node, depth=0):
         "is_definition": node.is_definition(),
         "definition id": get_cursor_id(node.get_definition()),
         "children": children,
+        "tokens": [token.spelling for token in node.get_tokens()],
     }
 
 
