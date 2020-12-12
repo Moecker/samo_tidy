@@ -1,4 +1,11 @@
-int FunctionId1()
+#include <cstdint>
+
+std::uint8_t Function()
 {
-    return 4488;
+    std::uint8_t my_uint = {42U};
+    return 1u;
+}
+
+int main()
+{
 }

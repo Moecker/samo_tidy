@@ -13,7 +13,7 @@ A simple command line tool for dumping a source file using the Clang Index
 Library.
 """
 
-from samo_tidy.utils.utils import setup_clang, traverse
+from samo_tidy.utils.utils import setup_clang
 
 
 def get_diag_info(diag):
@@ -46,21 +46,29 @@ def get_info(node, depth=0):
     if opts.maxDepth is not None and depth >= opts.maxDepth:
         children = None
     else:
-        children = [get_info(c, depth + 1) for c in node.get_children()]
-    traverse(node, depth)
-    return {
-        "id": get_cursor_id(node),
-        "kind": node.kind,
-        "usr": node.get_usr(),
-        "spelling": node.spelling,
-        "location": node.location,
-        "extent.start": node.extent.start,
-        "extent.end": node.extent.end,
-        "is_definition": node.is_definition(),
-        "definition id": get_cursor_id(node.get_definition()),
-        "children": children,
-        "tokens": [token.spelling for token in node.get_tokens()],
-    }
+        if node.location.file and "/usr" in node.location.file.name:
+            children = None
+        else:
+            children = [get_info(c, depth + 1) for c in node.get_children()]
+    if node.location.file and "/usr" in node.location.file.name:
+        return {
+            "location": node.location,
+        }
+    else:
+        return {
+            "id": get_cursor_id(node),
+            "kind": node.kind,
+            "usr": node.get_usr(),
+            "spelling": node.spelling,
+            "location": node.location,
+            "extent.start": node.extent.start,
+            "extent.end": node.extent.end,
+            "is_definition": node.is_definition(),
+            "definition id": get_cursor_id(node.get_definition()),
+            "->": children,
+            "number_of_tokens": len(list(node.get_tokens())),
+            "tokens": [token.spelling for token in node.get_tokens()],
+        }
 
 
 def main():
@@ -74,6 +82,9 @@ def main():
     parser = OptionParser("usage: %prog [options] {filename} [clang-args*]")
     parser.add_option(
         "", "--show-ids", dest="showIDs", help="Compute cursor IDs (very slow)", action="store_true", default=False
+    )
+    parser.add_option(
+        "", "--diagnosis_only", dest="diagnosis_only", help="Only show diagnosis", action="store_true", default=False
     )
     parser.add_option(
         "",
@@ -96,7 +107,8 @@ def main():
         parser.error("unable to load input")
 
     pprint(("diags", [get_diag_info(d) for d in tu.diagnostics]))
-    pprint(("nodes", get_info(tu.cursor)))
+    if not opts.diagnosis_only:
+        pprint(("nodes", get_info(tu.cursor)))
 
 
 if __name__ == "__main__":
