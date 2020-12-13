@@ -23,7 +23,7 @@ class TestSamoSuffixCaseChecker(test_checker.TestChecker):
         violations, diagnostics = self.apply_samo_suffix_case_checker(source_file)
         self.assertEqual(len(violations), 1)
         self.assertEqual(len(diagnostics), 1)
-        self.assertIn("source_id1.cpp", violations[0].file)
+        self.assertIn("source_id1.cpp", violations[0].file_path)
         self.assertEqual("TIDY_SAMO_SUFFIX_CASE", violations[0].id)
         self.assertEqual("-Wunused-variable", diagnostics[0].option)
 
@@ -56,7 +56,7 @@ class TestSamoSuffixCaseChecker(test_checker.TestChecker):
         )
         violations, diagnostics = self.apply_samo_suffix_case_checker(file_name)
         self.assertEqual(len(violations), 1)
-        self.assertIn(file_name, violations[0].file)
+        self.assertIn(file_name, violations[0].file_path)
         self.assertEqual("TIDY_SAMO_SUFFIX_CASE", violations[0].id)
 
     def test_temp_file_uint_conversion(self):
