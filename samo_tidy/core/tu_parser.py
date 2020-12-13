@@ -32,6 +32,6 @@ def create_translation_unit(source_file, args=[]):
         return translation_unit
     except cindex.TranslationUnitLoadError as the_exception:
         logging.error(the_exception)
-        logging.error("Current File was '%s'", source_file)
+        logging.error("Failed to parse '%s'", source_file)
         logging.debug(the_exception, exc_info=True)
         return None

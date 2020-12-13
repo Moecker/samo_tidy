@@ -4,6 +4,8 @@ import sys
 
 import samo_tidy.core.compdb_parser as compdb_parser
 import samo_tidy.checker.checker as checker
+import samo_tidy.checker.samo_suffix_case_checker as samo_suffix_case_checker
+import samo_tidy.checker.samo_multiple_classes_checker as samo_multiple_classes_checker
 import samo_tidy.checker.clang_warning_checker as clang_warning_checker
 import samo_tidy.utils.utils as utils
 
@@ -11,7 +13,8 @@ import samo_tidy.utils.utils as utils
 def apply_checkers_for_translation_units(translation_units):
     for tu in translation_units:
         if tu:
-            checker.check_for_ints(tu)
+            checker.apply_checker(tu, samo_suffix_case_checker.rule)
+            checker.apply_checker(tu, samo_multiple_classes_checker.rule)
             clang_warning_checker.check_for_clang_warnings(tu)
         else:
             logging.warning("Skipping translation unit")

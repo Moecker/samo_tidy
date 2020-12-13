@@ -19,11 +19,14 @@ def get_ignored_file_strings():
     return ["/usr/", "/lib/gcc/"]
 
 
+def shall_ignore_based_on_file_name(file_name):
+    return any(word in file_name for word in get_ignored_file_strings())
+
+
 def extract_violation(child_token, rule_id, message):
     location = child_token.location
     if any(word in location.file.name for word in get_ignored_file_strings()):
-        logging.debug("Ignoring violation from external file '%s'", location.file.name)
-        no_ignored_violations += 1
+        logging.info("Ignoring violation from external file '%s'", location.file.name)
         return None
     violation = violations.Violation(
         rule_id,
@@ -36,20 +39,20 @@ def extract_violation(child_token, rule_id, message):
     return violation
 
 
-def check_for_ints(translation_unit):
+def apply_checker(translation_unit, checker):
     violations = []
-    no_ignored_violations = 0
+    ignored_violations = 0
+    logging.info("Analyzing translation unit '%s'", translation_unit.spelling)
+    if shall_ignore_based_on_file_name(translation_unit.spelling):
+        logging.warning("Ignoring translation unit '%s'", translation_unit.spelling)
+        return []
     for token in translation_unit.cursor.walk_preorder():
-        if token.kind == cindex.CursorKind.INTEGER_LITERAL:
-            if token.type.spelling == "unsigned int":
-                for child_token in token.get_tokens():
-                    violation = None
-                    if "u" in child_token.spelling:
-                        violation = extract_violation(child_token, "TIDY_SAMO_SUFFIX_CASE", "Lower Case suffix")
-                    if not "u" in child_token.spelling.lower():
-                        violation = extract_violation(child_token, "TIDY_SAMO_SUFFIX_MISSING", "Suffix missing")
-                    if violation:
-                        violations.append(violation)
-    if no_ignored_violations > 0:
-        logging.warning("Ignored %d violation(s) from external files", no_ignored_violations)
+        violation = checker(token)
+        if violation:
+            violations.append(violation)
+        else:
+            ignored_violations += 1
+
+    if ignored_violations > 0:
+        logging.warning("Ignored %d violation(s) from external files", ignored_violations)
     return violations

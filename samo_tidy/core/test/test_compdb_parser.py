@@ -8,6 +8,7 @@ from unittest import skip
 
 import samo_tidy.core.compdb_parser as compdb_parser
 import samo_tidy.utils.utils as utils
+
 import samo_tidy.test.test_utils as test_utils
 
 
@@ -70,6 +71,17 @@ class TestClang(unittest.TestCase):
         compdb = self.create_and_parse_comdb("source_id2.cpp")
         translation_units = compdb_parser.parse_compdb(compdb, ["not_existing"])
         self.assertEqual(len(translation_units), 0)
+
+    def test_parse_compdb_ignore_file_name(self):
+        compdb = self.create_and_parse_comdb("external/ignored.cpp")
+        translation_units = compdb_parser.parse_compdb(compdb)
+        self.assertEqual(len(translation_units), 0)
+
+    def test_parse_compdb_ignore_file_name_ok(self):
+        compdb = self.create_and_parse_comdb("internal/not_ignored.cpp")
+        translation_units = compdb_parser.parse_compdb(compdb)
+        self.assertEqual(len(translation_units), 1)
+        self.assertEqual(translation_units[0], None)
 
 
 if __name__ == "__main__":
