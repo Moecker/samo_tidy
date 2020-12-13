@@ -1,7 +1,13 @@
+import samo_tidy.checker.checker as checker
+
+
 def check_for_clang_warnings(translation_unit):
     violations = []
     no_ignored_violations = 0
     for diagnostic in translation_unit.diagnostics:
-        print(diagnostic)
-        violations.append(diagnostic)
+        if diagnostic.option and diagnostic.location.file:
+            if diagnostic.option.startswith("-W"):
+                the_id = "TIDY_" + diagnostic.option[2:].upper().replace("-", "_")
+                violation = checker.extract_violation(diagnostic, the_id, diagnostic.spelling)
+            violations.append(violation)
     return violations

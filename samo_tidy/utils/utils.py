@@ -23,7 +23,11 @@ def setup_clang():
 def log_diagnostics_info_summary(translation_unit):
     for d in translation_unit.diagnostics:
         logging.warning(
-            "Clang diagnostic of category '%s' from option '%s' in message: '%s'", d.category_name, d.option, d.spelling
+            "Clang diagnostic of category '%s' from option '%s' with message: '%s' in file '%s'",
+            d.category_name,
+            d.option,
+            d.spelling,
+            d.location.file,
         )
 
 
@@ -43,4 +47,4 @@ def get_diag_info(diag):
 
 def debug_file_content(file_path):
     with open(file_path) as f:
-        logging.debug("File '%s' looks like: '%s'", file_path, pformat(",".join(f.readlines())))
+        logging.debug("File '%s' looks like: '%s'", file_path, pformat("".join(f.readlines())))

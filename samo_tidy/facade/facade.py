@@ -3,14 +3,16 @@ import logging
 import sys
 
 from samo_tidy.core.compdb_parser import load_compdb, parse_compdb
-from samo_tidy.checker.checker import check_for_ints
+import samo_tidy.checker.checker as checker
+import samo_tidy.checker.clang_warning_checker as clang_warning_checker
 from samo_tidy.utils.utils import setup_clang
 
 
 def apply_checkers_for_translation_units(translation_units):
     for tu in translation_units:
         if tu:
-            check_for_ints(tu)
+            checker.check_for_ints(tu)
+            clang_warning_checker.check_for_clang_warnings(tu)
         else:
             logging.warning("Skipping translation unit")
 

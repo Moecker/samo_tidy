@@ -19,7 +19,7 @@ def get_ignored_file_strings():
     return ["/usr/", "/lib/gcc/"]
 
 
-def extract_violation(child_token, rule_id):
+def extract_violation(child_token, rule_id, message):
     location = child_token.location
     if any(word in location.file.name for word in get_ignored_file_strings()):
         logging.debug("Ignoring violation from external file '%s'", location.file.name)
@@ -27,6 +27,7 @@ def extract_violation(child_token, rule_id):
         return None
     violation = Violation(
         rule_id,
+        message,
         location.file.name,
         location.line,
         location.column,
@@ -44,9 +45,9 @@ def check_for_ints(translation_unit):
                 for child_token in token.get_tokens():
                     violation = None
                     if "u" in child_token.spelling:
-                        violation = extract_violation(child_token, "TIDY_SUFFIX_CASE")
+                        violation = extract_violation(child_token, "TIDY_SUFFIX_CASE", "Lower Case suffix")
                     if not "u" in child_token.spelling.lower():
-                        violation = extract_violation(child_token, "TIDY_SUFFIX_MISSING")
+                        violation = extract_violation(child_token, "TIDY_SUFFIX_MISSING", "Suffix missing")
                     if violation:
                         violations.append(violation)
     if no_ignored_violations > 0:
