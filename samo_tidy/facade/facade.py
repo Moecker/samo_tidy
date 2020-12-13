@@ -1,4 +1,6 @@
 import argparse
+from argparse import RawTextHelpFormatter
+
 import logging
 import sys
 
@@ -30,15 +32,18 @@ def run(compdb_root_dir, files=None):
     apply_checkers_for_translation_units(translation_units)
 
 
-def setup_logger(be_verbose, log_file):
+def setup_logger(log_file, loglevel):
     the_logger = logging.getLogger()
 
-    if be_verbose:
-        level = logging.DEBUG
+    if loglevel:
+        level = getattr(logging, loglevel.upper(), None)
+        if not isinstance(level, int):
+            raise ValueError("Invalid log level: %s" % loglevel)
     else:
         level = logging.INFO
 
     formater = logging.Formatter("[%(levelname)-7.7s] %(message)s")
+    the_logger.setLevel(level)
 
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(formater)
@@ -54,14 +59,22 @@ def setup_logger(be_verbose, log_file):
 
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser("SAMO TIDY", formatter_class=RawTextHelpFormatter)
     parser.add_argument("--compdb", required=True, help="Directory which contains the 'compile_comands.json' file")
-    parser.add_argument("--files", nargs="+", help="List of file from compdb to be analysed")
-    parser.add_argument("--log_file", help="Log file")
-    parser.add_argument("--verbose", action="store_true", help="Produces more debug output")
+    parser.add_argument(
+        "--files",
+        nargs="+",
+        help=(
+            "List of files from compdb to be analyzed. Used substring search.\n"
+            "Example: '--files .cpp' would match every file which has '.cpp' in its name"
+        ),
+    )
+    parser.add_argument("--log_file", help="Full path to a log file")
+    parser.add_argument("--log_level", help="Log level. One of {DEBUG, INFO, WARN, ERROR}")
+
     args = parser.parse_args()
 
-    setup_logger(args.verbose, args.log_file)
+    setup_logger(args.log_file, args.log_level)
 
     utils.setup_clang()
     run(args.compdb, args.files)

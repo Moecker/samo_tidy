@@ -7,6 +7,10 @@ from pprint import pformat
 from clang import cindex
 
 
+def only_filename(file_path):
+    return os.path.basename(file_path)
+
+
 def setup_clang():
     if platform.system() == "Linux":
         lib_location_file = "/usr/lib/llvm-10/lib/libclang-10.so"
@@ -22,12 +26,16 @@ def setup_clang():
 
 def log_diagnostics_info_summary(translation_unit):
     for d in translation_unit.diagnostics:
+        if d.location.file:
+            file_path = d.location.file.name
+        else:
+            file_path = "Unknown"
         logging.warning(
-            "Clang diagnostic of category '%s' from option '%s' with message: '%s' in file '%s'",
+            "Clang diagnostic: Category '%s', Option '%s', Message: '%s', File '%s'",
             d.category_name,
             d.option,
             d.spelling,
-            d.location.file,
+            only_filename(file_path),
         )
 
 

@@ -23,9 +23,12 @@ def shall_ignore_based_on_file_name(file_name):
     return any(word in file_name for word in get_ignored_file_strings())
 
 
-def extract_violation(child_token, rule_id, message):
-    location = child_token.location
-    if any(word in location.file.name for word in get_ignored_file_strings()):
+def extract_violation(token, rule_id, message):
+    location = token.location
+    if not location.file:
+        logging.info("Missing source location for '%s'", token.kind)
+        return None
+    if shall_ignore_based_on_file_name(location.file.name):
         logging.info("Ignoring violation from external file '%s'", location.file.name)
         return None
     violation = violations.Violation(
