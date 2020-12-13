@@ -1,18 +1,23 @@
 import logging
 import platform
-from pprint import pformat
-import clang
-from clang import cindex
 import os
+import sys
+from pprint import pformat
+
+from clang import cindex
 
 
 def setup_clang():
     if platform.system() == "Linux":
+        lib_location_file = "/usr/lib/llvm-10/lib/libclang-10.so"
+        logging.info("Searching libclang file in %s", lib_location)
         cindex.Config.set_library_file("/usr/lib/llvm-10/lib/libclang-10.so")
     if platform.system() == "Darwin":
-        cindex.Config.set_library_path(
-            "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib"
-        )
+        lib_location_path = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib"
+        logging.info("Searching libclang path in %s", lib_location_path)
+        cindex.Config.set_library_path(lib_location_path)
+    if platform.system() == "Windows":
+        sys.exit("Windows is not supported")
 
 
 def log_diagnostics_info_summary(translation_unit):

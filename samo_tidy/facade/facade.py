@@ -37,9 +37,9 @@ def main():
     else:
         logging.basicConfig(level=logging.INFO)
 
+    setup_clang()
     run(args.compdb, args.files)
 
 
 if __name__ == "__main__":
-    setup_clang()
     main()

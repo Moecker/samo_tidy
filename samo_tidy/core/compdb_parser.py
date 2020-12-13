@@ -1,12 +1,9 @@
 import logging
 import os
-import traceback
 
-import clang
 from clang import cindex
-from pprint import pformat
 
-from samo_tidy.utils.utils import get_diagnostics_info, log_diagnostics_info_summary
+from samo_tidy.core.tu_parser import create_translation_unit
 
 
 def load_compdb(directory):
@@ -38,7 +35,8 @@ def parse_compdb(compdb):
             os.path.join(command.directory, command.filename), list(command.arguments)
         )
         translation_units.append(translation_unit)
-    logging.info("Skipped %d file(s)", no_of_skipped_files)
+    if no_of_skipped_files > 0:
+        logging.info("Skipped %d file(s)", no_of_skipped_files)
     return translation_units
 
 
@@ -56,19 +54,3 @@ def clean_args(args):
 def debug_tokens(translation_unit):
     for token in translation_unit.cursor.walk_preorder():
         logging.debug("Token kind: %s", token.kind)
-
-
-def create_translation_unit(source_file, args):
-    index = cindex.Index.create()
-    try:
-        args = clean_args(args)
-        logging.debug("Parsing %s with args %s", source_file, args)
-        translation_unit = index.parse(source_file, args=args)
-        logging.debug(get_diagnostics_info(translation_unit))
-        log_diagnostics_info_summary(translation_unit)
-        return translation_unit
-    except cindex.TranslationUnitLoadError as the_exception:
-        logging.error(the_exception)
-        logging.error("Current File was %s", source_file)
-        logging.debug(the_exception, exc_info=True)
-        return None

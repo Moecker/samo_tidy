@@ -1,17 +1,4 @@
-#!/usr/bin/env python
-
-# ===- cindex-dump.py - cindex/Python Source Dump -------------*- python -*--===#
-#
-# Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-# See https://llvm.org/LICENSE.txt for license information.
-# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-#
-# ===------------------------------------------------------------------------===#
-
-"""
-A simple command line tool for dumping a source file using the Clang Index
-Library.
-"""
+import logging
 
 from samo_tidy.utils.utils import setup_clang
 
@@ -64,7 +51,7 @@ def get_info(node, max_depth=None, depth=0):
             "definition id": get_cursor_id(node.get_definition()),
             "->": children,
             "number_of_tokens": len(list(node.get_tokens())),
-            "tokens": [token.spelling for token in node.get_tokens()],
+            "tokens": ",".join([token.spelling for token in node.get_tokens()]),
         }
 
 
@@ -77,10 +64,9 @@ def main():
     parser = OptionParser("usage: %prog [options] {filename} [clang-args*]")
 
     parser.add_option(
-        "", "--diagnosis_only", dest="diagnosis_only", help="Only show diagnosis", action="store_true", default=False
+        "--diagnosis_only", dest="diagnosis_only", help="Only show diagnosis", action="store_true", default=False
     )
     parser.add_option(
-        "",
         "--max-depth",
         dest="max_depth",
         help="Limit cursor expansion to depth N",
@@ -94,6 +80,9 @@ def main():
     if len(args) == 0:
         parser.error("invalid number arguments")
 
+    logging.basicConfig(level=logging.DEBUG)
+    setup_clang()
+
     index = Index.create()
     tu = index.parse(None, args)
     if not tu:
@@ -105,5 +94,4 @@ def main():
 
 
 if __name__ == "__main__":
-    setup_clang()
     main()

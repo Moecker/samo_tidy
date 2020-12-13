@@ -9,17 +9,9 @@ import shutil
 from clang import cindex
 
 from samo_tidy.checker.checker import check_for_ints
+from samo_tidy.core.tu_parser import create_translation_unit
 from samo_tidy.utils.utils import debug_file_content, setup_clang, get_diag_info
 from samo_tidy.utils.cindex_dump import get_info
-
-
-def create_translation_unit(source_file, args=[]):
-    index = cindex.Index.create()
-    logging.debug("Using args: %s", args)
-    logging.debug("Using source_file: %s", source_file)
-    tu = index.parse(source_file, args=args)
-    logging.info(pformat(("diags", [get_diag_info(d) for d in tu.diagnostics])))
-    return tu
 
 
 def make_file_string(the_list):

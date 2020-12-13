@@ -5,9 +5,11 @@ py_library(
     name = "checker",
     srcs = glob(["**/*.py"]),
     visibility = [
-        "//samo_tidy/core:__pkg__",
         "//samo_tidy/facade:__pkg__",
         "//samo_tidy/test:__pkg__",
     ],
-    deps = [requirement("clang")],
+    deps = [
+        requirement("clang"),
+        "//samo_tidy/core",
+    ],
 )
