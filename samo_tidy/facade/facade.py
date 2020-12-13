@@ -20,24 +20,45 @@ def apply_checkers_for_translation_units(translation_units):
 def run(compdb_root_dir, files=None):
     compdb = compdb_parser.load_compdb(compdb_root_dir)
     if compdb:
-        translation_units = compdb_parser.parse_compdb(compdb)
+        translation_units = compdb_parser.parse_compdb(compdb, files)
     else:
         logging.error("Could not load compdb")
         sys.exit("Loading of compdb failed")
     apply_checkers_for_translation_units(translation_units)
 
 
+def setup_logger(be_verbose, log_file):
+    the_logger = logging.getLogger()
+
+    if be_verbose:
+        level = logging.DEBUG
+    else:
+        level = logging.INFO
+
+    formater = logging.Formatter("[%(levelname)-7.7s] %(message)s")
+
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(formater)
+    the_logger.addHandler(console_handler)
+
+    if log_file:
+        file_handler = logging.FileHandler(
+            log_file,
+            "w",
+        )
+        file_handler.setFormatter(formater)
+        the_logger.addHandler(file_handler)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--compdb", required=True, help="Directory which contains the 'compile_comands.json' file")
     parser.add_argument("--files", nargs="+", help="List of file from compdb to be analysed")
+    parser.add_argument("--log_file", help="Log file")
     parser.add_argument("--verbose", action="store_true", help="Produces more debug output")
     args = parser.parse_args()
 
-    if args.verbose:
-        logging.basicConfig(level=logging.DEBUG)
-    else:
-        logging.basicConfig(level=logging.INFO)
+    setup_logger(args.verbose, args.log_file)
 
     utils.setup_clang()
     run(args.compdb, args.files)

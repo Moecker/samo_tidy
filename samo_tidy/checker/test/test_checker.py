@@ -37,7 +37,7 @@ class TestChecker(unittest.TestCase):
         self.assertEqual(len(violations), 1)
         self.assertEqual(len(diagnostics), 1)
         self.assertIn("source_id1.cpp", violations[0].file)
-        self.assertEqual("TIDY_SUFFIX_CASE", violations[0].id)
+        self.assertEqual("TIDY_SAMO_SUFFIX_CASE", violations[0].id)
         self.assertEqual("-Wunused-variable", diagnostics[0].option)
 
     def test_check_for_ints_id2(self):
@@ -70,7 +70,7 @@ class TestChecker(unittest.TestCase):
         violations, diagnostics = self.check_ints(file_name)
         self.assertEqual(len(violations), 1)
         self.assertIn(file_name, violations[0].file)
-        self.assertEqual("TIDY_SUFFIX_CASE", violations[0].id)
+        self.assertEqual("TIDY_SAMO_SUFFIX_CASE", violations[0].id)
 
     def test_temp_file_uint_conversion(self):
         file_name = test_utils.create_temp_file_for(

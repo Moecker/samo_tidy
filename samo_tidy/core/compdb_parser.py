@@ -17,12 +17,14 @@ def load_compdb(directory):
         return None
 
 
-def parse_compdb(compdb):
+def parse_compdb(compdb, list_of_file=None):
     commands = compdb.getAllCompileCommands()
     logging.debug("Got %d command(s)", len(commands))
     translation_units = []
     no_of_skipped_files = 0
     for command in commands:
+        if list_of_file and not any(word in command.filename for word in list_of_file):
+            continue
         if "external/" in command.filename:
             logging.debug("Skipping: '%s'", command.filename)
             no_of_skipped_files += 1

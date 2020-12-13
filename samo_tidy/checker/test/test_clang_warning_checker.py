@@ -13,7 +13,7 @@ class TestChecker(unittest.TestCase):
         tu = tu_parser.create_translation_unit(file_name)
         violations = clang_warning_checker.check_for_clang_warnings(tu)
         self.assertEqual(len(violations), 1)
-        self.assertEqual(violations[0].id, "TIDY_UNUSED_VARIABLE")
+        self.assertEqual(violations[0].id, "TIDY_CLANG_UNUSED_VARIABLE")
         self.assertEqual(violations[0].message, "unused variable 'a'")
 
     def test_impl_conversion(self):
@@ -23,7 +23,7 @@ class TestChecker(unittest.TestCase):
         tu = tu_parser.create_translation_unit(file_name)
         violations = clang_warning_checker.check_for_clang_warnings(tu)
         self.assertEqual(len(violations), 1)
-        self.assertEqual(violations[0].id, "TIDY_IMPLICIT_INT_CONVERSION")
+        self.assertEqual(violations[0].id, "TIDY_CLANG_IMPLICIT_INT_CONVERSION")
         self.assertEqual(
             violations[0].message,
             "implicit conversion loses integer precision: 'int' to 'uint8_t' (aka 'unsigned char')",

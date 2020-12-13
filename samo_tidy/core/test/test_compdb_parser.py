@@ -37,13 +37,17 @@ class TestClang(unittest.TestCase):
         if os.path.exists(self.compdb_full_path):
             os.remove(self.compdb_full_path)
 
+    def create_and_parse_comdb(self, file_name):
+        self.create_temporary_compdb_file(file_name)
+        compdb = compdb_parser.load_compdb(directory=self.temporary_dir)
+        return compdb
+
     def create_temporary_compdb_file(self, file_name):
         compdb = create_compdb_string(self.test_data_dir, "c++", file_name)
         create_temp_file_for(compdb, self.temporary_dir, self.compdb_name)
 
     def test_load_compdb_parser_success(self):
-        self.create_temporary_compdb_file("source_id1.cpp")
-        compdb = compdb_parser.load_compdb(directory=self.temporary_dir)
+        compdb = self.create_and_parse_comdb("source_id1.cpp")
         self.assertTrue(compdb != None)
 
     def test_load_compdb_parser_compdb_fail(self):
@@ -51,11 +55,21 @@ class TestClang(unittest.TestCase):
         self.assertTrue(compdb == None)
 
     def test_parse_compdb(self):
-        self.create_temporary_compdb_file("source_id1.cpp")
-        compdb = compdb_parser.load_compdb(directory=self.temporary_dir)
+        compdb = self.create_and_parse_comdb("source_id1.cpp")
         translation_units = compdb_parser.parse_compdb(compdb)
         self.assertEqual(len(translation_units), 1)
         self.assertIn("source_id1.cpp", translation_units[0].spelling)
+
+    def test_parse_compdb_set_of_files(self):
+        compdb = self.create_and_parse_comdb("source_id2.cpp")
+        translation_units = compdb_parser.parse_compdb(compdb, ["source_id2.cpp"])
+        self.assertEqual(len(translation_units), 1)
+        self.assertIn("source_id2.cpp", translation_units[0].spelling)
+
+    def test_parse_compdb_set_of_files_missing(self):
+        compdb = self.create_and_parse_comdb("source_id2.cpp")
+        translation_units = compdb_parser.parse_compdb(compdb, ["not_existing"])
+        self.assertEqual(len(translation_units), 0)
 
 
 if __name__ == "__main__":
