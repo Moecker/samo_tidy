@@ -14,7 +14,7 @@ from samo_tidy.test.test_utils import default_test_setup
 def create_temp_file_for(compdb_string, dir, name):
     desired_path = os.path.join(dir, name)
     with tempfile.NamedTemporaryFile(dir=dir, delete=False) as tmp:
-        logging.debug("Writing compilation database to: %s", desired_path)
+        logging.debug("Writing compilation database to: '%s'", desired_path)
         with open(tmp.name, "w") as f:
             f.write(compdb_string)
         shutil.copy(tmp.name, desired_path)

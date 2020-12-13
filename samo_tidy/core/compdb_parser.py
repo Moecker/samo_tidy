@@ -24,13 +24,13 @@ def parse_compdb(compdb):
     no_of_skipped_files = 0
     for command in commands:
         if "external/" in command.filename:
-            logging.debug("Skipping: %s", command.filename)
+            logging.debug("Skipping: '%s'", command.filename)
             no_of_skipped_files += 1
             continue
-        logging.info("Analyzing: %s", command.filename)
-        logging.debug("Got file name %s", command.filename)
-        logging.debug("Got directory %s", command.directory)
-        logging.debug("Got arguments %s", list(command.arguments))
+        logging.info("Analyzing: '%s'", command.filename)
+        logging.debug("Got file name '%s'", command.filename)
+        logging.debug("Got directory '%s'", command.directory)
+        logging.debug("Got arguments '%s'", list(command.arguments))
         translation_unit = create_translation_unit(
             os.path.join(command.directory, command.filename), list(command.arguments)
         )
@@ -53,4 +53,4 @@ def clean_args(args):
 
 def debug_tokens(translation_unit):
     for token in translation_unit.cursor.walk_preorder():
-        logging.debug("Token kind: %s", token.kind)
+        logging.debug("Token kind: '%s'", token.kind)

@@ -4,6 +4,10 @@ from clang import cindex
 
 from samo_tidy.utils.utils import get_diagnostics_info, log_diagnostics_info_summary
 
+DEFAULT_ACTIVE_ARGUMENTS = ["-std=c++14", "-Weverything"]
+DEFAULT_IGNORED_ARGUMENTS = ["-Wno-unused-command-line-argument"]
+DEFAULT_ARGUMENTS = DEFAULT_ACTIVE_ARGUMENTS + DEFAULT_IGNORED_ARGUMENTS
+
 
 def clean_args(args):
     to_remove_idx = []
@@ -18,15 +22,16 @@ def clean_args(args):
 
 def create_translation_unit(source_file, args=[]):
     index = cindex.Index.create()
+    args = DEFAULT_ARGUMENTS + args
     try:
         args = clean_args(args)
-        logging.debug("Parsing %s with args %s", source_file, args)
+        logging.debug("Parsing '%s' with args '%s'", source_file, args)
         translation_unit = index.parse(source_file, args=args)
         logging.debug(get_diagnostics_info(translation_unit))
         log_diagnostics_info_summary(translation_unit)
         return translation_unit
     except cindex.TranslationUnitLoadError as the_exception:
         logging.error(the_exception)
-        logging.error("Current File was %s", source_file)
+        logging.error("Current File was '%s'", source_file)
         logging.debug(the_exception, exc_info=True)
         return None

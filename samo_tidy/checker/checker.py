@@ -8,11 +8,11 @@ from samo_tidy.checker.violation import Violation
 
 def debug_token_contains(token):
     for child_token in token.get_tokens():
-        logging.debug("Token contains: %s", child_token.spelling)
+        logging.debug("Token contains: '%s'", child_token.spelling)
 
 
 def debug_token_spelling(token):
-    logging.debug("Token spelling is %s:", pformat(token.type.spelling))
+    logging.debug("Token spelling is '%s':", pformat(token.type.spelling))
 
 
 def get_ignored_file_strings():
@@ -22,7 +22,7 @@ def get_ignored_file_strings():
 def extract_violation(child_token, rule_id):
     location = child_token.location
     if any(word in location.file.name for word in get_ignored_file_strings()):
-        logging.debug("Ignoring violation from external file %s", location.file.name)
+        logging.debug("Ignoring violation from external file '%s'", location.file.name)
         no_ignored_violations += 1
         return None
     violation = Violation(

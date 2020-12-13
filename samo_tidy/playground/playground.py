@@ -6,9 +6,7 @@ import logging
 
 
 def __configure_logger(logging_level=logging.DEBUG):
-    logging.basicConfig(
-        level=logging_level, format="%(levelname)s: %(message)s", datefmt="%H:%M:%S"
-    )
+    logging.basicConfig(level=logging_level, format="%(levelname)s: %(message)s", datefmt="%H:%M:'%s'")
 
 
 def __translation_unit_basename_and_extension(translation_unit_name):
@@ -28,18 +26,14 @@ def __swap_target(source_file, target_name):
     target_directory = tempfile.TemporaryDirectory()
     destination_file = pathutil.join(target_directory.name, target_name)
     shutil.copyfile(source_file, destination_file)
-    massedit.edit_files(
-        [destination_file], ["re.sub(r'^#include','//#include',line)"], dry_run=False
-    )
+    massedit.edit_files([destination_file], ["re.sub(r'^#include','//#include',line)"], dry_run=False)
     return destination_file
 
 
 def __compute_expected_name(classes, translation_unit_name):
     import re
 
-    basename, extension = __translation_unit_basename_and_extension(
-        translation_unit_name
-    )
+    basename, extension = __translation_unit_basename_and_extension(translation_unit_name)
     pattern = re.compile(r"(?<!^)(?=[A-Z])")
     computed_name = pattern.sub("_", classes[0]).lower()
     computed_name += extension
@@ -65,27 +59,14 @@ def __check_one_class_per_file(tu, target):
             translation_unit_name = token.spelling
 
     if len(classes) != 0:
-        computed_name, basename = __compute_expected_name(
-            classes, translation_unit_name
-        )
+        computed_name, basename = __compute_expected_name(classes, translation_unit_name)
         if computed_name != basename:
             errors.append(
-                "FileNameMismatchException: "
-                + target
-                + " (expected: "
-                + basename
-                + " current: "
-                + computed_name
-                + ")"
+                "FileNameMismatchException: " + target + " (expected: " + basename + " current: " + computed_name + ")"
             )
 
         if len(classes) > 1:
-            errors.append(
-                "MultipleClassesWithinTranslationUnitException: "
-                + target_name
-                + " -- "
-                + str(classes)
-            )
+            errors.append("MultipleClassesWithinTranslationUnitException: " + target_name + " -- " + str(classes))
     classes = []
     for token in tu.cursor.walk_preorder():
         if token.kind == CursorKind.CLASS_DECL:
@@ -94,27 +75,14 @@ def __check_one_class_per_file(tu, target):
             translation_unit_name = token.spelling
 
     if len(classes) != 0:
-        computed_name, basename = __compute_expected_name(
-            classes, translation_unit_name
-        )
+        computed_name, basename = __compute_expected_name(classes, translation_unit_name)
         if computed_name != basename:
             errors.append(
-                "FileNameMismatchException: "
-                + target
-                + " (expected: "
-                + basename
-                + " current: "
-                + computed_name
-                + ")"
+                "FileNameMismatchException: " + target + " (expected: " + basename + " current: " + computed_name + ")"
             )
 
         if len(classes) > 1:
-            errors.append(
-                "MultipleClassesWithinTranslationUnitException: "
-                + target_name
-                + " -- "
-                + str(classes)
-            )
+            errors.append("MultipleClassesWithinTranslationUnitException: " + target_name + " -- " + str(classes))
     return errors
 
 
@@ -148,9 +116,9 @@ def check_files(compile_db_path, files):
         commands = compdb.getAllCompileCommands()
         for command in commands:
             if "external/" in command.filename:
-                logging.debug("Skipping: %s", command.filename)
+                logging.debug("Skipping: '%s'", command.filename)
                 continue
-            logging.info("Checking file: %s", command.filename)
+            logging.info("Checking file: '%s'", command.filename)
             errors = __check_for_file(command.filename, compdb)
 
 

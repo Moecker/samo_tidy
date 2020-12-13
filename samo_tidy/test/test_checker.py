@@ -16,14 +16,14 @@ from samo_tidy.test.test_utils import default_test_setup
 
 
 def make_file_string(the_list):
-    return "\n".join(the_list)
+    return "\n".join(the_list) + "\n"
 
 
 def create_temp_file_for(content):
     the_string = make_file_string(content)
     with tempfile.NamedTemporaryFile(delete=False) as tmp:
         desired_name = tmp.name + ".cpp"
-        logging.debug("Writing file to: %s", tmp.name)
+        logging.debug("Writing file to: '%s'", tmp.name)
         with open(tmp.name, "w") as f:
             f.write(the_string)
         shutil.copy(tmp.name, desired_name)
@@ -52,9 +52,10 @@ class TestChecker(unittest.TestCase):
         source_file = self.get_source_file_path("source_id1.cpp")
         violations, diagnostics = self.check_ints(source_file)
         self.assertEqual(len(violations), 1)
-        self.assertEqual(len(diagnostics), 0)
+        self.assertEqual(len(diagnostics), 1)
         self.assertIn("source_id1.cpp", violations[0].file)
         self.assertEqual("TIDY_SUFFIX_CASE", violations[0].id)
+        self.assertEqual("-Wunused-variable", diagnostics[0].option)
 
     def test_check_for_ints_id2(self):
         source_file = self.get_source_file_path("source_id2.cpp")
@@ -75,33 +76,28 @@ class TestChecker(unittest.TestCase):
         self.assertEqual(len(diagnostics), 0)
 
     def test_temp_file_int(self):
-        file_name = create_temp_file_for(["int Function()", "{", "return 0;", "}"])
+        file_name = create_temp_file_for(["int Function();", "int Function()", "{", "return 0;", "}"])
         violations, diagnostics = self.check_ints(file_name)
         self.assertEqual(len(violations), 0)
 
     def test_temp_file_uint(self):
-        file_name = create_temp_file_for(["#include <cstdint>", "std::uint8_t Function()", "{", "return 0u;", "}"])
+        file_name = create_temp_file_for(
+            ["#include <cstdint>", "std::uint8_t Function();", "std::uint8_t Function()", "{", "return 0u;", "}"]
+        )
         violations, diagnostics = self.check_ints(file_name)
         self.assertEqual(len(violations), 1)
         self.assertIn(file_name, violations[0].file)
         self.assertEqual("TIDY_SUFFIX_CASE", violations[0].id)
 
-    @skip("No yet supported")
-    def test_temp_file_uint_def(self):
-        file_name = create_temp_file_for(["#include <cstdint>", "std::uint8_t a = 1;"])
+    def test_temp_file_uint_converstion(self):
+        file_name = create_temp_file_for(
+            ["#include <cstdint>", "int main()", "{", "int a = 12;", "std::uint8_t b = a;", "}"]
+        )
         violations, diagnostics = self.check_ints(file_name)
-        self.dump(file_name)
-        self.assertEqual(len(violations), 1)
-        self.assertIn(file_name, violations[0].file)
-        self.assertEqual("TIDY_SUFFIX_MISSING", violations[0].id)
-
-    @skip("No yet supported")
-    def test_temp_file_uint_missing(self):
-        file_name = create_temp_file_for(["#include <cstdint>", "std::uint8_t Function()", "{", "return 0;", "}"])
-        violations, diagnostics = self.check_ints(file_name)
-        self.assertEqual(len(violations), 1)
-        self.assertIn(file_name, violations[0].file)
-        self.assertEqual("TIDY_SUFFIX_MISSING", violations[0].id)
+        self.assertEqual(len(diagnostics), 2)
+        self.assertEqual("-Wimplicit-int-conversion", diagnostics[0].option)
+        self.assertEqual("-Wunused-variable", diagnostics[1].option)
+        self.assertEqual(len(violations), 0)
 
 
 if __name__ == "__main__":
