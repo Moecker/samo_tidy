@@ -1,17 +1,18 @@
 import unittest
-from unittest import skip
-import clang
 import os
 import logging
-from pprint import pformat
 import tempfile
 import shutil
+
+from unittest import skip
+from pprint import pformat
 from clang import cindex
 
 from samo_tidy.checker.checker import check_for_ints
 from samo_tidy.core.tu_parser import create_translation_unit
-from samo_tidy.utils.utils import debug_file_content, setup_clang, get_diag_info
+from samo_tidy.utils.utils import debug_file_content
 from samo_tidy.utils.cindex_dump import get_info
+from samo_tidy.test.test_utils import default_test_setup
 
 
 def make_file_string(the_list):
@@ -74,14 +75,12 @@ class TestChecker(unittest.TestCase):
         self.assertEqual(len(diagnostics), 0)
 
     def test_temp_file_int(self):
-        content = ["int Function()", "{", "return 0;", "}"]
-        file_name = create_temp_file_for(content)
+        file_name = create_temp_file_for(["int Function()", "{", "return 0;", "}"])
         violations, diagnostics = self.check_ints(file_name)
         self.assertEqual(len(violations), 0)
 
     def test_temp_file_uint(self):
-        content = ["#include <cstdint>", "std::uint8_t Function()", "{", "return 0u;", "}"]
-        file_name = create_temp_file_for(content)
+        file_name = create_temp_file_for(["#include <cstdint>", "std::uint8_t Function()", "{", "return 0u;", "}"])
         violations, diagnostics = self.check_ints(file_name)
         self.assertEqual(len(violations), 1)
         self.assertIn(file_name, violations[0].file)
@@ -89,8 +88,7 @@ class TestChecker(unittest.TestCase):
 
     @skip("No yet supported")
     def test_temp_file_uint_def(self):
-        content = ["#include <cstdint>", "std::uint8_t a = 1;"]
-        file_name = create_temp_file_for(content)
+        file_name = create_temp_file_for(["#include <cstdint>", "std::uint8_t a = 1;"])
         violations, diagnostics = self.check_ints(file_name)
         self.dump(file_name)
         self.assertEqual(len(violations), 1)
@@ -99,8 +97,7 @@ class TestChecker(unittest.TestCase):
 
     @skip("No yet supported")
     def test_temp_file_uint_missing(self):
-        content = ["#include <cstdint>", "std::uint8_t Function()", "{", "return 0;", "}"]
-        file_name = create_temp_file_for(content)
+        file_name = create_temp_file_for(["#include <cstdint>", "std::uint8_t Function()", "{", "return 0;", "}"])
         violations, diagnostics = self.check_ints(file_name)
         self.assertEqual(len(violations), 1)
         self.assertIn(file_name, violations[0].file)
@@ -108,6 +105,4 @@ class TestChecker(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
-    setup_clang()
-    unittest.main()
+    default_test_setup()

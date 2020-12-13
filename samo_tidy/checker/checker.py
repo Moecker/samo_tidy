@@ -1,9 +1,7 @@
 import logging
 
-import clang
-from clang import cindex
 from pprint import pprint, pformat
-
+from clang import cindex
 
 from samo_tidy.checker.violation import Violation
 

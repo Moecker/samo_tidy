@@ -1,5 +1,9 @@
 import logging
 
+from pprint import pprint
+from optparse import OptionParser, OptionGroup
+from clang.cindex import Index
+
 from samo_tidy.utils.utils import setup_clang
 
 
@@ -17,7 +21,7 @@ def get_cursor_id(cursor, cursor_list=[]):
     if cursor is None:
         return None
 
-    # FIXME: This is really slow. It would be nice if the index API exposed
+    # TODO: This is really slow. It would be nice if the index API exposed
     # something that let us hash cursors.
     for i, c in enumerate(cursor_list):
         if cursor == c:
@@ -56,11 +60,6 @@ def get_info(node, max_depth=None, depth=0):
 
 
 def main():
-    from clang.cindex import Index
-    from pprint import pprint
-
-    from optparse import OptionParser, OptionGroup
-
     parser = OptionParser("usage: %prog [options] {filename} [clang-args*]")
 
     parser.add_option(

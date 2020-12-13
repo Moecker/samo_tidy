@@ -2,8 +2,8 @@ import logging
 import platform
 import os
 import sys
-from pprint import pformat
 
+from pprint import pformat
 from clang import cindex
 
 

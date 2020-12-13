@@ -21,15 +21,15 @@ def run(compdb_root_dir, files=None):
         translation_units = parse_compdb(compdb)
     else:
         logging.error("Could not load compdb")
-        sys.exit(1)
+        sys.exit("Loading of compdb failed")
     apply_checkers_for_translation_units(translation_units)
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--compdb", required=True)
-    parser.add_argument("--files", nargs="+")
-    parser.add_argument("--verbose", action="store_true")
+    parser.add_argument("--compdb", required=True, help="Directory which contains the 'compile_comands.json' file")
+    parser.add_argument("--files", nargs="+", help="List of file from compdb to be analysed")
+    parser.add_argument("--verbose", action="store_true", help="Produces more debug output")
     args = parser.parse_args()
 
     if args.verbose:

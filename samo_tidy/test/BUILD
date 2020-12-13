@@ -1,4 +1,4 @@
-load("@rules_python//python:defs.bzl", "py_test")
+load("@rules_python//python:defs.bzl", "py_library", "py_test")
 
 # TODO Move all test targets to their packages
 py_test(
@@ -31,4 +31,11 @@ py_test(
         "//samo_tidy/core",
         "//samo_tidy/utils",
     ],
+)
+
+py_library(
+    name = "tet_utils",
+    srcs = glob(["**/*.py"]),
+    visibility = ["//samo_tidy:__subpackages__"],
+    deps = ["//samo_tidy/utils"],
 )

@@ -1,13 +1,14 @@
 import unittest
-from unittest import skip
 import logging
 import os
 import shutil
 import tempfile
 
+from unittest import skip
 
 from samo_tidy.core.compdb_parser import load_compdb, parse_compdb
-from samo_tidy.utils.utils import debug_file_content, setup_clang
+from samo_tidy.utils.utils import debug_file_content
+from samo_tidy.test.test_utils import default_test_setup
 
 
 def create_temp_file_for(compdb_string, dir, name):
@@ -57,10 +58,5 @@ class TestClang(unittest.TestCase):
         self.assertIn("source_id1.cpp", translation_units[0].spelling)
 
 
-# TODO Test multiple translation units
-
-
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
-    setup_clang()
-    unittest.main()
+    default_test_setup()
