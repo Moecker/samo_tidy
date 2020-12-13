@@ -16,12 +16,14 @@ def setup_clang():
         lib_location_file = "/usr/lib/llvm-10/lib/libclang-10.so"
         logging.info("Searching libclang file in '%s'", lib_location_file)
         cindex.Config.set_library_file(lib_location_file)
-    if platform.system() == "Darwin":
+    elif platform.system() == "Darwin":
         lib_location_path = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib"
         logging.info("Searching libclang path in '%s'", lib_location_path)
         cindex.Config.set_library_path(lib_location_path)
-    if platform.system() == "Windows":
+    elif platform.system() == "Windows":
         sys.exit("Windows is not supported")
+    else:
+        sys.exit("Unknown OS")
 
 
 def log_diagnostics_info_summary(translation_unit):
@@ -55,4 +57,4 @@ def get_diag_info(diag):
 
 def debug_file_content(file_path):
     with open(file_path) as f:
-        logging.debug("File '%s' looks like: '%s'", file_path, pformat("".join(f.readlines())))
+        logging.debug("File '%s' looks like: '%s'", only_filename(file_path), pformat("".join(f.readlines())))

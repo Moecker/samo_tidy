@@ -5,10 +5,11 @@ import shutil
 import os
 
 import samo_tidy.utils.utils as utils
+import samo_tidy.utils.logger as logger
 
 
 def default_test_setup():
-    logging.basicConfig(level=logging.INFO)
+    logger.setup_logger("debug")
     utils.setup_clang()
     unittest.main()
 
@@ -25,7 +26,7 @@ def create_temp_file_for(content, desired_absolute_path=None):
         else:
             os.makedirs(os.path.dirname(desired_absolute_path), exist_ok=True)
             desired_name = desired_absolute_path
-        logging.debug("Writing file to: '%s'", tmp.name)
+        logging.debug("Writing file to '%s'", tmp.name)
         with open(tmp.name, "w") as f:
             f.write(the_string)
         shutil.copy(tmp.name, desired_name)

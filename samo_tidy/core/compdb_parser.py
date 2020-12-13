@@ -4,6 +4,7 @@ import os
 from clang import cindex
 
 import samo_tidy.core.tu_parser as tu_parser
+import samo_tidy.utils.utils as utils
 
 
 def load_compdb(directory):
@@ -30,7 +31,7 @@ def parse_compdb(compdb, list_of_file=None):
             number_of_skipped_files += 1
             continue
         logging.info("Analyzing file '%s'", command.filename)
-        logging.debug("Got file name '%s'", command.filename)
+        logging.debug("Got file name '%s'", utils.only_filename(command.filename))
         logging.debug("Got directory '%s'", command.directory)
         logging.debug("Got arguments '%s'", list(command.arguments))
         translation_unit = tu_parser.create_translation_unit(

@@ -4,6 +4,7 @@ from pprint import pprint, pformat
 from clang import cindex
 
 import samo_tidy.checker.violation as violations
+import samo_tidy.utils.utils as utils
 
 
 def debug_token_contains(token):
@@ -45,9 +46,9 @@ def extract_violation(token, rule_id, message):
 def apply_checker(translation_unit, checker):
     violations = []
     ignored_violations = 0
-    logging.info("Analyzing translation unit '%s'", translation_unit.spelling)
+    logging.info("Analyzing translation unit '%s'", utils.only_filename(translation_unit.spelling))
     if shall_ignore_based_on_file_name(translation_unit.spelling):
-        logging.warning("Ignoring translation unit '%s'", translation_unit.spelling)
+        logging.warning("Ignoring translation unit '%s'", utils.only_filename(translation_unit.spelling))
         return []
     for token in translation_unit.cursor.walk_preorder():
         violation = checker(token)
