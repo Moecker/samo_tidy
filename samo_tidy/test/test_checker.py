@@ -8,27 +8,10 @@ from unittest import skip
 from pprint import pformat
 from clang import cindex
 
-from samo_tidy.checker.checker import check_for_ints
-from samo_tidy.core.tu_parser import create_translation_unit
-from samo_tidy.utils.utils import debug_file_content
-from samo_tidy.utils.cindex_dump import get_info
-from samo_tidy.test.test_utils import default_test_setup
-
-
-def make_file_string(the_list):
-    return "\n".join(the_list) + "\n"
-
-
-def create_temp_file_for(content):
-    the_string = make_file_string(content)
-    with tempfile.NamedTemporaryFile(delete=False) as tmp:
-        desired_name = tmp.name + ".cpp"
-        logging.debug("Writing file to: '%s'", tmp.name)
-        with open(tmp.name, "w") as f:
-            f.write(the_string)
-        shutil.copy(tmp.name, desired_name)
-        debug_file_content(desired_name)
-    return desired_name
+import samo_tidy.checker.checker as checker
+import samo_tidy.core.tu_parser as tu_parser
+import samo_tidy.utils.cindex_dump as cindex_dump
+import samo_tidy.test.test_utils as test_utils
 
 
 class TestChecker(unittest.TestCase):
@@ -40,13 +23,13 @@ class TestChecker(unittest.TestCase):
         return source_file
 
     def check_ints(self, source_file, args=[]):
-        tu = create_translation_unit(source_file, args)
-        violations = check_for_ints(tu)
+        tu = tu_parser.create_translation_unit(source_file, args)
+        violations = checker.check_for_ints(tu)
         return violations, tu.diagnostics
 
     def dump(self, source_file, args=[]):
-        tu = create_translation_unit(source_file, args)
-        logging.debug(pformat(("nodes", get_info(tu.cursor))))
+        tu = tu_parser.create_translation_unit(source_file, args)
+        logging.debug(pformat(("nodes", cindex_dump.get_info(tu.cursor))))
 
     def test_check_for_ints_id1(self):
         source_file = self.get_source_file_path("source_id1.cpp")
@@ -65,7 +48,7 @@ class TestChecker(unittest.TestCase):
 
     def test_check_for_ints_id3(self):
         source_file = self.get_source_file_path("source_id3.cpp")
-        tu = create_translation_unit(source_file)
+        tu = tu_parser.create_translation_unit(source_file)
         self.assertEqual(len(tu.diagnostics), 1)
         self.assertIn("expected ';'", tu.diagnostics[0].spelling)
 
@@ -76,12 +59,12 @@ class TestChecker(unittest.TestCase):
         self.assertEqual(len(diagnostics), 0)
 
     def test_temp_file_int(self):
-        file_name = create_temp_file_for(["int F();", "int F()", "{", "return 0;", "}"])
+        file_name = test_utils.create_temp_file_for(["int F();", "int F()", "{", "return 0;", "}"])
         violations, diagnostics = self.check_ints(file_name)
         self.assertEqual(len(violations), 0)
 
     def test_temp_file_uint(self):
-        file_name = create_temp_file_for(
+        file_name = test_utils.create_temp_file_for(
             ["#include <cstdint>", "std::uint8_t F();", "std::uint8_t F()", "{", "return 0u;", "}"]
         )
         violations, diagnostics = self.check_ints(file_name)
@@ -90,7 +73,7 @@ class TestChecker(unittest.TestCase):
         self.assertEqual("TIDY_SUFFIX_CASE", violations[0].id)
 
     def test_temp_file_uint_conversion(self):
-        file_name = create_temp_file_for(
+        file_name = test_utils.create_temp_file_for(
             ["#include <cstdint>", "int main()", "{", "int a = 12;", "std::uint8_t b = a;", "}"]
         )
         violations, diagnostics = self.check_ints(file_name)
@@ -100,7 +83,7 @@ class TestChecker(unittest.TestCase):
         self.assertEqual(len(violations), 0)
 
     def test_temp_file_uint_conversion_fine(self):
-        file_name = create_temp_file_for(
+        file_name = test_utils.create_temp_file_for(
             ["#include <cstdint>", "int main()", "{", "std::uint8_t b = 123;", "return b;" "}"]
         )
         violations, diagnostics = self.check_ints(file_name)
@@ -109,4 +92,4 @@ class TestChecker(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    default_test_setup()
+    test_utils.default_test_setup()

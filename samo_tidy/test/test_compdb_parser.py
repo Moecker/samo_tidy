@@ -8,7 +8,7 @@ from unittest import skip
 
 from samo_tidy.core.compdb_parser import load_compdb, parse_compdb
 from samo_tidy.utils.utils import debug_file_content
-from samo_tidy.test.test_utils import default_test_setup
+import samo_tidy.test.test_utils as test_utils
 
 
 def create_temp_file_for(compdb_string, dir, name):
@@ -59,4 +59,4 @@ class TestClang(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    default_test_setup()
+    test_utils.default_test_setup()
