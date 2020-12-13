@@ -1,7 +1,7 @@
 import unittest
 import logging
 
-from samo_tidy.test.test_utils import default_test_setup
+import samo_tidy.test.test_utils as test_utils
 
 
 class TestFacade(unittest.TestCase):
@@ -10,4 +10,4 @@ class TestFacade(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    default_test_setup()
+    test_utils.default_test_setup()

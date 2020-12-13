@@ -3,9 +3,7 @@ load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 py_library(
     name = "facade",
     srcs = ["facade.py"],
-    visibility = [
-        "//samo_tidy/test:__pkg__",
-    ],
+    visibility = ["//samo_tidy/facade/test:__pkg__"],
     deps = [
         "//samo_tidy/checker",
         "//samo_tidy/core",

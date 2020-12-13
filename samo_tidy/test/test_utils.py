@@ -3,13 +3,12 @@ import logging
 import tempfile
 import shutil
 
-from samo_tidy.utils.utils import setup_clang
-from samo_tidy.utils.utils import debug_file_content
+import samo_tidy.utils.utils as utils
 
 
 def default_test_setup():
     logging.basicConfig(level=logging.DEBUG)
-    setup_clang()
+    utils.setup_clang()
     unittest.main()
 
 
@@ -25,5 +24,5 @@ def create_temp_file_for(content):
         with open(tmp.name, "w") as f:
             f.write(the_string)
         shutil.copy(tmp.name, desired_name)
-        debug_file_content(desired_name)
+        utils.debug_file_content(desired_name)
     return desired_name

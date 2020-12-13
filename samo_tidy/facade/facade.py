@@ -2,10 +2,10 @@ import argparse
 import logging
 import sys
 
-from samo_tidy.core.compdb_parser import load_compdb, parse_compdb
+import samo_tidy.core.compdb_parser as compdb_parser
 import samo_tidy.checker.checker as checker
 import samo_tidy.checker.clang_warning_checker as clang_warning_checker
-from samo_tidy.utils.utils import setup_clang
+import samo_tidy.utils.utils as utils
 
 
 def apply_checkers_for_translation_units(translation_units):
@@ -18,9 +18,9 @@ def apply_checkers_for_translation_units(translation_units):
 
 
 def run(compdb_root_dir, files=None):
-    compdb = load_compdb(compdb_root_dir)
+    compdb = compdb_parser.load_compdb(compdb_root_dir)
     if compdb:
-        translation_units = parse_compdb(compdb)
+        translation_units = compdb_parser.parse_compdb(compdb)
     else:
         logging.error("Could not load compdb")
         sys.exit("Loading of compdb failed")
@@ -39,7 +39,7 @@ def main():
     else:
         logging.basicConfig(level=logging.INFO)
 
-    setup_clang()
+    utils.setup_clang()
     run(args.compdb, args.files)
 
 

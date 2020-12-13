@@ -3,7 +3,7 @@ import os
 
 from clang import cindex
 
-from samo_tidy.core.tu_parser import create_translation_unit
+import samo_tidy.core.tu_parser as tu_parser
 
 
 def load_compdb(directory):
@@ -31,7 +31,7 @@ def parse_compdb(compdb):
         logging.debug("Got file name '%s'", command.filename)
         logging.debug("Got directory '%s'", command.directory)
         logging.debug("Got arguments '%s'", list(command.arguments))
-        translation_unit = create_translation_unit(
+        translation_unit = tu_parser.create_translation_unit(
             os.path.join(command.directory, command.filename), list(command.arguments)
         )
         translation_units.append(translation_unit)

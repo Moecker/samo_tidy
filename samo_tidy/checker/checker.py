@@ -3,7 +3,7 @@ import logging
 from pprint import pprint, pformat
 from clang import cindex
 
-from samo_tidy.checker.violation import Violation
+import samo_tidy.checker.violation as violations
 
 
 def debug_token_contains(token):
@@ -25,7 +25,7 @@ def extract_violation(child_token, rule_id, message):
         logging.debug("Ignoring violation from external file '%s'", location.file.name)
         no_ignored_violations += 1
         return None
-    violation = Violation(
+    violation = violations.Violation(
         rule_id,
         message,
         location.file.name,

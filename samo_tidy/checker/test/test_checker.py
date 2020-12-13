@@ -16,7 +16,7 @@ import samo_tidy.test.test_utils as test_utils
 
 class TestChecker(unittest.TestCase):
     def setUp(self):
-        self.test_data_dir = os.path.join(os.path.dirname(__file__), "data")
+        self.test_data_dir = os.path.join(os.path.dirname(__file__), "../../test/data")
 
     def get_source_file_path(self, file_name):
         source_file = os.path.join(self.test_data_dir, file_name)

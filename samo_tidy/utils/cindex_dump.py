@@ -4,7 +4,7 @@ from pprint import pprint
 from optparse import OptionParser, OptionGroup
 from clang.cindex import Index
 
-from samo_tidy.utils.utils import setup_clang
+import samo_tidy.utils.utils as utils
 
 
 def get_diag_info(diag):
@@ -80,7 +80,7 @@ def main():
         parser.error("invalid number arguments")
 
     logging.basicConfig(level=logging.DEBUG)
-    setup_clang()
+    utils.setup_clang()
 
     index = Index.create()
     tu = index.parse(None, args)

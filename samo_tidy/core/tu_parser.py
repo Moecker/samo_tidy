@@ -2,7 +2,7 @@ import logging
 
 from clang import cindex
 
-from samo_tidy.utils.utils import get_diagnostics_info, log_diagnostics_info_summary
+import samo_tidy.utils.utils as utils
 
 DEFAULT_ACTIVE_ARGUMENTS = ["-std=c++14", "-Weverything"]
 DEFAULT_IGNORED_ARGUMENTS = ["-Wno-unused-command-line-argument"]
@@ -27,8 +27,8 @@ def create_translation_unit(source_file, args=[]):
         args = clean_args(args)
         logging.debug("Parsing '%s' with args '%s'", source_file, args)
         translation_unit = index.parse(source_file, args=args)
-        logging.debug(get_diagnostics_info(translation_unit))
-        log_diagnostics_info_summary(translation_unit)
+        logging.debug(utils.get_diagnostics_info(translation_unit))
+        utils.log_diagnostics_info_summary(translation_unit)
         return translation_unit
     except cindex.TranslationUnitLoadError as the_exception:
         logging.error(the_exception)
