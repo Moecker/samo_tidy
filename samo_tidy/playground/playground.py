@@ -1,14 +1,3 @@
-import clang
-from clang.cindex import CursorKind, Config
-import sys
-import argparse
-import logging
-
-
-def __configure_logger(logging_level=logging.DEBUG):
-    logging.basicConfig(level=logging_level, format="%(levelname)s: %(message)s", datefmt="%H:%M:'%s'")
-
-
 def __translation_unit_basename_and_extension(translation_unit_name):
     from os.path import splitext, basename
 
@@ -38,11 +27,6 @@ def __compute_expected_name(classes, translation_unit_name):
     computed_name = pattern.sub("_", classes[0]).lower()
     computed_name += extension
     return computed_name, basename
-
-
-def __load_clang_db(db_directory):
-    clangdb = clang.cindex.CompilationDatabase.fromDirectory(db_directory)
-    return clangdb
 
 
 def __check_one_class_per_file(tu, target):
@@ -84,51 +68,3 @@ def __check_one_class_per_file(tu, target):
         if len(classes) > 1:
             errors.append("MultipleClassesWithinTranslationUnitException: " + target_name + " -- " + str(classes))
     return errors
-
-
-def __check_for_file(target, compdb):
-    errors = []
-    index = clang.cindex.Index.create()
-    try:
-        # This does not work
-        #   target_args = compdb.getCompileCommands(target)
-        #   tu = index.parse(target, args=target_args)
-        tu = index.parse(target)
-        errors = __check_one_class_per_file(tu, target)
-    except clang.cindex.TranslationUnitLoadError as e:
-        raise e
-    return errors
-
-
-def check_files(compile_db_path, files):
-    try:
-        compdb = __load_clang_db(compile_db_path)
-    except clang.cindex.CompilationDatabaseError as e:
-        print(e)
-    if files:
-        # go through files
-        for target in files:
-            errors = __check_for_file(target, compdb)
-            if len(errors) > 0:
-                raise Exception("\n" + "\n".join(errors))
-    else:
-        # all files in compile db
-        commands = compdb.getAllCompileCommands()
-        for command in commands:
-            if "external/" in command.filename:
-                logging.debug("Skipping: '%s'", command.filename)
-                continue
-            logging.info("Checking file: '%s'", command.filename)
-            errors = __check_for_file(command.filename, compdb)
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--db", required=True)
-    parser.add_argument("--files", nargs="+")
-    args = parser.parse_args()
-    __configure_logger(logging.INFO)
-    Config.set_library_file("/usr/lib/llvm-8/lib/libclang.so.1")
-    if args.db:
-        # create temporary directory
-        check_files(args.db, args.files)

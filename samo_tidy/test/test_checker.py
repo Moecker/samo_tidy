@@ -76,20 +76,20 @@ class TestChecker(unittest.TestCase):
         self.assertEqual(len(diagnostics), 0)
 
     def test_temp_file_int(self):
-        file_name = create_temp_file_for(["int Function();", "int Function()", "{", "return 0;", "}"])
+        file_name = create_temp_file_for(["int F();", "int F()", "{", "return 0;", "}"])
         violations, diagnostics = self.check_ints(file_name)
         self.assertEqual(len(violations), 0)
 
     def test_temp_file_uint(self):
         file_name = create_temp_file_for(
-            ["#include <cstdint>", "std::uint8_t Function();", "std::uint8_t Function()", "{", "return 0u;", "}"]
+            ["#include <cstdint>", "std::uint8_t F();", "std::uint8_t F()", "{", "return 0u;", "}"]
         )
         violations, diagnostics = self.check_ints(file_name)
         self.assertEqual(len(violations), 1)
         self.assertIn(file_name, violations[0].file)
         self.assertEqual("TIDY_SUFFIX_CASE", violations[0].id)
 
-    def test_temp_file_uint_converstion(self):
+    def test_temp_file_uint_conversion(self):
         file_name = create_temp_file_for(
             ["#include <cstdint>", "int main()", "{", "int a = 12;", "std::uint8_t b = a;", "}"]
         )
@@ -97,6 +97,14 @@ class TestChecker(unittest.TestCase):
         self.assertEqual(len(diagnostics), 2)
         self.assertEqual("-Wimplicit-int-conversion", diagnostics[0].option)
         self.assertEqual("-Wunused-variable", diagnostics[1].option)
+        self.assertEqual(len(violations), 0)
+
+    def test_temp_file_uint_conversion_fine(self):
+        file_name = create_temp_file_for(
+            ["#include <cstdint>", "int main()", "{", "std::uint8_t b = 123;", "return b;" "}"]
+        )
+        violations, diagnostics = self.check_ints(file_name)
+        self.assertEqual(len(diagnostics), 0)
         self.assertEqual(len(violations), 0)
 
 
