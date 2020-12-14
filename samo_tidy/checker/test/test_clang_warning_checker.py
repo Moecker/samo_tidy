@@ -1,7 +1,5 @@
 import unittest
 
-from unittest import skip
-
 import samo_tidy.checker.clang_warning_checker as clang_warning_checker
 import samo_tidy.core.tu_parser as tu_parser
 

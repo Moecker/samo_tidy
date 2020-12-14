@@ -4,8 +4,6 @@ import os
 import shutil
 import tempfile
 
-from unittest import skip
-
 import samo_tidy.core.compdb_parser as compdb_parser
 import samo_tidy.utils.utils as utils
 

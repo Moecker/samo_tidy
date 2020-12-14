@@ -3,8 +3,8 @@ import logging
 import sys
 import os
 
+from clang import cindex
 from unittest.mock import patch
-from unittest import skip
 
 import samo_tidy.test.test_utils as test_utils
 import samo_tidy.facade.facade as facade
@@ -14,6 +14,7 @@ import samo_tidy.core.tu_parser as tu_parser
 class TestFacade(unittest.TestCase):
     def setUp(self):
         self.test_data_dir = os.path.join(os.path.dirname(__file__), "../../test/data")
+        cindex.Config.loaded = False
 
     def set_arguments(self, arguments):
         sys.argv = [sys.argv[0]]
@@ -29,12 +30,10 @@ class TestFacade(unittest.TestCase):
         # Raised by arg-parser on missing mandatory fields
         self.assert_exit_code(facade.main, 2)
 
-    @skip("Does not work as a 'missing clang path' error occurs when calling it multiple times")
     def test_default_arguments_missing_db(self):
         self.set_arguments(["--compdb", "/tmp"])
         self.assert_exit_code(facade.main, "Loading of compdb failed")
 
-    @skip("Does not work as a 'missing clang path' error occurs when calling it multiple times")
     def test_default_arguments_valid_but_empty_db(self):
         self.set_arguments(["--compdb", self.test_data_dir])
         self.assert_exit_code(facade.main, 0)

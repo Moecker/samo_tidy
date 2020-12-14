@@ -2,6 +2,8 @@ import logging
 import platform
 import os
 import sys
+import multiprocessing
+import itertools
 
 from pprint import pformat
 from clang import cindex
@@ -91,3 +93,24 @@ def debug_file_content(file_path):
         logging.debug(
             "File '%s' looks like: '%s'", only_filename(file_path), join_and_strip_file_content(f.readlines())
         )
+
+
+def parallel(the_list, workers, the_function):
+    list_length = len(the_list)
+    workers = min(workers, list_length)
+    batch = int(list_length / workers)
+
+    output = []
+    with multiprocessing.Pool(workers) as pool:
+        output = pool.map(
+            the_function,
+            [
+                (start, min(start + batch, list_length), the_list)
+                for start in range(
+                    0,
+                    list_length,
+                    batch,
+                )
+            ],
+        )
+    return list(itertools.chain.from_iterable(output))

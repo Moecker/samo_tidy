@@ -1,6 +1,8 @@
 import logging
 import os
 import sys
+import time
+
 
 from clang import cindex
 
@@ -30,6 +32,26 @@ def parse_single_command(command):
     return translation_unit
 
 
+def computation(args):
+    start, end, the_list = args
+    ret = []
+
+    for i in range(start, end):
+        ret.append(the_list[i] * 100)
+        time.sleep(0.1)
+    return ret
+
+
+def parse_from_commands(args):
+    start, end, commands = args
+    translation_units = []
+
+    for i in range(start, end):
+        translation_unit = parse_single_command(command)
+        translation_units.append(translation_unit)
+    return translation_units
+
+
 def parse_compdb(compdb, list_of_files=None):
     commands = compdb.getAllCompileCommands()
     if not commands:
@@ -41,6 +63,9 @@ def parse_compdb(compdb, list_of_files=None):
 
     translation_units = []
     number_of_skipped_files = 0
+
+    # TODO Does not work: ValueError: ctypes objects containing pointers cannot be pickled
+    # output = utils.parallel(commands, 4, parse_from_commands)
 
     for command in commands:
         # Check if we want to parse the translation unit based on the file name pattern
