@@ -24,6 +24,12 @@ py_test(
 )
 
 py_test(
+    name = "test_samo_multiple_classes_checker",
+    srcs = glob(["**/*.py"]),
+    deps = ["//samo_tidy/checker/test:test_checker_lib"],
+)
+
+py_test(
     name = "test_clang_warning_checker",
     srcs = glob(["**/*.py"]),
     deps = [
