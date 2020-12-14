@@ -34,7 +34,7 @@ class TestClang(test_core_lib.TestCoreLib):
 
     def test_parallel_parse_compdb(self):
         compdb = self.create_and_parse_comdb("source_id1.cpp")
-        # translation_units = parallel_parse_compdb()
+        translation_units = parallel_parser.parallel_parse_compdb(compdb)
 
 
 if __name__ == "__main__":

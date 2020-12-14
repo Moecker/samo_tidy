@@ -97,6 +97,9 @@ def debug_file_content(file_path):
 
 def parallel(the_list, workers, the_function):
     list_length = len(the_list)
+    if list_length == 0:
+        return []
+
     workers = min(workers, list_length)
     batch = int(list_length / workers)
 
