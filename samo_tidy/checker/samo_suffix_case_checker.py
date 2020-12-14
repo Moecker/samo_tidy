@@ -9,5 +9,7 @@ def token_based_rule(token):
         if token.type.spelling == "unsigned int":
             for child_token in token.get_tokens():
                 if "u" in child_token.spelling:
-                    violation = checker.extract_violation(child_token, "TIDY_SAMO_SUFFIX_CASE", "Lower Case suffix")
+                    violation = checker.extract_violation(
+                        child_token, "TIDY_SAMO_SUFFIX_CASE", "Lower Case suffix for unsigned integer"
+                    )
     return violation

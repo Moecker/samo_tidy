@@ -16,7 +16,7 @@ def translation_unit_based_rule(translation_unit):
         violation = checker.extract_violation(
             token,
             "TIDY_SAMO_MULTIPLE_CLASSES",
-            f"Using multiple <{len(classes)}> classes in one translation unit <{utils.only_filename(translation_unit.spelling)}>",
+            f"Multiple {len(classes)} classes in one translation unit",
         )
         if violation:
             violations.append(violation)
