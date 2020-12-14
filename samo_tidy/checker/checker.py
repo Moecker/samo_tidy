@@ -27,10 +27,11 @@ def shall_ignore_based_on_file_name(file_name):
 def extract_violation(token, rule_id, message):
     location = token.location
     if not location.file:
-        logging.info("Missing source location for '%s'", token.kind)
+        logging.warning("Missing source location for '%s'", token.kind)
         return None
     if shall_ignore_based_on_file_name(location.file.name):
-        logging.info("Ignoring violation from external file '%s'", location.file.name)
+        # Too noisy
+        # logging.debug("Ignoring violation from external file '%s'", location.file.name)
         return None
     violation = violations.Violation(
         rule_id,
@@ -46,9 +47,13 @@ def extract_violation(token, rule_id, message):
 def apply_checker(translation_unit, checker):
     violations = []
     ignored_violations = 0
-    logging.info("Analyzing translation unit '%s'", utils.only_filename(translation_unit.spelling))
+    logging.info(
+        "Analyzing translation unit '%s' with checker '%s'",
+        utils.only_filename(translation_unit.spelling),
+        checker.__module__,
+    )
     if shall_ignore_based_on_file_name(translation_unit.spelling):
-        logging.warning("Ignoring translation unit '%s'", utils.only_filename(translation_unit.spelling))
+        logging.debug("Ignoring translation unit '%s'", utils.only_filename(translation_unit.spelling))
         return []
     for token in translation_unit.cursor.walk_preorder():
         violation = checker(token)
@@ -58,5 +63,5 @@ def apply_checker(translation_unit, checker):
             ignored_violations += 1
 
     if ignored_violations > 0:
-        logging.warning("Ignored %d violation(s) from external files", ignored_violations)
+        logging.debug("Ignored %d violation(s) from external files", ignored_violations)
     return violations

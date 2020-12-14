@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 
 from clang import cindex
 
@@ -20,6 +21,10 @@ def load_compdb(directory):
 
 def parse_compdb(compdb, list_of_file=None):
     commands = compdb.getAllCompileCommands()
+    if not commands:
+        err_msg = "Compilation Database invalid"
+        logging.error(err_msg)
+        sys.exit(err_msg)
     logging.debug("Got %d command(s)", len(commands))
     translation_units = []
     number_of_skipped_files = 0
@@ -27,10 +32,10 @@ def parse_compdb(compdb, list_of_file=None):
         if list_of_file and not any(word in command.filename for word in list_of_file):
             continue
         if "external/" in command.filename:
-            logging.warning("Skipping file '%s'", command.filename)
+            logging.debug("Skipping file '%s'", command.filename)
             number_of_skipped_files += 1
             continue
-        logging.info("Analyzing file '%s'", command.filename)
+        logging.info("Parsing file '%s'", command.filename)
         logging.debug("Got file name '%s'", utils.only_filename(command.filename))
         logging.debug("Got directory '%s'", command.directory)
         logging.debug("Got arguments '%s'", list(command.arguments))

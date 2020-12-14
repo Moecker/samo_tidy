@@ -26,17 +26,24 @@ def setup_clang():
         sys.exit("Unknown OS")
 
 
+def replace_if_none(to_be_checked, replacement_string, replacement_value=None):
+    if to_be_checked:
+        return to_be_checked
+    else:
+        return replacement_string
+
+
 def log_diagnostics_info_summary(translation_unit):
     for d in translation_unit.diagnostics:
         if d.location.file:
             file_path = d.location.file.name
         else:
             file_path = "Unknown"
-        logging.warning(
+        logging.debug(
             "Clang diagnostic: Category '%s', Option '%s', Message: '%s', File '%s'",
-            d.category_name,
-            d.option,
-            d.spelling,
+            replace_if_none(d.category_name, "Unknown Category"),
+            replace_if_none(d.option, "Unknown Option"),
+            replace_if_none(d.spelling, "Unknown Spelling"),
             only_filename(file_path),
         )
 

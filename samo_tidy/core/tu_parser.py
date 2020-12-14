@@ -27,7 +27,8 @@ def create_translation_unit(source_file, args=[]):
         args = clean_args(args)
         logging.debug("Parsing '%s' with args '%s'", utils.only_filename(source_file), args)
         translation_unit = index.parse(source_file, args=args)
-        logging.debug(utils.get_diagnostics_info(translation_unit))
+        # TODO Too noisy, add a "verbose" log level
+        # logging.debug(utils.get_diagnostics_info(translation_unit))
         utils.log_diagnostics_info_summary(translation_unit)
         return translation_unit
     except cindex.TranslationUnitLoadError as the_exception:
