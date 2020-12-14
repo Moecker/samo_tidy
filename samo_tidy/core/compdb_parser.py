@@ -19,36 +19,48 @@ def load_compdb(directory):
         return None
 
 
-def parse_compdb(compdb, list_of_file=None):
+def parse_single_command(command):
+    logging.info("Parsing file '%s'", command.filename)
+    logging.debug("Using file name '%s'", utils.only_filename(command.filename))
+    logging.debug("Using directory '%s'", command.directory)
+    logging.debug("Using arguments '%s'", list(command.arguments))
+    translation_unit = tu_parser.create_translation_unit(
+        os.path.join(command.directory, command.filename), list(command.arguments)
+    )
+    return translation_unit
+
+
+def parse_compdb(compdb, list_of_files=None):
     commands = compdb.getAllCompileCommands()
     if not commands:
         err_msg = "Compilation Database invalid"
         logging.error(err_msg)
         sys.exit(err_msg)
-    logging.debug("Got %d command(s)", len(commands))
+
+    logging.info("Read %d command(s) in compilation database", len(commands))
+
     translation_units = []
     number_of_skipped_files = 0
+
     for command in commands:
-        if list_of_file and not any(word in command.filename for word in list_of_file):
+        # Check if we want to parse the translation unit based on the file name pattern
+        if list_of_files and not any(word in command.filename for word in list_of_files):
             continue
-        if "external/" in command.filename:
-            logging.debug("Skipping file '%s'", command.filename)
+        if any(word in command.filename for word in ["external/"]):
+            logging.debug("Skipping external file '%s'", command.filename)
             number_of_skipped_files += 1
             continue
-        logging.info("Parsing file '%s'", command.filename)
-        logging.debug("Got file name '%s'", utils.only_filename(command.filename))
-        logging.debug("Got directory '%s'", command.directory)
-        logging.debug("Got arguments '%s'", list(command.arguments))
-        translation_unit = tu_parser.create_translation_unit(
-            os.path.join(command.directory, command.filename), list(command.arguments)
-        )
+
+        translation_unit = parse_single_command(command)
         translation_units.append(translation_unit)
+
     if number_of_skipped_files > 0:
         logging.info("Skipped %d file(s)", number_of_skipped_files)
     return translation_units
 
 
 def clean_args(args):
+    # Some arguments cause problems - remove them
     to_remove_idx = []
     for idx, arg in enumerate(args):
         if arg.startswith("-c"):

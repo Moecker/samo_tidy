@@ -1,6 +1,6 @@
 import samo_tidy.checker.checker as checker
 
-
+# Interprets clang diagnostics warnings (aka compiler warnings) as violations
 def check_for_clang_warnings(translation_unit):
     violations = []
     no_ignored_violations = 0

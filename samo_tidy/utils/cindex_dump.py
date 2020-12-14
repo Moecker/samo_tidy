@@ -21,8 +21,7 @@ def get_cursor_id(cursor, cursor_list=[]):
     if cursor is None:
         return None
 
-    # TODO: This is really slow. It would be nice if the index API exposed
-    # something that let us hash cursors.
+    # TODO: This is really slow. It would be nice if the index API exposed something that let us hash cursors.
     for i, c in enumerate(cursor_list):
         if cursor == c:
             return i

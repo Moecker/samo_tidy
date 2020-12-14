@@ -11,7 +11,7 @@ import samo_tidy.checker.test.test_checker_lib as test_checker_lib
 class TestSamoSuffixCaseChecker(test_checker_lib.TestCheckerLib):
     def apply_samo_suffix_case_checker(self, source_file, args=[]):
         tu = tu_parser.create_translation_unit(source_file, args)
-        violations = checker.apply_checker(tu, samo_suffix_case_checker.rule)
+        violations = checker.apply_checker(tu, samo_suffix_case_checker.token_based_rule)
         return violations, tu.diagnostics
 
     def test_check_for_ints_id1(self):

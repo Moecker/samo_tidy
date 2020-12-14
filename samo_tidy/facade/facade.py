@@ -15,15 +15,21 @@ import samo_tidy.utils.logger as logger
 
 
 def apply_checkers_for_translation_units(translation_units):
+    number_of_successfull_tus = 0
+    # For each translation unit, apply the checkers
+    # TODO Make this generic by using a "registry" of checkers
+    # TODO Do not differentiation between tu and token based checker
     for tu in translation_units:
         logging.info("Applying checkers for '%s'", utils.only_filename(tu.spelling))
         if tu:
-            checker.apply_checker(tu, samo_suffix_case_checker.rule)
-            checker.apply_checker(tu, samo_multiple_classes_checker.rule)
-            checker.apply_checker(tu, samo_unsigned_int_checker.rule)
+            checker.apply_checker(tu, samo_suffix_case_checker.token_based_rule)
+            checker.apply_checker(tu, samo_multiple_classes_checker.translation_unit_based_rule)
+            checker.apply_checker(tu, samo_unsigned_int_checker.token_based_rule)
             clang_warning_checker.check_for_clang_warnings(tu)
+            number_of_successfull_tus += 1
         else:
             logging.warning("Skipping translation unit")
+    return number_of_successfull_tus
 
 
 def run(compdb_root_dir, files=None):

@@ -7,12 +7,14 @@ import samo_tidy.test.test_utils as test_utils
 
 
 class TestChecker(test_checker_lib.TestCheckerLib):
-    def test_ignored_file_name(self):
+    def test_ignored_file_name_positiv(self):
         file_name = test_utils.create_temp_file_for(
             ["#include <cstdint>", "std::uint8_t a=0u;"], "/tmp/usr/ignore_me.cpp"
         )
         violations = self.apply_random_check(file_name)
         self.assertEqual(len(violations), 0)
+
+    def test_ignored_file_name_negativ(self):
         file_name = test_utils.create_temp_file_for(
             ["#include <cstdint>", "std::uint8_t a=0u;"], "/tmp/do_not_ignore_me.cpp"
         )
