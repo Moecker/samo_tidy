@@ -4,6 +4,7 @@ py_library(
     name = "test_checker_lib",
     srcs = glob(["**/*.py"]),
     data = ["//samo_tidy/test:test_sources"],
+    visibility = [":__subpackages__"],
     deps = [
         "//samo_tidy/checker",
         "//samo_tidy/test:test_utils",

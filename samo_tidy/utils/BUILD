@@ -1,6 +1,8 @@
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@pip//:requirements.bzl", "requirement")
 
+# TODO Add tests for utils packages
+
 py_library(
     name = "utils",
     srcs = glob(["**/*.py"]),
