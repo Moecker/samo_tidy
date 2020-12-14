@@ -33,22 +33,37 @@ def replace_if_none(to_be_checked, replacement_string, replacement_value=None):
         return replacement_string
 
 
+def shall_exclude_diagnostic_message(message):
+    exclusion_list = [
+        "-fno-canonical-system-headers",
+        "-Wunused-but-set-parameter",
+        "-Wno-free-nonheap-object",
+        "-Werror=init-list-lifetime",
+        "-Werror=class-conversion",
+    ]
+    return any(word in message for word in exclusion_list)
+
+
 def log_diagnostics_info_summary(translation_unit):
-    for d in translation_unit.diagnostics:
-        if d.location.file:
-            file_path = d.location.file.name
+    for diagnostic in translation_unit.diagnostics:
+        if shall_exclude_diagnostic_message(diagnostic.spelling):
+            continue
+
+        if diagnostic.location.file:
+            file_path = diagnostic.location.file.name
         else:
             file_path = "Unknown"
 
         log_function = logging.debug
-        if d.severity > 2:
+        if diagnostic.severity > 3:
             log_function = logging.warning
+
+        logging.debug(get_diagnostics_info(translation_unit))
+
         log_function(
-            "Clang diagnostic: Severity '%s', Category '%s', Option '%s', Message: '%s', File '%s'",
-            d.severity,
-            replace_if_none(d.category_name, "Unknown Category"),
-            replace_if_none(d.option, "Unknown Option"),
-            d.spelling,
+            "Clang diagnostic: Severity '%s', Message: '%s', File '%s'",
+            diagnostic.severity,
+            diagnostic.spelling,
             only_filename(file_path),
         )
 

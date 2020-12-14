@@ -25,7 +25,7 @@ def parse_single_command(command):
     logging.debug("Using directory '%s'", command.directory)
     logging.debug("Using arguments '%s'", list(command.arguments))
     translation_unit = tu_parser.create_translation_unit(
-        os.path.join(command.directory, command.filename), list(command.arguments)
+        os.path.join(command.directory, command.filename), list(command.arguments), command.directory
     )
     return translation_unit
 
@@ -37,7 +37,7 @@ def parse_compdb(compdb, list_of_files=None):
         logging.error(err_msg)
         sys.exit(err_msg)
 
-    logging.info("Read %d command(s) in compilation database", len(commands))
+    logging.info("Found %d command(s) in compilation database", len(commands))
 
     translation_units = []
     number_of_skipped_files = 0
