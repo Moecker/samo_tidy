@@ -16,10 +16,10 @@ class TestCheckerLib(unittest.TestCase):
         self.test_data_dir = os.path.join(os.path.dirname(__file__), "../../test/data")
 
     # Just take any check to test the checker template method
-    def apply_random_check(self, source_file):
-        tu = tu_parser.create_translation_unit(source_file)
+    def apply_random_check(self, source_file, args=[]):
+        tu = tu_parser.create_translation_unit(source_file, args)
         violations = checker.apply_checker(tu, samo_suffix_case_checker.token_based_rule)
-        return violations
+        return violations, tu.diagnostics
 
     def get_source_file_path(self, file_name):
         source_file = os.path.join(self.test_data_dir, file_name)

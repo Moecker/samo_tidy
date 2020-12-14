@@ -4,6 +4,7 @@ from pprint import pprint, pformat
 from clang import cindex
 
 import samo_tidy.checker.violation as violations
+import samo_tidy.core.summary as summary
 import samo_tidy.utils.utils as utils
 
 
@@ -27,11 +28,10 @@ def shall_ignore_based_on_file_name(file_name):
 def extract_violation(token, rule_id, message):
     location = token.location
     if not location.file:
-        logging.warning("Missing source location for '%s'", token.kind)
+        logging.warning("Missing source location for '%s', skipping", token.kind)
         return None
     if shall_ignore_based_on_file_name(location.file.name):
-        # TODO Too noisy, add a "verbose" log level
-        # logging.debug("Ignoring violation from external file '%s'", location.file.name)
+        logging.debug("Ignoring violation for id '%s' from file '%s'", rule_id, location.file.name)
         return None
     violation = violations.Violation(
         rule_id,
@@ -40,6 +40,7 @@ def extract_violation(token, rule_id, message):
         location.line,
         location.column,
     )
+    summary.add_filename(location.file.name)
     # The actual log out which can be mechanically read
     logging.error(violation)
     return violation
@@ -66,4 +67,5 @@ def apply_checker(translation_unit, checker):
                 violations.append(violation)
     elif checker.__name__ == "translation_unit_based_rule":
         violations = checker(translation_unit)
+    # TODO Consider returning diagnostics
     return violations

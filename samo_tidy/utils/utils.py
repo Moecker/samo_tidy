@@ -39,11 +39,16 @@ def log_diagnostics_info_summary(translation_unit):
             file_path = d.location.file.name
         else:
             file_path = "Unknown"
-        logging.debug(
-            "Clang diagnostic: Category '%s', Option '%s', Message: '%s', File '%s'",
+
+        log_function = logging.debug
+        if d.severity > 2:
+            log_function = logging.warning
+        log_function(
+            "Clang diagnostic: Severity '%s', Category '%s', Option '%s', Message: '%s', File '%s'",
+            d.severity,
             replace_if_none(d.category_name, "Unknown Category"),
             replace_if_none(d.option, "Unknown Option"),
-            replace_if_none(d.spelling, "Unknown Spelling"),
+            d.spelling,
             only_filename(file_path),
         )
 
@@ -62,6 +67,12 @@ def get_diag_info(diag):
     }
 
 
+def join_and_strip_file_content(lines):
+    return " ".join([x.strip() for x in lines])
+
+
 def debug_file_content(file_path):
     with open(file_path) as f:
-        logging.debug("File '%s' looks like: '%s'", only_filename(file_path), pformat("".join(f.readlines())))
+        logging.debug(
+            "File '%s' looks like: '%s'", only_filename(file_path), join_and_strip_file_content(f.readlines())
+        )

@@ -1,15 +1,19 @@
 import argparse
 from argparse import RawTextHelpFormatter
+from pprint import pformat
 
 import logging
 import sys
 
 import samo_tidy.core.compdb_parser as compdb_parser
+import samo_tidy.core.summary as summary
+
 import samo_tidy.checker.checker as checker
 import samo_tidy.checker.samo_suffix_case_checker as samo_suffix_case_checker
 import samo_tidy.checker.samo_multiple_classes_checker as samo_multiple_classes_checker
 import samo_tidy.checker.samo_unsigned_int_checker as samo_unsigned_int_checker
 import samo_tidy.checker.clang_warning_checker as clang_warning_checker
+
 import samo_tidy.utils.utils as utils
 import samo_tidy.utils.logger as logger
 
@@ -21,6 +25,7 @@ def apply_checkers_for_translation_units(translation_units):
     # TODO Do not differentiation between tu and token based checker
     for tu in translation_units:
         logging.info("Applying checkers for '%s'", utils.only_filename(tu.spelling))
+        summary.add_translation_unit(tu.spelling)
         if tu:
             checker.apply_checker(tu, samo_suffix_case_checker.token_based_rule)
             checker.apply_checker(tu, samo_multiple_classes_checker.translation_unit_based_rule)
@@ -62,6 +67,9 @@ def main():
 
     utils.setup_clang()
     run(args.compdb, args.files)
+
+    logging.info("\n" + pformat(summary.present()))
+
     sys.exit(0)
 
 
