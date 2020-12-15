@@ -131,5 +131,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-compile_commands.json
-compile_commands*.json
+examples/compile_commands*.json

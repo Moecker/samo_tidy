@@ -21,3 +21,9 @@ filegroup(
     srcs = ["data/compile_commands.json"],
     visibility = ["//samo_tidy:__subpackages__"],
 )
+
+filegroup(
+    name = "test_multiple_files_compdb",
+    srcs = ["data/multiple_files_compdb/compile_commands.json"],
+    visibility = ["//samo_tidy:__subpackages__"],
+)
