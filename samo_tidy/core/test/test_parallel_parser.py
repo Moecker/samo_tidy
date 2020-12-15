@@ -5,6 +5,7 @@ import samo_tidy.core.parallel_parser as parallel_parser
 import samo_tidy.core.test.test_core_lib as test_core_lib
 import samo_tidy.test.test_support as test_support
 import samo_tidy.utils.utils as utils
+import samo_tidy.utils.parallel as parallel
 
 
 def computation(args):
@@ -17,23 +18,23 @@ def computation(args):
     return ret
 
 
-class TestClang(test_core_lib.TestCoreLib):
+class TestParallelParser(test_core_lib.TestCoreLib):
     def setUp(self):
         super().setUp()
         self.the_list = [0, 1, 2, 3, 4, 5, 6, 7]
 
     def test_dummy_parallel_4_worker(self):
-        output = utils.parallel(self.the_list, 4, computation)
+        output = parallel.execute_parallel(self.the_list, 4, computation)
         self.assertEqual(len(output), 8)
         self.assertEqual(output, [0, 1, 4, 9, 16, 25, 36, 49])
 
     def test_dummy_parallel_2_workers_single_list_entry(self):
-        output = utils.parallel([10], 2, computation)
+        output = parallel.execute_parallel([10], 2, computation)
         self.assertEqual(len(output), 1)
         self.assertEqual(output, [100])
 
     def test_dummy_parallel_1_worker(self):
-        output = utils.parallel(self.the_list, 1, computation)
+        output = parallel.execute_parallel(self.the_list, 1, computation)
         self.assertEqual(len(output), 8)
 
     def test_parallel_parse_compdb(self):

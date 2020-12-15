@@ -4,6 +4,7 @@ import multiprocessing
 import samo_tidy.core.compdb_parser as compdb_parser
 import samo_tidy.facade.facade_lib as facade_lib
 import samo_tidy.utils.utils as utils
+import samo_tidy.utils.parallel as parallel
 
 
 class CompileCommandsWrapper:
@@ -35,7 +36,7 @@ def single_run(args):
 def run_parallel(compdb, files=None):
     commands = compdb.getAllCompileCommands()
     wrapped_commands = wrap_commands(commands)
-    utils.parallel(wrapped_commands, multiprocessing.cpu_count() - 1, single_run)
+    parallel.execute_parallel(wrapped_commands, multiprocessing.cpu_count() - 1, single_run)
 
 
 def main():

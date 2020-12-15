@@ -5,7 +5,7 @@ import samo_tidy.core.test.test_core_lib as test_core_lib
 import samo_tidy.test.test_support as test_support
 
 
-class TestClang(test_core_lib.TestCoreLib):
+class TestCompdbParser(test_core_lib.TestCoreLib):
     def test_load_compdb_parser_success(self):
         compdb = self.create_and_parse_comdb(["source_id1.cpp"])
         self.assertTrue(compdb != None)

@@ -2,6 +2,7 @@ from threading import Thread, Lock
 
 import samo_tidy.core.compdb_parser as compdb_parser
 import samo_tidy.utils.utils as utils
+import samo_tidy.utils.parallel as parallel
 
 # TODO Remove this
 mutex = Lock()
@@ -57,5 +58,5 @@ def parallel_parse_compdb(compdb):
     translation_units = []
 
     # TODO Does not work: ValueError: ctypes objects containing pointers cannot be pickled
-    translation_units = utils.parallel(wrapped_commands, 4, parse_from_commands)
+    translation_units = parallel.execute_parallel(wrapped_commands, 4, parse_from_commands)
     return translation_units
