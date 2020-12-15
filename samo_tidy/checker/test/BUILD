@@ -44,3 +44,6 @@ py_test(
         "//samo_tidy/test:test_support",
     ],
 )
+
+# TODO Add multiple namespace check
+# TODO Add using count check
