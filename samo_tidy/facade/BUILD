@@ -19,3 +19,12 @@ py_binary(
         "//samo_tidy/facade",
     ],
 )
+
+py_binary(
+    name = "run_parallel",
+    srcs = glob(["**/*.py"]),
+    main = "parallel_facade.py",
+    deps = [
+        "//samo_tidy/facade",
+    ],
+)

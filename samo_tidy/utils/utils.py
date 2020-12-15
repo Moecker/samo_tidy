@@ -58,6 +58,7 @@ def shall_exclude_diagnostic_message(message):
 
 
 def log_diagnostics_info_summary(translation_unit):
+    # TODO logging.debug(get_diagnostics_info(translation_unit))
     for diagnostic in translation_unit.diagnostics:
         if shall_exclude_diagnostic_message(diagnostic.spelling):
             continue
@@ -70,8 +71,6 @@ def log_diagnostics_info_summary(translation_unit):
         log_function = logging.debug
         if diagnostic.severity > 3:
             log_function = logging.warning
-
-        logging.debug(get_diagnostics_info(translation_unit))
 
         log_function(
             "Clang diagnostic: Severity '%s', Message: '%s', File '%s'",
