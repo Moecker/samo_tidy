@@ -2,6 +2,10 @@ import samo_tidy.utils.utils as utils
 
 import samo_tidy.core.compdb_parser as compdb_parser
 
+from threading import Thread, Lock
+
+mutex = Lock()
+
 
 class TranslationUnitWrapper:
     def __init__(self):
@@ -32,8 +36,12 @@ def parse_from_commands(args):
     start, end, commands = args
     translation_units = []
 
-    # We are in a multiprocessing environment which does not know about the global state (assumed)
-    utils.setup_clang()
+    mutex.acquire()
+    try:
+        # We are in a multiprocessing environment which does not know about the global state (assumed)
+        utils.setup_clang()
+    finally:
+        mutex.release()
 
     for i in range(start, end):
         translation_unit = compdb_parser.parse_single_command(commands[i])
@@ -47,7 +55,6 @@ def parallel_parse_compdb(compdb):
     wrapped_commands = wrap_commands(commands)
 
     translation_units = []
-    number_of_skipped_files = 0
 
     # TODO Does not work: ValueError: ctypes objects containing pointers cannot be pickled
     translation_units = utils.parallel(wrapped_commands, 4, parse_from_commands)

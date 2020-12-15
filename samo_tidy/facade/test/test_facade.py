@@ -14,7 +14,6 @@ import samo_tidy.core.tu_parser as tu_parser
 class TestFacade(unittest.TestCase):
     def setUp(self):
         self.test_data_dir = os.path.join(os.path.dirname(__file__), "../../test/data")
-        cindex.Config.loaded = False
 
     def set_arguments(self, arguments):
         sys.argv = [sys.argv[0]]
