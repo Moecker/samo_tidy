@@ -1,5 +1,5 @@
-import multiprocessing
 import itertools
+import multiprocessing
 import time
 
 
@@ -37,7 +37,6 @@ def parallel(the_list, workers, the_function):
 def main():
     the_list = 2 * [0, 1, 2, 3, 4, 5, 6, 7]
     output = parallel(the_list, 4, computation)
-    print(output)
 
 
 if __name__ == "__main__":

@@ -1,9 +1,9 @@
-import samo_tidy.utils.utils as utils
-
-import samo_tidy.core.compdb_parser as compdb_parser
-
 from threading import Thread, Lock
 
+import samo_tidy.core.compdb_parser as compdb_parser
+import samo_tidy.utils.utils as utils
+
+# TODO Remove this
 mutex = Lock()
 
 

@@ -30,7 +30,7 @@ def create_compdb_string(directory, command, file_names):
 
 class TestCoreLib(unittest.TestCase):
     def setUp(self):
-        self.test_data_dir = os.path.join(os.path.dirname(__file__), "../../test/data")
+        self.test_data_dir = os.path.join(os.path.dirname(__file__), "../../test/data/cpp_files")
         self.temporary_dir = "/tmp"
         self.compdb_name = "compile_commands.json"
         self.compdb_full_path = os.path.join(self.temporary_dir, self.compdb_name)

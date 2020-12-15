@@ -1,8 +1,4 @@
-from clang import cindex
 from unittest.mock import patch
-import logging
-import os
-import sys
 import unittest
 
 import samo_tidy.core.tu_parser as tu_parser

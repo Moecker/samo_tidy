@@ -1,7 +1,6 @@
+from clang import cindex
 import logging
 import os
-
-from clang import cindex
 
 import samo_tidy.utils.utils as utils
 

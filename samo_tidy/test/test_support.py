@@ -1,15 +1,15 @@
-import unittest
 import logging
-import tempfile
-import shutil
 import os
+import shutil
+import tempfile
+import unittest
 
-import samo_tidy.utils.utils as utils
 import samo_tidy.utils.logger as logger
+import samo_tidy.utils.utils as utils
 
 
 def default_test_setup():
-    logger.setup_logger("warning")
+    logger.setup_logger("debug")
     utils.setup_clang()
     unittest.main()
 

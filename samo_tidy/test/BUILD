@@ -10,15 +10,15 @@ py_library(
 filegroup(
     name = "test_sources",
     srcs = glob([
-        "data/*.cpp",
-        "data/header/*.h",
+        "data/cpp_files/*.cpp",
+        "data/cpp_files/header/*.h",
     ]),
     visibility = ["//samo_tidy:__subpackages__"],
 )
 
 filegroup(
     name = "test_compdb",
-    srcs = ["data/compile_commands.json"],
+    srcs = ["data/single_file_compdb/compile_commands.json"],
     visibility = ["//samo_tidy:__subpackages__"],
 )
 

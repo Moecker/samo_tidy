@@ -1,7 +1,6 @@
 import unittest
 
 import samo_tidy.core.compdb_parser as compdb_parser
-
 import samo_tidy.core.test.test_core_lib as test_core_lib
 import samo_tidy.test.test_support as test_support
 

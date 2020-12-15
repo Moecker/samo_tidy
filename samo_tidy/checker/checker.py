@@ -1,8 +1,7 @@
-import logging
-
-from pprint import pprint, pformat
 from clang import cindex
+from pprint import pprint, pformat
 from termcolor import colored
+import logging
 
 import samo_tidy.checker.violation as violations
 import samo_tidy.core.summary as summary

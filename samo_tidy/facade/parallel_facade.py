@@ -1,13 +1,9 @@
 import logging
-import argparse
-import time
 import multiprocessing
-import logging
 
 import samo_tidy.core.compdb_parser as compdb_parser
 import samo_tidy.facade.facade_lib as facade_lib
 import samo_tidy.utils.utils as utils
-import samo_tidy.checker.clang_warning_checker as clang_warning_checker
 
 
 class CompileCommandsWrapper:
@@ -39,7 +35,6 @@ def single_run(args):
 def run_parallel(compdb, files=None):
     commands = compdb.getAllCompileCommands()
     wrapped_commands = wrap_commands(commands)
-    print("len wrapped: " + str(len(wrapped_commands)))
     utils.parallel(wrapped_commands, multiprocessing.cpu_count() - 1, single_run)
 
 

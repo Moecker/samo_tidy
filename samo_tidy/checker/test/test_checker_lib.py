@@ -1,19 +1,17 @@
-import unittest
-import os
-import logging
-
-from pprint import pformat
 from clang import cindex
+from pprint import pformat
+import logging
+import os
+import unittest
 
 import samo_tidy.checker.checker as checker
-
 import samo_tidy.core.tu_parser as tu_parser
 import samo_tidy.utils.cindex_dump as cindex_dump
 
 
 class TestCheckerLib(unittest.TestCase):
     def setUp(self):
-        self.test_data_dir = os.path.join(os.path.dirname(__file__), "../../test/data")
+        self.test_data_dir = os.path.join(os.path.dirname(__file__), "../../test/data/cpp_files")
 
     def apply_checker(self, rule, source_file, args=[]):
         tu = tu_parser.create_translation_unit(source_file, args)

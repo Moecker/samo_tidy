@@ -1,13 +1,12 @@
+from clang import cindex
+from termcolor import colored
 import logging
 import os
 import sys
-from termcolor import colored
 
-from clang import cindex
-
+import samo_tidy.core.summary as summary
 import samo_tidy.core.tu_parser as tu_parser
 import samo_tidy.utils.utils as utils
-import samo_tidy.core.summary as summary
 
 
 def load_compdb(directory):

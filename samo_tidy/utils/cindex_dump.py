@@ -1,8 +1,7 @@
-import logging
-
-from pprint import pprint
-from optparse import OptionParser, OptionGroup
 from clang.cindex import Index
+from optparse import OptionParser, OptionGroup
+from pprint import pprint
+import logging
 
 import samo_tidy.utils.utils as utils
 

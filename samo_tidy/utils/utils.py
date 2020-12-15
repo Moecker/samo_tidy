@@ -1,12 +1,11 @@
-import logging
-import platform
-import os
-import sys
-import multiprocessing
-import itertools
-
-from pprint import pformat
 from clang import cindex
+from pprint import pformat
+import itertools
+import logging
+import multiprocessing
+import os
+import platform
+import sys
 
 
 def only_filename(file_path):
@@ -112,8 +111,6 @@ def parallel(the_list, workers, the_function):
 
     workers = min(workers, list_length)
     batch = int(list_length / workers)
-
-    print("Length of List" + str(list_length))
 
     output = []
     with multiprocessing.Pool(workers) as pool:
