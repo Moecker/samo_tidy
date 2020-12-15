@@ -1,19 +1,37 @@
-# SAMO TIDY
-A python based static code analysis engine
+# Samo Tidy
+A python based static code analysis engine.
 
-# Test
-### Default
-`bazel test /...`
+Goal of this project is to provide a simple framework to write own static code analysis checks based on the Abstract Syntax Tree (AST) provided by the LLVM libclang tooling.
 
-### Verbose
-`bazel test /... --test_output all`
+The tool takes a compilation database (`compile_commands.json`) which can be generated with CMake or Bazel.
+
+# Usage
+Check the help output
+`bazel run //samo_tidy/facade:run -- --help`
+
+````
+  -h, --help            show this help message and exit
+  --compdb COMPDB       Directory which contains the 'compile_comands.json' file
+  --files FILES [FILES ...]
+                        List of files from compdb to be analyzed. Used substring search.
+                        Example: '--files .cpp' would match every file which has '.cpp' in its name
+  --log_file LOG_FILE   Full path to a log file
+  --log_level LOG_LEVEL
+                        Log level. One of {DEBUG, INFO, WARN, ERROR}
+````
+
 
 # Examples
-### Run on a compilation database
+### Run on a example compilation database
 `bazel run //samo_tidy/facade:run -- --compdb <WORKSPACE>/samo_tidy/samo_tidy/test/data`
 
-### Dump AST
+### Dump AST for an example file
 `bazel run //samo_tidy/utils:cindex_dump -- <WORKSPACE>/samo_tidy/samo_tidy/test/data/source_id1.cpp`
+
+# Tests
+### Execute all project tests
+`bazel test /...`
+
 
 # Installation
 ### Mac
