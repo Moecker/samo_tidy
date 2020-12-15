@@ -13,7 +13,6 @@ py_binary(
     srcs = ["cindex_dump.py"],
     visibility = ["//samo_tidy:__subpackages__"],
     deps = [
-        requirement("clang"),
         "//samo_tidy/utils",
     ],
 )

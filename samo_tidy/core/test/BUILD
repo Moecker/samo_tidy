@@ -16,8 +16,7 @@ py_test(
     data = ["//samo_tidy/test:test_sources"],
     deps = [
         "//samo_tidy/core",
-        "//samo_tidy/test:test_support",
-        "//samo_tidy/utils",
+        "//samo_tidy/core/test:test_core_lib",
     ],
 )
 
