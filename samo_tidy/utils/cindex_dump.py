@@ -3,6 +3,7 @@ from optparse import OptionParser, OptionGroup
 from pprint import pprint
 import logging
 
+import samo_tidy.utils.clang_setup as clang_setup
 import samo_tidy.utils.utils as utils
 
 
@@ -78,7 +79,7 @@ def main():
         parser.error("invalid number arguments")
 
     logging.basicConfig(level=logging.DEBUG)
-    utils.setup_clang()
+    clang_setup.setup_clang()
 
     index = Index.create()
     tu = index.parse(None, args)

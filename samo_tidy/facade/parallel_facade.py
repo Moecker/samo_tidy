@@ -3,8 +3,9 @@ import multiprocessing
 
 import samo_tidy.core.compdb_parser as compdb_parser
 import samo_tidy.facade.facade_lib as facade_lib
-import samo_tidy.utils.utils as utils
+import samo_tidy.utils.clang_setup as clang_setup
 import samo_tidy.utils.parallel as parallel
+import samo_tidy.utils.utils as utils
 
 
 class CompileCommandsWrapper:
@@ -23,7 +24,7 @@ def wrap_commands(commands):
 
 
 def single_run(args):
-    utils.setup_clang()
+    clang_setup.setup_clang()
 
     start, end, commands = args
 

@@ -5,15 +5,16 @@ import argparse
 import logging
 import sys
 
-import samo_tidy.core.compdb_parser as compdb_parser
-import samo_tidy.core.summary as summary
 import samo_tidy.checker.checker as checker
 import samo_tidy.checker.clang_warning_checker as clang_warning_checker
-import samo_tidy.utils.utils as utils
-import samo_tidy.utils.logger as logger
-import samo_tidy.checker.samo_suffix_case_checker as samo_suffix_case_checker
 import samo_tidy.checker.samo_multiple_classes_checker as samo_multiple_classes_checker
+import samo_tidy.checker.samo_suffix_case_checker as samo_suffix_case_checker
 import samo_tidy.checker.samo_unsigned_int_checker as samo_unsigned_int_checker
+import samo_tidy.core.compdb_parser as compdb_parser
+import samo_tidy.core.summary as summary
+import samo_tidy.utils.clang_setup as clang_setup
+import samo_tidy.utils.logger as logger
+import samo_tidy.utils.utils as utils
 
 active_checkers = [
     samo_suffix_case_checker.token_based_rule,
@@ -79,7 +80,7 @@ def main(runner):
     logger.setup_logger(args.log_level, args.log_file)
     logging.info(colored("Welcome", "magenta"))
 
-    utils.setup_clang()
+    clang_setup.setup_clang()
 
     run(runner, args.compdb, args.files)
 

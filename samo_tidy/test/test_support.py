@@ -4,13 +4,14 @@ import shutil
 import tempfile
 import unittest
 
+import samo_tidy.utils.clang_setup as clang_setup
 import samo_tidy.utils.logger as logger
 import samo_tidy.utils.utils as utils
 
 
 def default_test_setup():
     logger.setup_logger("debug")
-    utils.setup_clang()
+    clang_setup.setup_clang()
     unittest.main()
 
 

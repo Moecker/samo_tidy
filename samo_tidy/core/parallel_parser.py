@@ -1,8 +1,9 @@
 from threading import Thread, Lock
 
 import samo_tidy.core.compdb_parser as compdb_parser
-import samo_tidy.utils.utils as utils
+import samo_tidy.utils.clang_setup as clang_setup
 import samo_tidy.utils.parallel as parallel
+import samo_tidy.utils.utils as utils
 
 # TODO Remove this
 mutex = Lock()
@@ -40,7 +41,7 @@ def parse_from_commands(args):
     mutex.acquire()
     try:
         # We are in a multiprocessing environment which does not know about the global state (assumed)
-        utils.setup_clang()
+        clang_setup.setup_clang()
     finally:
         mutex.release()
 
