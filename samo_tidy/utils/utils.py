@@ -113,6 +113,8 @@ def parallel(the_list, workers, the_function):
     workers = min(workers, list_length)
     batch = int(list_length / workers)
 
+    print("Length of List" + str(list_length))
+
     output = []
     with multiprocessing.Pool(workers) as pool:
         output = pool.map(

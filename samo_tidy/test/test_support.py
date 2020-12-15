@@ -9,7 +9,7 @@ import samo_tidy.utils.logger as logger
 
 
 def default_test_setup():
-    logger.setup_logger("debug")
+    logger.setup_logger("warning")
     utils.setup_clang()
     unittest.main()
 

@@ -28,6 +28,11 @@ class TestClang(test_core_lib.TestCoreLib):
         self.assertEqual(len(output), 8)
         self.assertEqual(output, [0, 1, 4, 9, 16, 25, 36, 49])
 
+    def test_dummy_parallel_2_workers_single_list_entry(self):
+        output = utils.parallel([10], 2, computation)
+        self.assertEqual(len(output), 1)
+        self.assertEqual(output, [100])
+
     def test_dummy_parallel_1_worker(self):
         output = utils.parallel(self.the_list, 1, computation)
         self.assertEqual(len(output), 8)
