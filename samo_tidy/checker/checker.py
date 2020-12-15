@@ -43,7 +43,9 @@ def extract_violation(token, rule_id, message):
     )
     summary.add_filename(location.file.name)
     # The actual log out which can be mechanically read
-    logging.error(colored(violation, "blue"))
+    logging.warning(colored(violation, "blue"))
+    logging.error(colored(violation.style(), "red"))
+    logging.info(colored(violation.file_path_link(), "green"))
     return violation
 
 

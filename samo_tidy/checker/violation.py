@@ -25,7 +25,7 @@ class Violation:
             + self.id
             + ", message="
             + str(self.message)
-            + ", file_path="
+            + ", file_name="
             + str(self.file_name)
             + ", line="
             + str(self.line)
@@ -33,3 +33,9 @@ class Violation:
             + str(self.column)
             + ")"
         )
+
+    def file_path_link(self):
+        return f"file:///{self.file_path}"
+
+    def style(self):
+        return f"{self.id}:{self.file_name}:{self.line}:{self.column}"
