@@ -8,7 +8,7 @@ import samo_tidy.core.compdb_parser as compdb_parser
 import samo_tidy.utils.utils as utils
 
 
-def create_temp_file_for(compdb_string, dir, name):
+def create_tempfile(compdb_string, dir, name):
     desired_path = os.path.join(dir, name)
     with tempfile.NamedTemporaryFile(dir=dir, delete=False) as tmp:
         logging.debug("Writing compilation database to: '%s'", desired_path)
@@ -41,4 +41,4 @@ class TestCoreLib(unittest.TestCase):
 
     def create_temporary_compdb_file(self, file_name):
         compdb = create_compdb_string(self.test_data_dir, "c++", file_name)
-        create_temp_file_for(compdb, self.temporary_dir, self.compdb_name)
+        create_tempfile(compdb, self.temporary_dir, self.compdb_name)

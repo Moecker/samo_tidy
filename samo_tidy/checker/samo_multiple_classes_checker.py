@@ -1,7 +1,6 @@
 from clang import cindex
 
 import samo_tidy.checker.checker as checker
-import samo_tidy.utils.utils as utils
 
 # Checks for multiple classes in one translation unit
 def translation_unit_based_rule(translation_unit):

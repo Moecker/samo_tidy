@@ -4,6 +4,7 @@ import samo_tidy.checker.checker as checker
 import samo_tidy.utils.utils as utils
 
 # Interprets clang diagnostics warnings (aka compiler warnings) as violations
+# The checker differs from the other ones as it operates on the translation unit directly
 def check_for_clang_warnings(translation_unit):
     violations = []
     logging.info(

@@ -44,7 +44,7 @@ class TestFacade(unittest.TestCase):
         self.assert_exit_code(facade.main, "Windows is not supported")
 
     def test_apply_checkers_for_translation_units(self):
-        source_file = test_utils.create_temp_file_for([""])
+        source_file = test_utils.create_tempfile([""])
         tu = tu_parser.create_translation_unit(source_file)
         number_of_successfull_tus = facade.apply_checkers_for_translation_units([tu])
         self.assertEqual(1, number_of_successfull_tus)

@@ -22,7 +22,7 @@ def is_absolute_path(desired_file):
     return os.path.basename(desired_file) != desired_file
 
 
-def create_temp_file_for(content, desired_file=None):
+def create_tempfile(content, desired_file=None):
     the_string = make_file_string(content)
     with tempfile.NamedTemporaryFile(delete=False) as tmp:
         if not desired_file:
