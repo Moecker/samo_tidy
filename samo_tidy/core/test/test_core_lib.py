@@ -18,9 +18,14 @@ def create_tempfile(compdb_string, dir, name):
         utils.debug_file_content(desired_path)
 
 
-def create_compdb_string(directory, command, the_file):
-    inner = f'"directory": "{directory}", "command": "{command}", "file": "{the_file}"'
-    return "[{" + inner + "}]"
+def create_compdb_string(directory, command, file_names):
+    list_of_comdb_entires = []
+    for file_name in file_names:
+        compdb_entry_inner = f'"directory": "{directory}", "command": "{command}", "file": "{file_name}"'
+        compdb_entry = "{" + compdb_entry_inner + "}"
+        list_of_comdb_entires.append(compdb_entry)
+    full_compdb = ",".join(list_of_comdb_entires)
+    return "[" + full_compdb + "]"
 
 
 class TestCoreLib(unittest.TestCase):
@@ -34,11 +39,11 @@ class TestCoreLib(unittest.TestCase):
         if os.path.exists(self.compdb_full_path):
             os.remove(self.compdb_full_path)
 
-    def create_and_parse_comdb(self, file_name):
-        self.create_temporary_compdb_file(file_name)
+    def create_and_parse_comdb(self, file_names):
+        self.create_temporary_compdb_file(file_names)
         compdb = compdb_parser.load_compdb(directory=self.temporary_dir)
         return compdb
 
-    def create_temporary_compdb_file(self, file_name):
-        compdb = create_compdb_string(self.test_data_dir, "c++", file_name)
+    def create_temporary_compdb_file(self, file_names):
+        compdb = create_compdb_string(self.test_data_dir, "c++", file_names)
         create_tempfile(compdb, self.temporary_dir, self.compdb_name)
