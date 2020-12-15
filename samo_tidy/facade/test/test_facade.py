@@ -6,7 +6,7 @@ import os
 from clang import cindex
 from unittest.mock import patch
 
-import samo_tidy.test.test_utils as test_utils
+import samo_tidy.test.test_support as test_support
 import samo_tidy.facade.facade as facade
 import samo_tidy.core.tu_parser as tu_parser
 
@@ -44,11 +44,11 @@ class TestFacade(unittest.TestCase):
         self.assert_exit_code(facade.main, "Windows is not supported")
 
     def test_apply_checkers_for_translation_units(self):
-        source_file = test_utils.create_tempfile([""])
+        source_file = test_support.create_tempfile([""])
         tu = tu_parser.create_translation_unit(source_file)
         number_of_successfull_tus = facade.apply_checkers_for_translation_units([tu])
         self.assertEqual(1, number_of_successfull_tus)
 
 
 if __name__ == "__main__":
-    test_utils.default_test_setup()
+    test_support.default_test_setup()

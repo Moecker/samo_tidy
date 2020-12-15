@@ -2,7 +2,7 @@ import unittest
 
 import samo_tidy.checker.samo_suffix_case_checker as samo_suffix_case_checker
 
-import samo_tidy.test.test_utils as test_utils
+import samo_tidy.test.test_support as test_support
 import samo_tidy.checker.test.test_checker_lib as test_checker_lib
 
 
@@ -43,12 +43,12 @@ class TestSamoSuffixCaseChecker(test_checker_lib.TestCheckerLib):
     def test_temp_file_int(self):
         violations, diagnostics = self.apply_checker(
             samo_suffix_case_checker.token_based_rule,
-            test_utils.create_tempfile(["int F();", "int F()", "{", "return 0;", "}"]),
+            test_support.create_tempfile(["int F();", "int F()", "{", "return 0;", "}"]),
         )
         self.assertEqual(len(violations), 0)
 
     def test_temp_file_uint(self):
-        file_name = test_utils.create_tempfile(
+        file_name = test_support.create_tempfile(
             ["#include <cstdint>", "std::uint8_t F();", "std::uint8_t F()", "{", "return 0u;", "}"]
         )
         violations, diagnostics = self.apply_checker(
@@ -62,7 +62,7 @@ class TestSamoSuffixCaseChecker(test_checker_lib.TestCheckerLib):
     def test_temp_file_uint_conversion(self):
         violations, diagnostics = self.apply_checker(
             samo_suffix_case_checker.token_based_rule,
-            test_utils.create_tempfile(
+            test_support.create_tempfile(
                 ["#include <cstdint>", "int main()", "{", "int a = 12;", "std::uint8_t b = a;", "}"]
             ),
         )
@@ -74,7 +74,7 @@ class TestSamoSuffixCaseChecker(test_checker_lib.TestCheckerLib):
     def test_temp_file_uint_conversion_fine(self):
         violations, diagnostics = self.apply_checker(
             samo_suffix_case_checker.token_based_rule,
-            test_utils.create_tempfile(
+            test_support.create_tempfile(
                 ["#include <cstdint>", "int main()", "{", "std::uint8_t b = 123;", "return b;" "}"]
             ),
         )
@@ -83,4 +83,4 @@ class TestSamoSuffixCaseChecker(test_checker_lib.TestCheckerLib):
 
 
 if __name__ == "__main__":
-    test_utils.default_test_setup()
+    test_support.default_test_setup()

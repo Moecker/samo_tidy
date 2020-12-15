@@ -3,7 +3,7 @@ import unittest
 import samo_tidy.core.compdb_parser as compdb_parser
 
 import samo_tidy.core.test.test_core_lib as test_core_lib
-import samo_tidy.test.test_utils as test_utils
+import samo_tidy.test.test_support as test_support
 
 
 class TestClang(test_core_lib.TestCoreLib):
@@ -46,4 +46,4 @@ class TestClang(test_core_lib.TestCoreLib):
 
 
 if __name__ == "__main__":
-    test_utils.default_test_setup()
+    test_support.default_test_setup()

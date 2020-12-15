@@ -21,21 +21,17 @@ class Violation:
 
     def __str__(self):
         return (
-            "Violation(id="
-            + self.id
-            + ", message="
-            + str(self.message)
-            + ", file_name="
-            + str(self.file_name)
-            + ", line="
-            + str(self.line)
-            + ", column="
-            + str(self.column)
-            + ")"
+            f"(Violation("
+            f"id={self.id}, "
+            f"message={self.message:1.50}, "
+            f"file_name={str(self.file_name)}, "
+            f"line={str(self.line)}, "
+            f"column={str(self.column)}"
+            f")"
         )
 
     def file_path_link(self):
-        return f"file:///{self.file_path}"
+        return f"file://{self.file_path}"
 
     def style(self):
         return f"{self.id}:{self.file_name}:{self.line}:{self.column}"

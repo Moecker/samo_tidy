@@ -7,7 +7,7 @@ py_library(
     visibility = [":__subpackages__"],
     deps = [
         "//samo_tidy/checker",
-        "//samo_tidy/test:test_utils",
+        "//samo_tidy/test:test_support",
         "//samo_tidy/utils",
     ],
 )
@@ -41,6 +41,6 @@ py_test(
     srcs = glob(["**/*.py"]),
     deps = [
         "//samo_tidy/checker",
-        "//samo_tidy/test:test_utils",
+        "//samo_tidy/test:test_support",
     ],
 )

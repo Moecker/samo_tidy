@@ -6,6 +6,7 @@ from clang import cindex
 
 import samo_tidy.core.tu_parser as tu_parser
 import samo_tidy.utils.utils as utils
+import samo_tidy.core.summary as summary
 
 
 def load_compdb(directory):
@@ -46,9 +47,10 @@ def parse_compdb(compdb, list_of_files=None):
         # Check if we want to parse the translation unit based on the file name pattern
         if list_of_files and not any(word in command.filename for word in list_of_files):
             continue
-        if any(word in command.filename for word in ["external/"]):
+        if utils.shall_ignore_based_on_file_name(command.filename):
             logging.debug("Skipping external file '%s'", command.filename)
             number_of_skipped_files += 1
+            summary.add_skipped_filename(command.filename)
             continue
 
         translation_unit = parse_single_command(command)

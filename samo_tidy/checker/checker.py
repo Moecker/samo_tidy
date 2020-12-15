@@ -18,21 +18,14 @@ def debug_token_spelling(token):
     logging.debug("Token spelling is '%s':", pformat(token.type.spelling))
 
 
-def get_ignored_file_strings():
-    return ["/usr/", "/lib/gcc/"]
-
-
-def shall_ignore_based_on_file_name(file_name):
-    return any(word in file_name for word in get_ignored_file_strings())
-
-
 def extract_violation(token, rule_id, message):
     location = token.location
     if not location.file:
         logging.warning("Missing source location for '%s', skipping", token.kind)
         return None
-    if shall_ignore_based_on_file_name(location.file.name):
+    if utils.shall_ignore_based_on_file_name(location.file.name):
         logging.debug("Ignoring violation for id '%s' from file '%s'", rule_id, location.file.name)
+        summary.add_ignored_translation_unit(utils.only_filename(location.file.name))
         return None
     violation = violations.Violation(
         rule_id,
@@ -44,7 +37,7 @@ def extract_violation(token, rule_id, message):
     summary.add_filename(location.file.name)
     # The actual log out which can be mechanically read
     logging.warning(colored(violation, "blue"))
-    logging.error(colored(violation.style(), "red"))
+    logging.error(colored(violation.style(), "yellow"))
     logging.info(colored(violation.file_path_link(), "green"))
     return violation
 
@@ -58,8 +51,9 @@ def apply_checker(translation_unit, checker):
     )
 
     # Only check non-external translation units
-    if shall_ignore_based_on_file_name(translation_unit.spelling):
+    if utils.shall_ignore_based_on_file_name(translation_unit.spelling):
         logging.debug("Ignoring translation unit '%s'", utils.only_filename(translation_unit.spelling))
+        summary.add_ignored_translation_unit(utils.only_filename(translation_unit.spelling))
         return []
 
     # Decide based on the name of the function on which level the check shall be applied

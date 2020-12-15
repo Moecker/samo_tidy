@@ -13,6 +13,14 @@ def only_filename(file_path):
     return os.path.basename(file_path)
 
 
+def get_ignored_file_strings():
+    return ["/usr/", "/lib/gcc/", "external"]
+
+
+def shall_ignore_based_on_file_name(file_name):
+    return any(word in file_name for word in get_ignored_file_strings())
+
+
 def setup_clang():
     # The cindex.Config class is of global state.
     # TODO When executing test in parallel - for instance - we run into problems.

@@ -5,7 +5,7 @@ import samo_tidy.core.parallel_parser as parallel_parser
 import samo_tidy.utils.utils as utils
 
 import samo_tidy.core.test.test_core_lib as test_core_lib
-import samo_tidy.test.test_utils as test_utils
+import samo_tidy.test.test_support as test_support
 
 
 def computation(args):
@@ -39,4 +39,4 @@ class TestClang(test_core_lib.TestCoreLib):
 
 
 if __name__ == "__main__":
-    test_utils.default_test_setup()
+    test_support.default_test_setup()
