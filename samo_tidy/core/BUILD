@@ -10,5 +10,8 @@ py_library(
         "//samo_tidy/facade:__pkg__",
         "//samo_tidy/utils:__pkg__",
     ],
-    deps = [requirement("clang")],
+    deps = [
+        requirement("clang"),
+        requirement("termcolor"),
+    ],
 )

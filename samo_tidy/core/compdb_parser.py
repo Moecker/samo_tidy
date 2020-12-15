@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+from termcolor import colored
 
 from clang import cindex
 
@@ -21,7 +22,10 @@ def load_compdb(directory):
 
 
 def parse_single_command(command):
-    logging.info("Parsing file '%s'", command.filename)
+    logging.info(
+        colored("Parsing file '%s'", "grey"),
+        command.filename,
+    )
     logging.debug("Using file name '%s'", utils.only_filename(command.filename))
     logging.debug("Using directory '%s'", command.directory)
     logging.debug("Using arguments '%s'", list(command.arguments))

@@ -45,7 +45,7 @@ def extract_violation(token, rule_id, message):
 def apply_checker(translation_unit, checker):
     violations = []
     logging.info(
-        "Analyzing translation unit '%s' with checker '%s'",
+        colored("Analyzing translation unit '%s' with checker '%s'", "cyan"),
         utils.only_filename(translation_unit.spelling),
         checker.__module__,
     )
@@ -62,7 +62,9 @@ def apply_checker(translation_unit, checker):
             violation = checker(token)
             if violation:
                 violations.append(violation)
+
     elif checker.__name__ == "translation_unit_based_rule":
         violations = checker(translation_unit)
+
     # TODO Consider returning diagnostics
     return violations
