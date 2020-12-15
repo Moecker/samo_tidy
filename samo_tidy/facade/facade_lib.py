@@ -1,20 +1,23 @@
+import argparse
 from argparse import RawTextHelpFormatter
 from pprint import pformat
 from termcolor import colored
-import argparse
+
 import logging
 import sys
 
-import samo_tidy.checker.checker as checker
-import samo_tidy.checker.clang_warning_checker as clang_warning_checker
-import samo_tidy.checker.samo_multiple_classes_checker as samo_multiple_classes_checker
-import samo_tidy.checker.samo_suffix_case_checker as samo_suffix_case_checker
-import samo_tidy.checker.samo_unsigned_int_checker as samo_unsigned_int_checker
 import samo_tidy.core.compdb_parser as compdb_parser
 import samo_tidy.core.summary as summary
-import samo_tidy.facade.facade_lib as facade_lib
-import samo_tidy.utils.logger as logger
+
+import samo_tidy.checker.checker as checker
+import samo_tidy.checker.clang_warning_checker as clang_warning_checker
+
 import samo_tidy.utils.utils as utils
+import samo_tidy.utils.logger as logger
+
+import samo_tidy.checker.samo_suffix_case_checker as samo_suffix_case_checker
+import samo_tidy.checker.samo_multiple_classes_checker as samo_multiple_classes_checker
+import samo_tidy.checker.samo_unsigned_int_checker as samo_unsigned_int_checker
 
 active_checkers = [
     samo_suffix_case_checker.token_based_rule,
@@ -55,24 +58,49 @@ def run(compdb_root_dir, files=None):
     compdb = compdb_parser.load_compdb(compdb_root_dir)
     if compdb:
         translation_units = compdb_parser.parse_compdb(compdb, files)
-        apply_checkers_for_translation_units(translation_units)
+    else:
+        logging.error("Could not load compdb")
+        sys.exit("Loading of compdb failed")
+    apply_checkers_for_translation_units(translation_units)
+
+
+def parse_args():
+    parser = argparse.ArgumentParser("SAMO TIDY", formatter_class=RawTextHelpFormatter)
+    parser.add_argument("--compdb", required=True, help="Directory which contains the 'compile_comands.json' file")
+    parser.add_argument(
+        "--files",
+        nargs="+",
+        help=(
+            "List of files from compdb to be analyzed. Used substring search.\n"
+            "Example: '--files .cpp' would match every file which has '.cpp' in its name"
+        ),
+    )
+    parser.add_argument("--log_file", help="Full path to a log file")
+    parser.add_argument("--log_level", help="Log level. One of {DEBUG, INFO, WARN, ERROR}")
+
+    args = parser.parse_args()
+    return args
+
+
+def run(runner, compdb_root_dir, files=[]):
+    compdb = compdb_parser.load_compdb(compdb_root_dir)
+    if compdb:
+        runner(compdb, files)
     else:
         logging.error("Could not load compdb")
         sys.exit("Loading of compdb failed")
 
 
-def main():
-    args = facade_lib.parse_args()
+def main(runner):
+    args = parse_args()
 
     logger.setup_logger(args.log_level, args.log_file)
     logging.info(colored("Welcome", "magenta"))
+
     utils.setup_clang()
-    run(args.compdb, args.files)
+
+    run(runner, args.compdb, args.files)
 
     logging.info("SUMMARY:\n" + pformat(summary.present()))
 
     sys.exit(0)
-
-
-if __name__ == "__main__":
-    main()

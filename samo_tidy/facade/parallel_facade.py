@@ -4,7 +4,7 @@ import time
 import multiprocessing
 
 import samo_tidy.core.compdb_parser as compdb_parser
-import samo_tidy.facade.facade as facade
+import samo_tidy.facade.facade_lib as facade_lib
 import samo_tidy.utils.utils as utils
 import samo_tidy.checker.clang_warning_checker as clang_warning_checker
 
@@ -15,7 +15,8 @@ def single_run(args):
 
     for i in range(start, end):
         translation_unit = compdb_parser.parse_single_command(commands[i])
-        clang_warning_checker.check_for_clang_warnings(translation_unit)
+        if translation_unit:
+            clang_warning_checker.check_for_clang_warnings(translation_unit)
     return []
 
 
@@ -34,21 +35,14 @@ def wrap_commands(commands):
     return wrapped_commands
 
 
-def run_parallel(compdb_root_dir):
-    logging.basicConfig(level=logging.INFO)
-    utils.setup_clang()
-
-    compdb = compdb_parser.load_compdb(compdb_root_dir)
+def run_parallel(compdb, files=None):
     commands = compdb.getAllCompileCommands()
     wrapped_commands = wrap_commands(commands)
     utils.parallel(wrapped_commands, multiprocessing.cpu_count() - 1, single_run)
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--compdb")
-    args = parser.parse_args()
-    run_parallel(args.compdb)
+    facade_lib.main(run_parallel)
 
 
 if __name__ == "__main__":
