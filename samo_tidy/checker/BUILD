@@ -10,6 +10,7 @@ py_library(
     ],
     deps = [
         requirement("clang"),
+        requirement("termcolor"),
         "//samo_tidy/core",
     ],
 )

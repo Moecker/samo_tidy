@@ -2,6 +2,7 @@ import logging
 
 from pprint import pprint, pformat
 from clang import cindex
+from termcolor import colored
 
 import samo_tidy.checker.violation as violations
 import samo_tidy.core.summary as summary
@@ -42,7 +43,7 @@ def extract_violation(token, rule_id, message):
     )
     summary.add_filename(location.file.name)
     # The actual log out which can be mechanically read
-    logging.error(violation)
+    logging.error(colored(violation, "blue"))
     return violation
 
 
