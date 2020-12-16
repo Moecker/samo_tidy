@@ -29,6 +29,15 @@ class TestCheckerLib(unittest.TestCase):
         translation_unit = tu_parser.create_translation_unit(source_file, args)
         logging.debug(pformat(("nodes", cindex_dump.get_info(translation_unit.cursor))))
 
+    def get_number_of_expected_violations(self, file_name):
+        number_of_expected_violations = 0
+        with open(file_name) as the_file:
+            lines = the_file.readlines()
+            for line in lines:
+                if not utils.is_commented_line(line) and "TIDY_SAMO" in line:
+                    number_of_expected_violations += 1
+        return number_of_expected_violations
+
     def validate(self, file_name, violations):
         number_of_expected_violations = 0
         with open(file_name) as the_file:
