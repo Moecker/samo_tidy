@@ -4,6 +4,7 @@ from termcolor import colored
 import argparse
 import logging
 import sys
+import multiprocessing
 
 import samo_tidy.checker.checker as checker
 import samo_tidy.checker.clang_warning_checker as clang_warning_checker
@@ -47,28 +48,37 @@ def run_for_translation_unit(translation_unit):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser("SAMO TIDY", formatter_class=RawTextHelpFormatter)
+    parser = argparse.ArgumentParser("Samo Tidy", formatter_class=RawTextHelpFormatter)
     parser.add_argument("--compdb", required=True, help="Directory which contains the 'compile_comands.json' file")
     parser.add_argument(
         "--files",
         nargs="+",
         help=(
-            "List of files from compdb to be analyzed. Used substring search.\n"
+            "List of files from compdb to be analyzed. Used substring search. Default: All files\n"
             "Example: '--files .cpp' would match every file which has '.cpp' in its name"
         ),
+        default=None,
     )
-    parser.add_argument("--log_file", help="Full path to a log file")
-    parser.add_argument("--log_level", help="Log level. One of {DEBUG, INFO, WARN, ERROR}")
+    parser.add_argument("--log_file", help="Full path to a log file", default=None)
+    parser.add_argument(
+        "--log_level", help="Log level. One of {DEBUG, INFO, WARN, ERROR}. Default: INFO", default="info"
+    )
+    parser.add_argument(
+        "--workers",
+        help="Number of workers for parallel execution. Default: Number of CPUs - 1",
+        type=int,
+        default=multiprocessing.cpu_count() - 1,
+    )
 
     args = parser.parse_args()
     return args
 
 
-def run(runner, compdb_root_dir, log_level, files=[]):
+def run(runner, compdb_root_dir, log_level, workers, files=[]):
     compdb = compdb_parser.load_compdb(compdb_root_dir)
     the_summary = summary.Summary
     if compdb:
-        the_summary = runner(compdb, log_level, files)
+        the_summary = runner(compdb, log_level, workers, files)
     else:
         logging.error("Could not load compdb")
         sys.exit("Loading of compdb failed")
@@ -83,7 +93,7 @@ def main(runner):
 
     clang_setup.setup_clang()
 
-    the_summary = run(runner, args.compdb, args.log_level, args.files)
+    the_summary = run(runner, args.compdb, args.log_level, args.workers, args.files)
 
     logging.info("SUMMARY:\n" + pformat(the_summary.present()))
 

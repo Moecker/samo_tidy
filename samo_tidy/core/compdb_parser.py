@@ -49,6 +49,7 @@ def parse_compdb(compdb, list_of_files=None):
     for command in commands:
         # Check if we want to parse the translation unit based on the file name pattern
         if list_of_files and not any(word in command.filename for word in list_of_files):
+            summary.add_skipped_commands(command.filename)
             continue
         if utils.shall_ignore_based_on_file_name(command.filename):
             logging.debug("Skipping external file '%s'", command.filename)

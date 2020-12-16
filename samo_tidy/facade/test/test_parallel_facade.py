@@ -12,12 +12,12 @@ class TestParallelFacade(test_facade_lib.TestFacadeLib):
         self.set_arguments(["--compdb", self.multiple_compdb_root])
         self.assert_exit_code(parallel_facade.main, 0)
 
-    @unittest.skip
     def test_apply_checkers_for_translation_units(self):
-        result = facade_lib.run(parallel_facade.run_parallel, self.multiple_compdb_root, "debug")
+        result = facade_lib.run(parallel_facade.run_parallel, self.multiple_compdb_root, "debug", 2)
+        # TODO Expect results in summary module
 
     def test_apply_checkers_for_single_entry(self):
-        result = facade_lib.run(parallel_facade.run_parallel, self.single_compdb_root, "debug")
+        result = facade_lib.run(parallel_facade.run_parallel, self.single_compdb_root, "debug", 1)
 
 
 if __name__ == "__main__":

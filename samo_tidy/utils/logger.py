@@ -1,7 +1,16 @@
 import logging
 
 
-def setup_logger(loglevel="INFO", log_file=None):
+class LoggerAdapter(logging.LoggerAdapter):
+    def __init__(self, prefix, logger):
+        super(LoggerAdapter, self).__init__(logger, {})
+        self.prefix = prefix
+
+    def process(self, msg, kwargs):
+        return "[%s] %s" % (self.prefix, msg), kwargs
+
+
+def setup_logger(loglevel, log_file=None):
     the_logger = logging.getLogger()
 
     if loglevel:
