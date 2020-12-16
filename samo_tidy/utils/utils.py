@@ -4,6 +4,10 @@ import os
 import sys
 
 
+def is_commented_line(line):
+    return line.startswith("//")
+
+
 def only_filename(file_path):
     return os.path.basename(file_path)
 

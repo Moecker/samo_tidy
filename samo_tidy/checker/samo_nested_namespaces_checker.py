@@ -2,7 +2,7 @@ from clang import cindex
 
 import samo_tidy.checker.checker as checker
 
-# Checks for multiple classes in one translation unit
+# Checks for nested namespaces in one translation unit
 def translation_unit_based_rule(translation_unit):
     violations = []
     namespaces = []
@@ -17,7 +17,7 @@ def translation_unit_based_rule(translation_unit):
         violation = checker.extract_violation(
             token,
             "TIDY_SAMO_NESTED_NAMESPACE",
-            f"Multiple {len(namespaces)} namespaces in one translation unit",
+            f"Multiple of {len(namespaces)} namespaces in one translation unit",
         )
         if violation:
             violations.append(violation)

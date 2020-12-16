@@ -3,13 +3,25 @@ load("@rules_python//python:defs.bzl", "py_library", "py_test")
 py_library(
     name = "test_checker_lib",
     srcs = glob(["**/*.py"]),
-    data = ["//samo_tidy/test:test_sources"],
+    data = [
+        "//samo_tidy/checker/test:test_sources",
+        "//samo_tidy/test:test_sources",
+    ],
     visibility = [":__subpackages__"],
     deps = [
         "//samo_tidy/checker",
         "//samo_tidy/test:test_support",
         "//samo_tidy/utils",
     ],
+)
+
+filegroup(
+    name = "test_sources",
+    srcs = glob([
+        "data/*.cpp",
+        "data/*.h",
+    ]),
+    visibility = ["//samo_tidy/checker/test/__subpackages__"],
 )
 
 py_test(
