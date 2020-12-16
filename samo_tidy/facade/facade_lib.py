@@ -3,30 +3,17 @@ from pprint import pformat
 from termcolor import colored
 import argparse
 import logging
-import sys
 import multiprocessing
+import sys
 
 import samo_tidy.checker.checker as checker
 import samo_tidy.checker.clang_warning_checker as clang_warning_checker
-import samo_tidy.checker.samo_multiple_classes_checker as samo_multiple_classes_checker
-import samo_tidy.checker.samo_suffix_case_checker as samo_suffix_case_checker
-import samo_tidy.checker.samo_unsigned_int_checker as samo_unsigned_int_checker
 import samo_tidy.core.compdb_parser as compdb_parser
 import samo_tidy.core.summary as summary
+import samo_tidy.facade.config as config
 import samo_tidy.utils.clang_setup as clang_setup
 import samo_tidy.utils.logger as logger
 import samo_tidy.utils.utils as utils
-
-active_checkers = [
-    samo_suffix_case_checker.token_based_rule,
-    samo_unsigned_int_checker.token_based_rule,
-    samo_multiple_classes_checker.translation_unit_based_rule,
-]
-
-
-def get_checker_registry():
-    registry = set(active_checkers)
-    return registry
 
 
 def run_for_translation_unit(translation_unit):
@@ -37,7 +24,7 @@ def run_for_translation_unit(translation_unit):
         summary.add_translation_unit(translation_unit.spelling)
 
         # Apply the checker
-        for the_checker in get_checker_registry():
+        for the_checker in config.get_checker_registry():
             checker.apply_checker(translation_unit, the_checker)
 
         # Always apply the clang warning checker

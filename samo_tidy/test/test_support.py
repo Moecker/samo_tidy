@@ -9,8 +9,12 @@ import samo_tidy.utils.logger as logger
 import samo_tidy.utils.utils as utils
 
 
+def get_default_log_level_for_tests():
+    return "critical"
+
+
 def default_test_setup():
-    logger.setup_logger("debug")
+    logger.setup_logger(get_default_log_level_for_tests())
     clang_setup.setup_clang()
     unittest.main()
 
