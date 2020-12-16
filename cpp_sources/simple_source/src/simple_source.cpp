@@ -1,5 +1,5 @@
-#include <cstdint>
 #include "simple_source.h"
+#include <cstdint>
 
 uint8_t Function()
 {
@@ -9,8 +9,8 @@ uint8_t Function()
 
 namespace a
 {
-    namespace b
-    {
+namespace b
+{
 
-    }
-} // namespace a
+}
+}  // namespace a

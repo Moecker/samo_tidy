@@ -7,6 +7,4 @@ int Function()
     return CallFunction();
 }
 
-int main()
-{
-}
+int main() {}

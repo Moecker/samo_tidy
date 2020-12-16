@@ -1,2 +1,5 @@
 int CallFunction();
-int CallFunction() { return 0; }
+int CallFunction()
+{
+    return 0;
+}

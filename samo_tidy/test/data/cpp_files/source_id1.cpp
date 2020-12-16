@@ -8,6 +8,4 @@ std::uint8_t Function()
     return 1u;
 }
 
-int main()
-{
-}
+int main() {}
