@@ -1,3 +1,4 @@
+import argparse
 from clang.cindex import Index
 from optparse import OptionParser, OptionGroup
 from pprint import pprint
@@ -58,37 +59,42 @@ def get_info(node, max_depth=None, depth=0):
         }
 
 
-def main():
-    parser = OptionParser("usage: %prog [options] {filename} [clang-args*]")
-
-    parser.add_option(
-        "--diagnosis_only", dest="diagnosis_only", help="Only show diagnosis", action="store_true", default=False
+def parse_args():
+    parser = argparse.ArgumentParser("Cindex Dump")
+    parser.add_argument("--file", help="File to be analyzed", required=True)
+    parser.add_argument(
+        "--arguments",
+        help="File to be analyzed",
+        default=[],
+        nargs="+",
     )
-    parser.add_option(
+    parser.add_argument("--diagnostics_only", help="Only show diagnostics", action="store_true", default=False)
+
+    parser.add_argument(
         "--max-depth",
-        dest="max_depth",
         help="Limit cursor expansion to depth N",
-        metavar="N",
         type=int,
         default=None,
     )
-    parser.disable_interspersed_args()
-    (opts, args) = parser.parse_args()
 
-    if len(args) == 0:
-        parser.error("invalid number arguments")
+    args = parser.parse_args()
+    return args
+
+
+def main():
+    args = parse_args()
 
     logging.basicConfig(level=logging.DEBUG)
     clang_setup.setup_clang()
 
     index = Index.create()
-    tu = index.parse(None, args)
+    tu = index.parse(args.file, args.arguments)
     if not tu:
         parser.error("unable to load input")
 
     pprint(("diags", [get_diag_info(d) for d in tu.diagnostics]))
-    if not opts.diagnosis_only:
-        pprint(("nodes", get_info(tu.cursor, opts.max_depth)))
+    if not args.diagnostics_only:
+        pprint(("nodes", get_info(tu.cursor, args.max_depth)))
 
 
 if __name__ == "__main__":
