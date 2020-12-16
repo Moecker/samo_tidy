@@ -10,7 +10,8 @@ def translation_unit_based_rule(translation_unit):
     for token in translation_unit.cursor.walk_preorder():
         if token.kind == cindex.CursorKind.NAMESPACE:
             if token.is_definition:
-                namespaces.append(token.spelling)
+                if token.location.file.name == translation_unit.spelling:
+                    namespaces.append(token.spelling)
 
     if len(namespaces) > 1:
         violation = checker.extract_violation(

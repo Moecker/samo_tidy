@@ -1,6 +1,6 @@
 from clang.cindex import Index
 from optparse import OptionParser, OptionGroup
-from pprint import pprint
+from pprint import pprint, pformat
 import argparse
 import logging
 
@@ -16,6 +16,17 @@ def get_diag_info(diag):
         "ranges": diag.ranges,
         "fixits": diag.fixits,
     }
+
+
+def dump_node(node):
+    return "\n" + pformat(
+        {
+            "kind": node.kind,
+            "spelling": node.spelling,
+            "location": node.location,
+            "is_definition": node.is_definition(),
+        }
+    )
 
 
 def get_cursor_id(cursor, cursor_list=[]):
