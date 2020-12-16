@@ -14,10 +14,10 @@ class TestParallelFacade(test_facade_lib.TestFacadeLib):
 
     @unittest.skip
     def test_apply_checkers_for_translation_units(self):
-        result = facade_lib.run(parallel_facade.run_parallel, self.multiple_compdb_root)
+        result = facade_lib.run(parallel_facade.run_parallel, self.multiple_compdb_root, "debug")
 
     def test_apply_checkers_for_single_entry(self):
-        result = facade_lib.run(parallel_facade.run_parallel, self.single_compdb_root)
+        result = facade_lib.run(parallel_facade.run_parallel, self.single_compdb_root, "debug")
 
 
 if __name__ == "__main__":

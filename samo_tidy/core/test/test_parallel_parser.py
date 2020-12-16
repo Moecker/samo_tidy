@@ -9,7 +9,7 @@ import samo_tidy.utils.parallel as parallel
 
 
 def computation(args):
-    start, end, the_list = args
+    start, end, the_list, _ = args
     ret = []
 
     for i in range(start, end):

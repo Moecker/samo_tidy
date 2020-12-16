@@ -8,9 +8,11 @@ def apply_checkers_for_translation_units(translation_units):
         facade_lib.run_for_translation_unit(translation_unit)
 
 
-def run_serial(compdb, files=None):
+def run_serial(compdb, _, files=None):
     translation_units = compdb_parser.parse_compdb(compdb, files)
     apply_checkers_for_translation_units(translation_units)
+    # This works as we are using a global state object in module summary
+    return summary
 
 
 def main():

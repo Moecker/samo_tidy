@@ -2,7 +2,7 @@ import itertools
 import multiprocessing
 
 
-def execute_parallel(the_list, workers, the_function):
+def execute_parallel(the_list, workers, the_function, function_args=()):
     list_length = len(the_list)
     if list_length == 0:
         return []
@@ -15,7 +15,7 @@ def execute_parallel(the_list, workers, the_function):
         output = pool.map(
             the_function,
             [
-                (start, min(start + batch, list_length), the_list)
+                (start, min(start + batch, list_length), the_list, function_args)
                 for start in range(
                     0,
                     list_length,

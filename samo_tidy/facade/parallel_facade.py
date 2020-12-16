@@ -6,6 +6,8 @@ import samo_tidy.facade.facade_lib as facade_lib
 import samo_tidy.utils.clang_setup as clang_setup
 import samo_tidy.utils.parallel as parallel
 import samo_tidy.utils.utils as utils
+import samo_tidy.utils.logger as logger
+import samo_tidy.core.summary as summary
 
 
 class CompileCommandsWrapper:
@@ -24,20 +26,31 @@ def wrap_commands(commands):
 
 
 def single_run(args):
+    start, end, commands, function_args = args
+    files, log_level = function_args
+
+    # TODO Respect the log_file attribute
+    logger.setup_logger(log_level)
+    logging.info("Spawning worker with name %s", multiprocessing.current_process().name)
+
     clang_setup.setup_clang()
 
-    start, end, commands = args
-
+    # TODO Respect the files attribute
     for i in range(start, end):
         translation_unit = compdb_parser.parse_single_command(commands[i])
-        facade_lib.run_for_translation_unit(translation_unit)
-    return []
+        the_summary = facade_lib.run_for_translation_unit(translation_unit)
+    # TODO Fix summary global state
+    return [the_summary.present()]
 
 
-def run_parallel(compdb, files=None):
+def run_parallel(compdb, log_level, files=None):
     commands = compdb.getAllCompileCommands()
     wrapped_commands = wrap_commands(commands)
-    parallel.execute_parallel(wrapped_commands, multiprocessing.cpu_count() - 1, single_run)
+    the_summary = parallel.execute_parallel(
+        wrapped_commands, multiprocessing.cpu_count() - 1, single_run, function_args=(files, log_level)
+    )
+
+    return summary
 
 
 def main():

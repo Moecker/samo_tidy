@@ -41,10 +41,9 @@ def run_for_translation_unit(translation_unit):
 
         # Always apply the clang warning checker
         clang_warning_checker.check_for_clang_warnings(translation_unit)
-        return True
     else:
         logging.warning("Skipping invalid translation unit")
-        return False
+    return summary
 
 
 def parse_args():
@@ -65,13 +64,15 @@ def parse_args():
     return args
 
 
-def run(runner, compdb_root_dir, files=[]):
+def run(runner, compdb_root_dir, log_level, files=[]):
     compdb = compdb_parser.load_compdb(compdb_root_dir)
+    the_summary = summary.Summary
     if compdb:
-        runner(compdb, files)
+        the_summary = runner(compdb, log_level, files)
     else:
         logging.error("Could not load compdb")
         sys.exit("Loading of compdb failed")
+    return the_summary
 
 
 def main(runner):
@@ -82,8 +83,8 @@ def main(runner):
 
     clang_setup.setup_clang()
 
-    run(runner, args.compdb, args.files)
+    the_summary = run(runner, args.compdb, args.log_level, args.files)
 
-    logging.info("SUMMARY:\n" + pformat(summary.present()))
+    logging.info("SUMMARY:\n" + pformat(the_summary.present()))
 
     sys.exit(0)

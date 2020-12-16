@@ -1,12 +1,7 @@
-from threading import Thread, Lock
-
 import samo_tidy.core.compdb_parser as compdb_parser
 import samo_tidy.utils.clang_setup as clang_setup
 import samo_tidy.utils.parallel as parallel
 import samo_tidy.utils.utils as utils
-
-# TODO Remove this
-mutex = Lock()
 
 
 class TranslationUnitWrapper:
@@ -35,15 +30,11 @@ def wrap_translation_unit(translation_unit):
 
 
 def parse_from_commands(args):
-    start, end, commands = args
+    start, end, commands, _ = args
     translation_units = []
 
-    mutex.acquire()
-    try:
-        # We are in a multiprocessing environment which does not know about the global state (assumed)
-        clang_setup.setup_clang()
-    finally:
-        mutex.release()
+    # We are in a multiprocessing environment which does not know about the global state
+    clang_setup.setup_clang()
 
     for i in range(start, end):
         translation_unit = compdb_parser.parse_single_command(commands[i])
