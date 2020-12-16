@@ -40,18 +40,16 @@ def single_run(args):
     # TODO Respect the files attribute
     for i in range(start, end):
         translation_unit = compdb_parser.parse_single_command(commands[i])
-        the_summary = facade_lib.run_for_translation_unit(translation_unit)
-    # TODO Fix summary global state
-    return [the_summary.present()]
+        summary_of_worker = facade_lib.run_for_translation_unit(translation_unit)
+    return [summary_of_worker]
 
 
 def run_parallel(compdb, log_level, workers, files=None):
     logging.info(colored("Using %d parallel worker(s)", attrs=["dark"]), workers)
     commands = compdb.getAllCompileCommands()
     wrapped_commands = wrap_commands(commands)
-    the_summary = parallel.execute_parallel(wrapped_commands, workers, single_run, function_args=(files, log_level))
-
-    return summary
+    all_summaries = parallel.execute_parallel(wrapped_commands, workers, single_run, function_args=(files, log_level))
+    return summary.merge(all_summaries)
 
 
 def main():

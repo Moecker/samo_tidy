@@ -31,7 +31,7 @@ def extract_violation(token, rule_id, message):
         return None
     if utils.shall_ignore_based_on_file_name(location.file.name):
         logging.debug("Ignoring violation for id '%s' from file '%s'", rule_id, location.file.name)
-        summary.add_ignored_translation_unit(utils.only_filename(location.file.name))
+        summary.get_summary().add_ignored_translation_unit(utils.only_filename(location.file.name))
         return None
     violation = violations.Violation(
         rule_id,
@@ -40,7 +40,7 @@ def extract_violation(token, rule_id, message):
         location.line,
         location.column,
     )
-    summary.add_filename(location.file.name)
+    summary.get_summary().add_filename(location.file.name)
     present_violation(violation)
     return violation
 
@@ -56,7 +56,7 @@ def apply_checker(translation_unit, checker):
     # Only check non-external translation units
     if utils.shall_ignore_based_on_file_name(translation_unit.spelling):
         logging.debug("Ignoring translation unit '%s'", utils.only_filename(translation_unit.spelling))
-        summary.add_ignored_translation_unit(utils.only_filename(translation_unit.spelling))
+        summary.get_summary().add_ignored_translation_unit(utils.only_filename(translation_unit.spelling))
         return []
 
     # Decide based on the name of the function on which level the check shall be applied

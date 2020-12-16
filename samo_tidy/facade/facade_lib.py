@@ -22,7 +22,7 @@ def run_for_translation_unit(translation_unit):
     # TODO Do not differentiation between tu and token based checker
     if translation_unit:
         logging.info(colored("Applying checkers for '%s'", "magenta"), utils.only_filename(translation_unit.spelling))
-        summary.add_translation_unit(translation_unit.spelling)
+        summary.get_summary().add_translation_unit(translation_unit.spelling)
 
         # Apply the checker
         for the_checker in config.get_checker_registry():
@@ -31,13 +31,13 @@ def run_for_translation_unit(translation_unit):
         # Always apply the clang warning checker
         clang_warning_checker.check_for_clang_warnings(translation_unit)
         logging.critical(
-            colored("Translation Unit %s has %d violation(s)", "red"),
+            colored("Translation Unit '%s' has %d violation(s)", "red"),
             utils.only_filename(translation_unit.spelling),
             len(violations_per_tu),
         )
     else:
         logging.warning("Skipping invalid translation unit")
-    return summary
+    return summary.get_summary()
 
 
 def parse_args():
@@ -69,7 +69,7 @@ def parse_args():
 
 def run(runner, compdb_root_dir, log_level, workers, files=[]):
     compdb = compdb_parser.load_compdb(compdb_root_dir)
-    the_summary = summary.Summary
+    the_summary = summary.get_summary()
     if compdb:
         the_summary = runner(compdb, log_level, workers, files)
     else:
@@ -88,6 +88,6 @@ def main(runner):
 
     the_summary = run(runner, args.compdb, args.log_level, args.workers, args.files)
 
-    logging.critical(colored("SUMMARY:\n" + pformat(the_summary.present()), "green"))
+    logging.critical(colored("SUMMARY:\n" + pformat(the_summary.present()), attrs=["dark"]))
 
     sys.exit(0)
