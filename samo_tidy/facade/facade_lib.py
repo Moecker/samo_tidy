@@ -30,13 +30,13 @@ def run_for_translation_unit(translation_unit):
 
         # Always apply the clang warning checker
         clang_warning_checker.check_for_clang_warnings(translation_unit)
+        logging.critical(
+            colored("Translation Unit %s has %d violation(s)", "red"),
+            utils.only_filename(translation_unit.spelling),
+            len(violations_per_tu),
+        )
     else:
         logging.warning("Skipping invalid translation unit")
-    logging.critical(
-        colored("Translation Unit %s has %d violation(s)", "red"),
-        utils.only_filename(translation_unit.spelling),
-        len(violations_per_tu),
-    )
     return summary
 
 
