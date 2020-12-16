@@ -17,6 +17,13 @@ def debug_token_spelling(token):
     logging.debug("Token spelling is '%s':", pformat(token.type.spelling))
 
 
+def present_violation(violation):
+    # The actual log out which can be mechanically read
+    logging.warning(colored(violation, "blue"))
+    logging.error(colored(violation.style(), "yellow"))
+    # TODO logging.info(colored(violation.file_path_link(), "green"))
+
+
 def extract_violation(token, rule_id, message):
     location = token.location
     if not location.file:
@@ -34,10 +41,7 @@ def extract_violation(token, rule_id, message):
         location.column,
     )
     summary.add_filename(location.file.name)
-    # The actual log out which can be mechanically read
-    logging.warning(colored(violation, "blue"))
-    logging.error(colored(violation.style(), "yellow"))
-    logging.info(colored(violation.file_path_link(), "green"))
+    present_violation(violation)
     return violation
 
 

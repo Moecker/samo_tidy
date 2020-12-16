@@ -88,6 +88,6 @@ def main(runner):
 
     the_summary = run(runner, args.compdb, args.log_level, args.workers, args.files)
 
-    logging.critical("SUMMARY:\n" + pformat(the_summary.present()))
+    logging.critical(colored("SUMMARY:\n" + pformat(the_summary.present()), "green"))
 
     sys.exit(0)

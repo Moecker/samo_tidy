@@ -12,7 +12,8 @@ import samo_tidy.utils.utils as utils
 def load_compdb(directory):
     try:
         logging.info(
-            "Opening compilation database '%s'", utils.make_link(os.path.join(directory, "compile_commands.json"))
+            colored("Opening compilation database '%s'", "green"),
+            utils.make_link(os.path.join(directory, "compile_commands.json")),
         )
         compdb = cindex.CompilationDatabase.fromDirectory(directory)
         return compdb
@@ -24,7 +25,7 @@ def load_compdb(directory):
 
 def parse_single_command(command):
     logging.info(
-        "Parsing file '%s'",
+        colored("Parsing file '%s'", "green"),
         utils.make_link(command.filename),
     )
     logging.debug("Using file name '%s'", utils.only_filename(command.filename))
@@ -43,7 +44,7 @@ def parse_compdb(compdb, list_of_files=None):
         logging.error(err_msg)
         sys.exit(err_msg)
 
-    logging.info("Found %d command(s) in compilation database", len(commands))
+    logging.info(colored("Found %d command(s) in compilation database", attrs=["dark"]), len(commands))
 
     translation_units = []
     number_of_skipped_files = 0
