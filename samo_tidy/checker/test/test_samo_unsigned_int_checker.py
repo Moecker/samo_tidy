@@ -18,8 +18,8 @@ class TestSamoUnsignedIntChecker(test_checker_lib.TestCheckerLib):
                 ]
             ),
         )
-        self.assertEqual(len(violations), 1)
         self.assertEqual(len(diagnostics), 0)
+        self.assertEqual(len(violations), 1)
 
 
 if __name__ == "__main__":

@@ -20,8 +20,8 @@ class TestSamoSuffixCaseChecker(test_checker_lib.TestCheckerLib):
         violations, diagnostics = self.apply_checker(
             samo_suffix_case_checker.token_based_rule, self.get_source_file_path("source_id2.cpp")
         )
-        self.assertEqual(len(violations), 0)
         self.assertEqual(len(diagnostics), 0)
+        self.assertEqual(len(violations), 0)
 
     def test_check_for_ints_id3(self):
         violations, diagnostics = self.apply_checker(
@@ -36,14 +36,15 @@ class TestSamoSuffixCaseChecker(test_checker_lib.TestCheckerLib):
             self.get_source_file_path("source_id4.cpp"),
             [f"-I{self.test_data_dir}"],
         )
-        self.assertEqual(len(violations), 0)
         self.assertEqual(len(diagnostics), 0)
+        self.assertEqual(len(violations), 0)
 
     def test_temp_file_int(self):
         violations, diagnostics = self.apply_checker(
             samo_suffix_case_checker.token_based_rule,
             test_support.create_tempfile(["int F();", "int F()", "{", "return 0;", "}"]),
         )
+        self.assertEqual(len(diagnostics), 0)
         self.assertEqual(len(violations), 0)
 
     def test_temp_file_uint(self):
@@ -54,6 +55,7 @@ class TestSamoSuffixCaseChecker(test_checker_lib.TestCheckerLib):
             samo_suffix_case_checker.token_based_rule,
             file_name,
         )
+        self.assertEqual(len(diagnostics), 0)
         self.assertEqual(len(violations), 1)
         self.assertIn(file_name, violations[0].file_path)
         self.assertEqual("TIDY_SAMO_SUFFIX_CASE", violations[0].id)

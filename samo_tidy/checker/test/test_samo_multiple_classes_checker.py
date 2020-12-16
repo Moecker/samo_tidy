@@ -11,25 +11,28 @@ class TestSamoMultipleClassesChecker(test_checker_lib.TestCheckerLib):
             samo_multiple_classes_checker.translation_unit_based_rule,
             test_support.create_tempfile(["class A", "{", "};", "class B", "{", "};"]),
         )
-        self.assertEqual(len(violations), 1)
         self.assertEqual(len(diagnostics), 0)
+        self.assertEqual(len(violations), 1)
 
-    @unittest.skip
     def test_check_for_multiple_classes_only_usage(self):
         violations, diagnostics = self.apply_checker(
             samo_multiple_classes_checker.translation_unit_based_rule,
-            test_support.create_tempfile(["class A", "{", "};", "B b;"]),
+            test_support.create_tempfile(
+                ["class A", "{", "public:", "int b;", "};", "int main()", "{", "A a;", "return a.b;", "}"]
+            ),
         )
-        self.assertEqual(len(violations), 1)
         self.assertEqual(len(diagnostics), 0)
+        self.assertEqual(len(violations), 0)
 
     def test_check_for_multiple_classes_negativ(self):
         violations, diagnostics = self.apply_checker(
             samo_multiple_classes_checker.translation_unit_based_rule,
             test_support.create_tempfile(["class A", "{", "};"]),
         )
-        self.assertEqual(len(violations), 0)
         self.assertEqual(len(diagnostics), 0)
+        self.assertEqual(len(violations), 0)
+
+    # TODO Check "#include <iostream>"
 
 
 if __name__ == "__main__":

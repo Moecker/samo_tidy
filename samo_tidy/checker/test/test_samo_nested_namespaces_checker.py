@@ -12,17 +12,16 @@ class TestSamoMultipleClassesChecker(test_checker_lib.TestCheckerLib):
             the_checker.translation_unit_based_rule,
             test_support.create_tempfile(["namespace a { namespace b { } }"]),
         )
-        self.dump(filename)
-        self.assertEqual(len(violations), 1)
         self.assertEqual(len(diagnostics), 0)
+        self.assertEqual(len(violations), 1)
 
     def test_negativ(self):
         violations, diagnostics = self.apply_checker(
             the_checker.translation_unit_based_rule,
             test_support.create_tempfile(["class A", "{", "};"]),
         )
-        self.assertEqual(len(violations), 0)
         self.assertEqual(len(diagnostics), 0)
+        self.assertEqual(len(violations), 0)
 
 
 if __name__ == "__main__":
