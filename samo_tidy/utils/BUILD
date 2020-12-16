@@ -5,7 +5,10 @@ py_library(
     name = "utils",
     srcs = glob(["**/*.py"]),
     visibility = ["//samo_tidy:__subpackages__"],
-    deps = [requirement("clang")],
+    deps = [
+        requirement("clang"),
+        requirement("termcolor"),
+    ],
 )
 
 py_binary(

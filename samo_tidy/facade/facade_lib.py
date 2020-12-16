@@ -17,6 +17,7 @@ import samo_tidy.utils.utils as utils
 
 
 def run_for_translation_unit(translation_unit):
+    violations_per_tu = []
     # For each translation unit, apply the checkers
     # TODO Do not differentiation between tu and token based checker
     if translation_unit:
@@ -25,12 +26,17 @@ def run_for_translation_unit(translation_unit):
 
         # Apply the checker
         for the_checker in config.get_checker_registry():
-            checker.apply_checker(translation_unit, the_checker)
+            violations_per_tu += checker.apply_checker(translation_unit, the_checker)
 
         # Always apply the clang warning checker
         clang_warning_checker.check_for_clang_warnings(translation_unit)
     else:
         logging.warning("Skipping invalid translation unit")
+    logging.critical(
+        colored("Translation Unit %s has %d violation(s)", "red"),
+        utils.only_filename(translation_unit.spelling),
+        len(violations_per_tu),
+    )
     return summary
 
 
@@ -76,7 +82,7 @@ def main(runner):
     args = parse_args()
 
     logger.setup_logger(args.log_level, args.log_file)
-    logging.info(colored("Welcome", "magenta"))
+    logging.critical(colored("Welcome. Lets run some static code analysis checks...", "magenta"))
 
     clang_setup.setup_clang()
 

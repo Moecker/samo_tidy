@@ -11,7 +11,9 @@ import samo_tidy.utils.utils as utils
 
 def load_compdb(directory):
     try:
-        logging.info("Opening compilation database from directory '%s'", directory)
+        logging.info(
+            "Opening compilation database '%s'", utils.make_link(os.path.join(directory, "compile_commands.json"))
+        )
         compdb = cindex.CompilationDatabase.fromDirectory(directory)
         return compdb
     except cindex.CompilationDatabaseError as the_exception:
@@ -22,8 +24,8 @@ def load_compdb(directory):
 
 def parse_single_command(command):
     logging.info(
-        colored("Parsing file '%s'", "grey"),
-        command.filename,
+        "Parsing file '%s'",
+        utils.make_link(command.filename),
     )
     logging.debug("Using file name '%s'", utils.only_filename(command.filename))
     logging.debug("Using directory '%s'", command.directory)

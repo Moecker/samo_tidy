@@ -1,7 +1,12 @@
 from pprint import pformat
+from termcolor import colored
 import logging
 import os
 import sys
+
+
+def make_link(text):
+    return colored(f"file://{text}", attrs=["underline"])
 
 
 def is_commented_line(line):

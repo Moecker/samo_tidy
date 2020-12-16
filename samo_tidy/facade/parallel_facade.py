@@ -1,5 +1,6 @@
 import logging
 import multiprocessing
+from termcolor import colored
 
 import samo_tidy.core.compdb_parser as compdb_parser
 import samo_tidy.facade.facade_lib as facade_lib
@@ -32,7 +33,7 @@ def single_run(args):
     # TODO Respect the log_file attribute
     logger.setup_logger(log_level)
     worker_id = multiprocessing.current_process()._identity[0]
-    logging.info("Spawning worker with id %s", worker_id)
+    logging.debug("Spawning worker with id %s", worker_id)
 
     clang_setup.setup_clang()
 
@@ -45,7 +46,7 @@ def single_run(args):
 
 
 def run_parallel(compdb, log_level, workers, files=None):
-    logging.info("Using %d parallel worker(s)", workers)
+    logging.info(colored("Using %d parallel worker(s)", attrs=["dark"]), workers)
     commands = compdb.getAllCompileCommands()
     wrapped_commands = wrap_commands(commands)
     the_summary = parallel.execute_parallel(wrapped_commands, workers, single_run, function_args=(files, log_level))
