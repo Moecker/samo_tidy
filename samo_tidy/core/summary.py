@@ -10,7 +10,7 @@ class Summary:
 
 
 def limit_set_display(the_set):
-    MAX_DISPLAY = 1
+    MAX_DISPLAY = 10
     list_to_show = list(the_set)[0:MAX_DISPLAY]
     remaining = len(the_set) - MAX_DISPLAY
     if remaining > 0:
