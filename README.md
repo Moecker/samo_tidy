@@ -5,7 +5,7 @@ Goal of this project is to provide a simple framework to write own static code a
 
 The tool takes a compilation database (`compile_commands.json`) which can be generated with CMake or Bazel.
 
-# Usage
+# Usage (Samo Tidy)
 Check the help output
 `bazel run //samo_tidy/facade:run -- --help`
 
@@ -13,20 +13,35 @@ Check the help output
   -h, --help            show this help message and exit
   --compdb COMPDB       Directory which contains the 'compile_comands.json' file
   --files FILES [FILES ...]
-                        List of files from compdb to be analyzed. Used substring search.
+                        List of files from compdb to be analyzed. Used substring search. Default: All files
                         Example: '--files .cpp' would match every file which has '.cpp' in its name
   --log_file LOG_FILE   Full path to a log file
   --log_level LOG_LEVEL
-                        Log level. One of {DEBUG, INFO, WARN, ERROR}
+                        Log level. One of {DEBUG, INFO, WARN, ERROR}. Default: INFO
+  --workers WORKERS     Number of workers for parallel execution. Default: Number of CPUs - 1
 ````
 
+# Usage (CIndex Dump)
+Check the help output
+` bazel run //samo_tidy/utils:cindex_dump -- --help`
+
+````
+  -h, --help            show this help message and exit
+  --file FILE           Filepath to be analyzed
+  --arguments ARGUMENTS [ARGUMENTS ...]
+                        Arguments for parsing the file (such as -I flags)
+  --diagnostics_only    Only show diagnostics
+  --max-depth MAX_DEPTH
+                        Limit cursor expansion to depth
+````
 
 # Examples
 ### Run on a example compilation database
 `bazel run //samo_tidy/facade:run -- --compdb <WORKSPACE>/samo_tidy/samo_tidy/test/data`
+`bazel run //samo_tidy/facade:run_parallel -- --compdb <WORKSPACE>/samo_tidy/samo_tidy/test/data`
 
 ### Dump AST for an example file
-`bazel run //samo_tidy/utils:cindex_dump -- <WORKSPACE>/samo_tidy/samo_tidy/test/data/source_id1.cpp`
+`bazel run //samo_tidy/utils:cindex_dump -- --file <WORKSPACE>/samo_tidy/samo_tidy/test/data/source_id1.cpp`
 
 # Tests
 ### Execute all project tests

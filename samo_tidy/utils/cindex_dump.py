@@ -1,7 +1,7 @@
-import argparse
 from clang.cindex import Index
 from optparse import OptionParser, OptionGroup
 from pprint import pprint
+import argparse
 import logging
 
 import samo_tidy.utils.clang_setup as clang_setup
@@ -60,19 +60,18 @@ def get_info(node, max_depth=None, depth=0):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser("Cindex Dump")
-    parser.add_argument("--file", help="File to be analyzed", required=True)
+    parser = argparse.ArgumentParser("CIndex Dump")
+    parser.add_argument("--file", help="Filepath to be analyzed", required=True)
     parser.add_argument(
         "--arguments",
-        help="File to be analyzed",
+        help="Arguments for parsing the file (such as -I flags)",
         default=[],
         nargs="+",
     )
     parser.add_argument("--diagnostics_only", help="Only show diagnostics", action="store_true", default=False)
-
     parser.add_argument(
         "--max-depth",
-        help="Limit cursor expansion to depth N",
+        help="Limit cursor expansion to depth",
         type=int,
         default=None,
     )
@@ -90,7 +89,7 @@ def main():
     index = Index.create()
     tu = index.parse(args.file, args.arguments)
     if not tu:
-        parser.error("unable to load input")
+        logging.error("Unable to load input")
 
     pprint(("diags", [get_diag_info(d) for d in tu.diagnostics]))
     if not args.diagnostics_only:
