@@ -1,3 +1,6 @@
+import samo_tidy.utils.utils as utils
+
+
 def get_diag_info(diag):
     return {
         "severity": diag.severity,
@@ -16,3 +19,10 @@ def dump_node(node):
             "is_definition": node.is_definition(),
         }
     )
+
+
+def pretty_location(location):
+    if location:
+        if location.file:
+            return f"{utils.only_filename(location.file.name)}:{location.line}:{location.column}"
+    return location

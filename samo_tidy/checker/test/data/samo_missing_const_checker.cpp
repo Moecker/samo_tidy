@@ -4,3 +4,5 @@ int main()
     value = 1;
     return value;
 }
+
+// TIDY_SAMO_MISSING_CONST

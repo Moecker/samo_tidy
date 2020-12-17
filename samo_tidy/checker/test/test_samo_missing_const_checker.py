@@ -7,6 +7,31 @@ import samo_tidy.test.test_support as test_support
 
 
 class TestSamoMissingConstChecker(test_checker_lib.TestCheckerLib):
+    def test_check_for_missing_const_simple_no_var(self):
+        violations, diagnostics = self.apply_checker(
+            the_checker.translation_unit_based_rule,
+            test_support.create_tempfile(["int main()", "{", "return 0;", "}"]),
+        )
+        self.assertEqual(len(diagnostics), 0)
+        self.assertEqual(len(violations), 0)
+
+    @unittest.skip
+    def test_check_for_missing_const_simple_var_def(self):
+        violations, diagnostics = self.apply_checker(
+            the_checker.translation_unit_based_rule,
+            test_support.create_tempfile(["int main()", "{", "int a = 0;", "return a;", "}"]),
+        )
+        self.assertEqual(len(diagnostics), 0)
+        self.assertEqual(len(violations), 1)
+
+    def test_check_for_missing_const_simple_var_used(self):
+        violations, diagnostics = self.apply_checker(
+            the_checker.translation_unit_based_rule,
+            test_support.create_tempfile(["int main()", "{", "int a = 0;", "a = 1;", "return a;", "}"]),
+        )
+        self.assertEqual(len(diagnostics), 0)
+        self.assertEqual(len(violations), 0)
+
     def test_validate(self):
         filename = os.path.join(self.checker_test_files, "samo_missing_const_checker.cpp")
         violations, diagnostics = self.apply_checker(

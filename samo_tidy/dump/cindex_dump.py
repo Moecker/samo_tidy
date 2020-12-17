@@ -14,13 +14,6 @@ import samo_tidy.utils.utils as utils
 import samo_tidy.dump.dump as dump
 
 
-def pretty_location(location):
-    if location:
-        if location.file:
-            return f"{utils.only_filename(location.file.name)}:{location.line}:{location.column}"
-    return location
-
-
 def get_info(node, max_depth=None, depth=0, details=False):
     if max_depth is not None and depth >= max_depth:
         children = None
@@ -33,7 +26,7 @@ def get_info(node, max_depth=None, depth=0, details=False):
     info_dict = {
         "kind": node.kind,
         "spelling": node.spelling,
-        "location": pretty_location(node.location),
+        "location": dump.pretty_location(node.location),
         "": children,
     }
     if details:
