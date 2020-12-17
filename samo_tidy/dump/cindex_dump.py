@@ -27,7 +27,7 @@ def get_info(node, max_depth=None, depth=0, details=False):
         "kind": node.kind,
         "spelling": node.spelling,
         "location": dump.pretty_location(node.location),
-        "": children,
+        "<--": children,
     }
     if details:
         info_dict.update(
