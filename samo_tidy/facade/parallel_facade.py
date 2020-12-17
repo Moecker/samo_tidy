@@ -1,14 +1,14 @@
+from termcolor import colored
 import logging
 import multiprocessing
-from termcolor import colored
 
 import samo_tidy.core.compdb_parser as compdb_parser
+import samo_tidy.core.summary as summary
 import samo_tidy.facade.facade_lib as facade_lib
 import samo_tidy.utils.clang_setup as clang_setup
+import samo_tidy.utils.logger as loggers
 import samo_tidy.utils.parallel as parallel
 import samo_tidy.utils.utils as utils
-import samo_tidy.utils.logger as logger
-import samo_tidy.core.summary as summary
 
 
 class CompileCommandsWrapper:
@@ -36,12 +36,9 @@ def single_run(args):
     logging.debug("Spawning worker with id %s", worker_id)
 
     clang_setup.setup_clang()
+    facade_lib.run_all(commands[start:end], files)
 
-    # TODO Respect the files attribute
-    for i in range(start, end):
-        translation_unit = compdb_parser.parse_single_command(commands[i])
-        summary_of_worker = facade_lib.run_for_translation_unit(translation_unit)
-    return [summary_of_worker]
+    return [summary.get_summary()]
 
 
 def run_parallel(compdb, log_level, workers, files=None):

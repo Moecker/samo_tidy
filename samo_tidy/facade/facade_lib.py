@@ -16,6 +16,16 @@ import samo_tidy.utils.logger as logger
 import samo_tidy.utils.utils as utils
 
 
+def run_all(commands, files):
+    translation_units = compdb_parser.parse_commmands(commands, files)
+    apply_checkers_for_translation_units(translation_units)
+
+
+def apply_checkers_for_translation_units(translation_units):
+    for translation_unit in translation_units:
+        run_for_translation_unit(translation_unit)
+
+
 def run_for_translation_unit(translation_unit):
     violations_per_tu = []
     # For each translation unit, apply the checkers
@@ -29,15 +39,15 @@ def run_for_translation_unit(translation_unit):
             violations_per_tu += checker.apply_checker(translation_unit, the_checker)
 
         # Always apply the clang warning checker
-        clang_warning_checker.check_for_clang_warnings(translation_unit)
+        clang_warnings = clang_warning_checker.check_for_clang_warnings(translation_unit)
         logging.critical(
-            colored("Translation Unit '%s' has %d violation(s)", "red"),
+            colored("Translation Unit '%s' has %d violation(s) and %d clang warning(s)", "red"),
             utils.only_filename(translation_unit.spelling),
             len(violations_per_tu),
+            len(clang_warnings),
         )
     else:
         logging.warning("Skipping invalid translation unit")
-    return summary.get_summary()
 
 
 def parse_args():

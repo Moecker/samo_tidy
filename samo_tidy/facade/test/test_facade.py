@@ -3,6 +3,7 @@ import unittest
 
 import samo_tidy.core.tu_parser as tu_parser
 import samo_tidy.facade.facade as facade
+import samo_tidy.facade.facade_lib as facade_lib
 import samo_tidy.facade.test.test_facade_lib as test_facade_lib
 import samo_tidy.test.test_support as test_support
 
@@ -32,7 +33,7 @@ class TestFacade(test_facade_lib.TestFacadeLib):
     def test_apply_checkers_for_translation_units(self):
         source_file = test_support.create_tempfile([""])
         tu = tu_parser.create_translation_unit(source_file)
-        facade.apply_checkers_for_translation_units([tu])
+        facade_lib.apply_checkers_for_translation_units([tu])
         # TODO Expect no call to the checkers as we have an invalid tu
 
 
