@@ -23,11 +23,12 @@ Check the help output
 
 # Usage (CIndex Dump)
 Check the help output
-` bazel run //samo_tidy/utils:cindex_dump -- --help`
+` bazel run //samo_tidy/dump:cindex_dump -- --help`
 
 ````
   -h, --help            show this help message and exit
   --file FILE           Filepath to be analyzed
+  --compdb COMPDB       Compilation Database for detailed build instructions
   --arguments ARGUMENTS [ARGUMENTS ...]
                         Arguments for parsing the file (such as -I flags)
   --diagnostics_only    Only show diagnostics
@@ -37,16 +38,18 @@ Check the help output
 
 # Examples
 ### Run on a example compilation database
-`bazel run //samo_tidy/facade:run -- --compdb <WORKSPACE>/samo_tidy/samo_tidy/test/data`
-`bazel run //samo_tidy/facade:run_parallel -- --compdb <WORKSPACE>/samo_tidy/samo_tidy/test/data`
+`bazel run //samo_tidy/facade:run -- --compdb <WORKSPACE>/samo_tidy/samo_tidy/test/data/single_file_compdb`
+`bazel run //samo_tidy/facade:run -- --compdb <WORKSPACE>/samo_tidy/samo_tidy/test/data/single_file_compdb --files source_id1.cpp source_id2.cpp`
+
+`bazel run //samo_tidy/facade:run_parallel -- --compdb <WORKSPACE>/samo_tidy/samo_tidy/test/data/single_file_compdb`
 
 ### Dump AST for an example file
-`bazel run //samo_tidy/utils:cindex_dump -- --file <WORKSPACE>/samo_tidy/samo_tidy/test/data/source_id1.cpp`
+`bazel run //samo_tidy/dump:cindex_dump -- --file <WORKSPACE>/samo_tidy/samo_tidy/test/data/source_id1.cpp`
+`bazel run //samo_tidy/dump:cindex_dump -- --file source_id1.cpp --compdb <WORKSPACE>/samo_tidy/samo_tidy/test/data/single_file_compdb`
 
 # Tests
 ### Execute all project tests
 `bazel test /...`
-
 
 # Installation
 ### Mac
