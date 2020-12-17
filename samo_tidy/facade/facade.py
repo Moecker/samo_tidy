@@ -4,7 +4,7 @@ import samo_tidy.facade.facade_lib as facade_lib
 
 
 def run_serial(compdb, log_level, workers, files=None):
-    commands = compdb.getAllCompileCommands()
+    commands = compdb_parser.parse_compdb(compdb)
     facade_lib.run_all(commands, files)
     return summary.get_summary()
 

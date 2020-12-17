@@ -37,19 +37,18 @@ def parse_single_command(command):
     return translation_unit
 
 
-def parse_compdb(compdb, list_of_files=None):
+def parse_compdb(compdb):
     commands = compdb.getAllCompileCommands()
-    return parse_commmands(commands, list_of_files)
-
-
-def parse_commmands(commands, list_of_files=None):
     if not commands:
         err_msg = "Compilation Database invalid"
         logging.error(err_msg)
         sys.exit(err_msg)
 
     logging.info(colored("Found %d command(s) in compilation database", attrs=["dark"]), len(commands))
+    return commands
 
+
+def parse_commands(commands, list_of_files=None):
     translation_units = []
     number_of_skipped_files = 0
 

@@ -47,3 +47,8 @@ class TestCoreLib(unittest.TestCase):
     def create_temporary_compdb_file(self, file_names):
         compdb = create_compdb_string(self.test_data_dir, "c++", file_names)
         create_tempfile(compdb, self.temporary_dir, self.compdb_name)
+
+    def parse_compdb(self, compdb, files=[]):
+        commands = compdb_parser.parse_compdb(compdb)
+        translation_units = compdb_parser.parse_commands(commands, files)
+        return translation_units

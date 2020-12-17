@@ -25,6 +25,7 @@ def merge(list_of_summaries):
         result.ignored_translation_units.update(a_summary.ignored_translation_units)
         result.skipped_commands.update(a_summary.skipped_commands)
         result.skipped_filenames.update(a_summary.skipped_filenames)
+        result.number_of_violations.update(a_summary.number_of_violations)
     return result
 
 
@@ -35,6 +36,7 @@ class Summary:
         self.ignored_translation_units = set()
         self.skipped_commands = set()
         self.skipped_filenames = set()
+        self.number_of_violations = set()
 
     def as_dict(self):
         return [{"Analyzed Files": self.analyzed_file_names}]
@@ -46,6 +48,7 @@ class Summary:
             "Ignored Translation Units": limit_set_display(self.ignored_translation_units),
             "Skipped Commands": limit_set_display(self.skipped_commands),
             "Skipped Files": limit_set_display(self.skipped_filenames),
+            "Number of Violations": self.number_of_violations,
         }
 
     def add_filename(self, file_path):
@@ -62,6 +65,9 @@ class Summary:
 
     def add_skipped_filename(self, file_path):
         self.skipped_filenames.add(os.path.basename(file_path))
+
+    def add_number_of_violations(self, violations_tuple):
+        self.number_of_violations.add(violations_tuple)
 
 
 the_summary = Summary()

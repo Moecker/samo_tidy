@@ -17,7 +17,7 @@ import samo_tidy.utils.utils as utils
 
 
 def run_all(commands, files):
-    translation_units = compdb_parser.parse_commmands(commands, files)
+    translation_units = compdb_parser.parse_commands(commands, files)
     apply_checkers_for_translation_units(translation_units)
 
 
@@ -46,6 +46,7 @@ def run_for_translation_unit(translation_unit):
             len(violations_per_tu),
             len(clang_warnings),
         )
+        summary.get_summary().add_number_of_violations((len(violations_per_tu), len(clang_warnings)))
     else:
         logging.warning("Skipping invalid translation unit")
 
