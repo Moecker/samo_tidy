@@ -10,7 +10,7 @@ import samo_tidy.utils.utils as utils
 
 
 def get_default_log_level_for_tests():
-    return "critical"
+    return "debug"
 
 
 def default_test_setup():

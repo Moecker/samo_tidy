@@ -8,5 +8,9 @@ int main()
     int combined = 3;
     combined += 4;
 
-    return value + foo;
+    int bla = {5};  // TIDY_SAMO_MISSING_CONST
+    int bar = bla;
+    bar -= value;
+
+    return value + foo - bar;
 }

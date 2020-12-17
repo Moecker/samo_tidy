@@ -62,7 +62,7 @@ def log_diagnostics_info_summary(translation_unit):
             "Clang diagnostic: Severity '%s', Message: '%s', File '%s'",
             diagnostic.severity,
             diagnostic.spelling,
-            only_filename(file_path),
+            f"{only_filename(file_path)}:{diagnostic.location.line}:{diagnostic.location.column}",
         )
 
 

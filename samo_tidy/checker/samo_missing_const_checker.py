@@ -1,7 +1,6 @@
 from clang import cindex
 
 import samo_tidy.checker.checker as checker
-import samo_tidy.dump.dump as dump
 
 
 def hash(token):
