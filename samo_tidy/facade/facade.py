@@ -9,7 +9,8 @@ def apply_checkers_for_translation_units(translation_units):
 
 
 def run_serial(compdb, log_level, workers, files=None):
-    translation_units = compdb_parser.parse_compdb(compdb, files)
+    commands = compdb.getAllCompileCommands()
+    translation_units = compdb_parser.parse_commmands(commands, files)
     apply_checkers_for_translation_units(translation_units)
     # This works as we are using a global state object in module summary
     return summary.get_summary()

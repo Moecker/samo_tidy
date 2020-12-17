@@ -5,6 +5,7 @@ import argparse
 import logging
 import os
 import sys
+from termcolor import colored
 
 import samo_tidy.core.tu_parser as tu_parser
 import samo_tidy.core.compdb_parser as compdb_parser
@@ -13,24 +14,38 @@ import samo_tidy.utils.utils as utils
 import samo_tidy.dump.dump as dump
 
 
-def get_info(node, max_depth=None, depth=0):
+def pretty_location(location):
+    if location:
+        if location.file:
+            return f"{utils.only_filename(location.file.name)}:{location.line}:{location.column}"
+    return location
+
+
+def get_info(node, max_depth=None, depth=0, details=False):
     if max_depth is not None and depth >= max_depth:
         children = None
     else:
-        if node.location.file and utils.shall_ignore_based_on_file_name(node.location.file.name):
-            children = None
-        else:
-            children = [get_info(c, max_depth, depth + 1) for c in node.get_children()]
+        children = [get_info(c, max_depth, depth + 1, details) for c in node.get_children()]
 
-    return {
+    if node.location.file and utils.shall_ignore_based_on_file_name(node.location.file.name):
+        return
+
+    info_dict = {
         "kind": node.kind,
-        "usr": node.get_usr(),
         "spelling": node.spelling,
-        "location": node.location,
-        "is_definition": node.is_definition(),
-        "->": children,
-        "tokens": ",".join([token.spelling for token in node.get_tokens()]),
+        "location": pretty_location(node.location),
+        "": children,
     }
+    if details:
+        info_dict.update(
+            {
+                "tokens": ",".join([token.spelling for token in node.get_tokens()]),
+                "usr": node.get_usr(),
+                "location": node.location,
+                "is_definition": node.is_definition,
+            }
+        )
+    return info_dict
 
 
 def parse_from_compdb(args):
@@ -62,6 +77,7 @@ def parse_args():
         nargs="+",
     )
     parser.add_argument("--diagnostics_only", help="Only show diagnostics", action="store_true", default=False)
+    parser.add_argument("--details", help="Show more details per node", action="store_true", default=False)
     parser.add_argument(
         "--max-depth",
         help="Limit cursor expansion to depth",
@@ -93,14 +109,17 @@ def main():
     logging.info("Parsing %s with %s", the_file, the_arguments)
     tu = index.parse(the_file, the_arguments)
     if not tu:
-        logging.error("Unable to load input")
+        sys.exit("Unable to load input for file {the_file}")
 
     # Dump the tu content
-    pprint(("diags", [dump.get_diag_info(d) for d in tu.diagnostics]))
+    if not args.diagnostics_only:
+        start_depth = 0
+        logging.info(
+            colored(pformat(("nodes", get_info(tu.cursor, args.max_depth, start_depth, args.details))), attrs=["dark"])
+        )
 
     # Dump the diagnostics
-    if not args.diagnostics_only:
-        pprint(("nodes", get_info(tu.cursor, args.max_depth)))
+    logging.info(pformat(("diags", [dump.get_diag_info(d) for d in tu.diagnostics])))
 
 
 if __name__ == "__main__":

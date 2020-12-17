@@ -39,6 +39,10 @@ def parse_single_command(command):
 
 def parse_compdb(compdb, list_of_files=None):
     commands = compdb.getAllCompileCommands()
+    return parse_commmands(commands, list_of_files)
+
+
+def parse_commmands(commands, list_of_files=None):
     if not commands:
         err_msg = "Compilation Database invalid"
         logging.error(err_msg)

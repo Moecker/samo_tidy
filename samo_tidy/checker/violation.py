@@ -34,4 +34,4 @@ class Violation:
         return f"file://{self.file_path}"
 
     def style(self):
-        return f"{self.id}:{utils.make_link(self.file_path)}:{self.line}:{self.column}"
+        return f"{self.id}:{utils.make_link(self.file_name)}:{self.line}:{self.column}"
