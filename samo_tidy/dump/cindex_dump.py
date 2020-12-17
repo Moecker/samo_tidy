@@ -42,7 +42,9 @@ def get_info(node, max_depth=None, depth=0, details=False):
                 "tokens": ",".join([token.spelling for token in node.get_tokens()]),
                 "usr": node.get_usr(),
                 "location": node.location,
-                "is_definition": node.is_definition,
+                "is_definition": node.is_definition(),
+                "type": node.type.spelling,
+                "referenced": node.referenced,
             }
         )
     return info_dict

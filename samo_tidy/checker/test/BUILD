@@ -50,6 +50,12 @@ py_test(
 )
 
 py_test(
+    name = "test_samo_missing_const_checker",
+    srcs = glob(["**/*.py"]),
+    deps = ["//samo_tidy/checker/test:test_checker_lib"],
+)
+
+py_test(
     name = "test_samo_unsigned_int_checker",
     srcs = glob(["**/*.py"]),
     deps = ["//samo_tidy/checker/test:test_checker_lib"],

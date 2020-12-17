@@ -48,7 +48,7 @@ class Summary:
             "Ignored Translation Units": limit_set_display(self.ignored_translation_units),
             "Skipped Commands": limit_set_display(self.skipped_commands),
             "Skipped Files": limit_set_display(self.skipped_filenames),
-            "Number of Violations": self.number_of_violations,
+            "Number of Violations": limit_set_display(self.number_of_violations),
         }
 
     def add_filename(self, file_path):
@@ -67,7 +67,7 @@ class Summary:
         self.skipped_filenames.add(os.path.basename(file_path))
 
     def add_number_of_violations(self, violations_tuple):
-        self.number_of_violations.add(violations_tuple)
+        self.number_of_violations.add(str(violations_tuple))
 
 
 the_summary = Summary()
