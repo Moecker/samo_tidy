@@ -1,4 +1,4 @@
-load("@rules_python//python:defs.bzl", "py_binary", "py_library")
+load("@rules_python//python:defs.bzl", "py_library")
 load("@pip//:requirements.bzl", "requirement")
 
 py_library(
@@ -8,14 +8,5 @@ py_library(
     deps = [
         requirement("clang"),
         requirement("termcolor"),
-    ],
-)
-
-py_binary(
-    name = "cindex_dump",
-    srcs = ["cindex_dump.py"],
-    visibility = ["//samo_tidy:__subpackages__"],
-    deps = [
-        "//samo_tidy/utils",
     ],
 )

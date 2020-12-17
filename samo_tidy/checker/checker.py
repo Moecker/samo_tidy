@@ -46,6 +46,7 @@ def extract_violation(token, rule_id, message):
 
 
 def apply_checker(translation_unit, checker):
+    # TODO Most checkers traverse the tu again and again, this can be speed up
     violations = []
     logging.info(
         colored("Analyzing translation unit '%s' with checker '%s'", "cyan"),

@@ -1,32 +1,14 @@
-from clang.cindex import Index
+from clang import cindex
 from optparse import OptionParser, OptionGroup
 from pprint import pprint, pformat
 import argparse
 import logging
 
+import samo_tidy.core.tu_parser as tu_parser
+import samo_tidy.core.compdb_parser as compdb_parser
 import samo_tidy.utils.clang_setup as clang_setup
 import samo_tidy.utils.utils as utils
-
-
-def get_diag_info(diag):
-    return {
-        "severity": diag.severity,
-        "location": diag.location,
-        "spelling": diag.spelling,
-        "ranges": diag.ranges,
-        "fixits": diag.fixits,
-    }
-
-
-def dump_node(node):
-    return "\n" + pformat(
-        {
-            "kind": node.kind,
-            "spelling": node.spelling,
-            "location": node.location,
-            "is_definition": node.is_definition(),
-        }
-    )
+import samo_tidy.dump.dump as dump
 
 
 def get_cursor_id(cursor, cursor_list=[]):
@@ -49,30 +31,39 @@ def get_info(node, max_depth=None, depth=0):
             children = None
         else:
             children = [get_info(c, max_depth, depth + 1) for c in node.get_children()]
+
     if node.location.file and "/usr" in node.location.file.name:
         return {
-            "location": node.location,
+            "location (ignored)": node.location,
         }
     else:
         return {
-            "id": get_cursor_id(node),
             "kind": node.kind,
             "usr": node.get_usr(),
             "spelling": node.spelling,
             "location": node.location,
-            "extent.start": node.extent.start,
-            "extent.end": node.extent.end,
             "is_definition": node.is_definition(),
-            "definition id": get_cursor_id(node.get_definition()),
             "->": children,
-            "number_of_tokens": len(list(node.get_tokens())),
             "tokens": ",".join([token.spelling for token in node.get_tokens()]),
         }
+
+
+def parse_from_compdb(args):
+    compdb = compdb_parser.load_compdb(args.compdb)
+    commands = compdb.getAllCompileCommands()
+    for command in commands:
+        if args.file in command.filename:
+            the_file = command.filename
+            the_arguments = list(command.arguments)
+            the_arguments = tu_parser.clean_args(the_arguments)
+            the_arguments = tu_parser.absolute_path_include(the_arguments, command.directory)
+    return the_file, the_arguments
 
 
 def parse_args():
     parser = argparse.ArgumentParser("CIndex Dump")
     parser.add_argument("--file", help="Filepath to be analyzed", required=True)
+    parser.add_argument("--compdb", help="Compilation Database for detailed build instructions")
     parser.add_argument(
         "--arguments",
         help="Arguments for parsing the file (such as -I flags)",
@@ -93,16 +84,27 @@ def parse_args():
 
 def main():
     args = parse_args()
-
     logging.basicConfig(level=logging.DEBUG)
     clang_setup.setup_clang()
 
-    index = Index.create()
-    tu = index.parse(args.file, args.arguments)
+    the_file = args.file
+    the_arguments = args.arguments
+
+    index = cindex.Index.create()
+
+    # Use compdb infos if available
+    if args.compdb:
+        the_file, the_arguments = parse_from_compdb(args)
+
+    # Only parse the file provided by the args
+    tu = index.parse(the_file, the_arguments)
     if not tu:
         logging.error("Unable to load input")
 
-    pprint(("diags", [get_diag_info(d) for d in tu.diagnostics]))
+    # Dump the tu content
+    pprint(("diags", [dump.get_diag_info(d) for d in tu.diagnostics]))
+
+    # Dump the diagnostics
     if not args.diagnostics_only:
         pprint(("nodes", get_info(tu.cursor, args.max_depth)))
 

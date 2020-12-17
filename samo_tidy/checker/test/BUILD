@@ -10,6 +10,7 @@ py_library(
     visibility = [":__subpackages__"],
     deps = [
         "//samo_tidy/checker",
+        "//samo_tidy/dump",
         "//samo_tidy/test:test_support",
         "//samo_tidy/utils",
     ],
