@@ -1,4 +1,5 @@
 # Samo Tidy
+![samo_tidy](ressources/samo_tidy.jpg)
 A python based static code analysis engine.
 
 Goal of this project is to provide a simple framework to write own static code analysis checks based on the Abstract Syntax Tree (AST) provided by the LLVM libclang tooling.
