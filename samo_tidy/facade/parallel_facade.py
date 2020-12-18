@@ -36,8 +36,9 @@ def single_run(args):
     logging.debug("Spawning worker with id %s", worker_id)
 
     clang_setup.setup_clang()
-    facade_lib.run_all(commands[start:end], files)
+    violations = facade_lib.run_all(commands[start:end], files)
 
+    # TODO Return the violations
     return [summary.get_summary()]
 
 

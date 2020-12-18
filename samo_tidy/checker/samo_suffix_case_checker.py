@@ -1,4 +1,5 @@
 from clang import cindex
+import logging
 
 import samo_tidy.checker.checker as checker
 
@@ -18,8 +19,10 @@ def token_based_rule(token):
 def fix(lines, violation):
     if violation.id != ID:
         return []
-    violated_line = list(lines[violation.line])
+    true_index = violation.line - 1
+    violated_line = list(lines[true_index])
+    logging.info(f"Fixing {violation}")
     violated_line[violation.column] = violated_line[violation.column].upper()
     fixed_line = "".join(violated_line)
-    lines[violation.line] = fixed_line
+    lines[true_index] = fixed_line
     return lines

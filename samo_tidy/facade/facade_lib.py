@@ -14,16 +14,25 @@ import samo_tidy.facade.config as config
 import samo_tidy.utils.clang_setup as clang_setup
 import samo_tidy.utils.logger as logger
 import samo_tidy.utils.utils as utils
+import samo_tidy.fixit.fixit as fixit
 
 
 def run_all(commands, files):
     translation_units = compdb_parser.parse_commands(commands, files)
-    apply_checkers_for_translation_units(translation_units)
+    return apply_checkers_for_translation_units(translation_units)
 
 
 def apply_checkers_for_translation_units(translation_units):
+    all_violations = []
     for translation_unit in translation_units:
-        run_for_translation_unit(translation_unit)
+        all_violations += run_for_translation_unit(translation_unit)
+
+    # TODO Integrate this better
+    import samo_tidy.checker.samo_suffix_case_checker as samo_suffix_case_checker
+
+    fixit.fix_violations(all_violations, samo_suffix_case_checker.fix)
+
+    return all_violations
 
 
 def run_for_translation_unit(translation_unit):
@@ -49,6 +58,7 @@ def run_for_translation_unit(translation_unit):
         summary.get_summary().add_number_of_violations((len(violations_per_tu), len(clang_warnings)))
     else:
         logging.warning("Skipping invalid translation unit")
+    return violations_per_tu
 
 
 def parse_args():
@@ -63,6 +73,7 @@ def parse_args():
         ),
         default=None,
     )
+    # TODO Implement this
     parser.add_argument(
         "--checkers",
         nargs="+",

@@ -13,7 +13,7 @@ class TestFixit(unittest.TestCase):
 
     def test_fixit_template_for_suffix(self):
         filename = test_support.create_tempfile(["std::uint8_t var = 1u;"])
-        violation = Violation("TIDY_SAMO_SUFFIX_CASE", "", filename, 0, 20)
+        violation = Violation("TIDY_SAMO_SUFFIX_CASE", "", filename, 1, 20)
 
         fixed_lines = fixit.fix_violation(violation, samo_suffix_case_checker.fix)
         self.assertTrue(fixed_lines)
@@ -21,7 +21,7 @@ class TestFixit(unittest.TestCase):
 
     def test_fixit_template_for_suffix(self):
         filename = test_support.create_tempfile(["std::uint8_t var = 1u;"])
-        violation = Violation("TIDY_SAMO_INVALID_ID", "", filename, 0, 20)
+        violation = Violation("TIDY_SAMO_INVALID_ID", "", filename, 1, 20)
 
         fixed_lines = fixit.fix_violation(violation, samo_suffix_case_checker.fix)
         self.assertFalse(fixed_lines)
@@ -31,8 +31,8 @@ class TestFixit(unittest.TestCase):
         filename = test_support.create_tempfile(
             ["std::uint8_t my_first_var = 1u;", "std::uint32_t my_second_var = 123u;"]
         )
-        violation1 = Violation("TIDY_SAMO_SUFFIX_CASE", "", filename, 0, 29)
-        violation2 = Violation("TIDY_SAMO_SUFFIX_CASE", "", filename, 1, 33)
+        violation1 = Violation("TIDY_SAMO_SUFFIX_CASE", "", filename, 1, 29)
+        violation2 = Violation("TIDY_SAMO_SUFFIX_CASE", "", filename, 2, 33)
         violations = [violation1, violation2]
 
         fixit.fix_violations(violations, samo_suffix_case_checker.fix)

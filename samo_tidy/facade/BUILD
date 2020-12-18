@@ -7,6 +7,7 @@ py_library(
     deps = [
         "//samo_tidy/checker",
         "//samo_tidy/core",
+        "//samo_tidy/fixit",
         "//samo_tidy/utils",
     ],
 )

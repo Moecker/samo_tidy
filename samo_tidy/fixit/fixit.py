@@ -4,6 +4,7 @@ def fix_violation(violation, fix_function):
         lines = the_file.readlines()
 
     fixed_lines = fix_function(lines, violation)
+
     if fixed_lines:
         with open(violation.file_path, "w") as the_file:
             the_file.writelines(fixed_lines)
