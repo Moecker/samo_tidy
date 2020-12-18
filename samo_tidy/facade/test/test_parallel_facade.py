@@ -16,13 +16,21 @@ class TestParallelFacade(test_facade_lib.TestFacadeLib):
 
     def test_apply_checkers_for_translation_units(self):
         result = facade_lib.run(
-            parallel_facade.run_parallel, self.multiple_compdb_root, test_support.get_default_log_level_for_tests(), 2
+            parallel_facade.run_parallel,
+            self.multiple_compdb_root,
+            test_support.get_default_log_level_for_tests(),
+            2,
+            None,
         )
         # TODO Expect results in summary module
 
     def test_apply_checkers_for_single_entry(self):
         result = facade_lib.run(
-            parallel_facade.run_parallel, self.single_compdb_root, test_support.get_default_log_level_for_tests(), 1
+            parallel_facade.run_parallel,
+            self.single_compdb_root,
+            test_support.get_default_log_level_for_tests(),
+            1,
+            None,
         )
 
 

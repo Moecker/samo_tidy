@@ -41,7 +41,7 @@ def single_run(args):
     return [summary.get_summary()]
 
 
-def run_parallel(compdb, log_level, workers, files=None):
+def run_parallel(compdb, log_level, workers, files):
     logging.info(colored("Using %d parallel worker(s)", attrs=["dark"]), workers)
     commands = compdb_parser.parse_compdb(compdb)
     wrapped_commands = wrap_commands(commands)

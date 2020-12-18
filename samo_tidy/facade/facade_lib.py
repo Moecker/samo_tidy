@@ -58,8 +58,17 @@ def parse_args():
         "--files",
         nargs="+",
         help=(
-            "List of files from compdb to be analyzed. Used substring search. Default: All files\n"
+            "List of files from compdb to be analyzed. Treated as substrings. Default: All files\n"
             "Example: '--files .cpp' would match every file which has '.cpp' in its name"
+        ),
+        default=None,
+    )
+    parser.add_argument(
+        "--checkers",
+        nargs="+",
+        help=(
+            "List of checkers to be applied. Treated as substrings. Default: All checkers\n"
+            "Example: '--checkers SAMO_TIDY_SUFFIX' would apply every checker which has 'SAMO_TIDY_SUFFIX' in its name"
         ),
         default=None,
     )
@@ -78,7 +87,7 @@ def parse_args():
     return args
 
 
-def run(runner, compdb_root_dir, log_level, workers, files=[]):
+def run(runner, compdb_root_dir, log_level, workers, files):
     compdb = compdb_parser.load_compdb(compdb_root_dir)
     the_summary = summary.get_summary()
     if compdb:

@@ -14,7 +14,7 @@ import samo_tidy.utils.utils as utils
 import samo_tidy.dump.dump as dump
 
 
-def get_info(node, max_depth=None, depth=0, details=False):
+def get_info(node, max_depth, depth, details):
     if max_depth is not None and depth >= max_depth:
         children = None
     else:
