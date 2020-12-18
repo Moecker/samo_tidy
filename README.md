@@ -44,31 +44,35 @@ Check the help output
 ````
 
 # Examples
-### Run on a example compilation database
-`bazel run //samo_tidy/facade:run -- --compdb <WORKSPACE>/samo_tidy/samo_tidy/test/data/single_file_compdb`
-`bazel run //samo_tidy/facade:run -- --compdb <WORKSPACE>/samo_tidy/samo_tidy/test/data/single_file_compdb --files source_id1.cpp source_id2.cpp`
+## Run on a example compilation database
+### Serial execution:
+Run on all files in a compdb: `bazel run //samo_tidy/facade:run -- --compdb <WORKSPACE>/samo_tidy/samo_tidy/test/data/single_file_compdb`
 
-`bazel run //samo_tidy/facade:run_parallel -- --compdb <WORKSPACE>/samo_tidy/samo_tidy/test/data/single_file_compdb`
+Only on selected files in a compdb: `bazel run //samo_tidy/facade:run -- --compdb <WORKSPACE>/samo_tidy/samo_tidy/test/data/single_file_compdb --files source_id1.cpp source_id2.cpp`
 
-### Dump AST for an example file
-`bazel run //samo_tidy/dump:cindex_dump -- --file <WORKSPACE>/samo_tidy/samo_tidy/test/data/source_id1.cpp`
-`bazel run //samo_tidy/dump:cindex_dump -- --file source_id1.cpp --compdb <WORKSPACE>/samo_tidy/samo_tidy/test/data/single_file_compdb`
+### Parallel execution:
+Run in parallel on all files in a compdb:: `bazel run //samo_tidy/facade:run_parallel -- --compdb <WORKSPACE>/samo_tidy/samo_tidy/test/data/single_file_compdb`
+
+## Dump AST for an example file
+Dump a file w/o arguments: `bazel run //samo_tidy/dump:cindex_dump -- --file <WORKSPACE>/samo_tidy/samo_tidy/test/data/source_id1.cpp`
+
+Dump a file with arguments from compdb:  `bazel run //samo_tidy/dump:cindex_dump -- --file source_id1.cpp --compdb <WORKSPACE>/samo_tidy/samo_tidy/test/data/single_file_compdb`
 
 # Tests
-### Execute all project tests
+## Execute all project tests
 `bazel test /...`
 
 # Installation
-### Mac
+## Mac
 Use XCode. The library can be found in `/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib`
 
 Or get LLVM libraries: `brew install llvm`. The library can be found in `/usr/local/opt/llvm/lib/libclang.dylib`
 
-### Linux
+## Linux
 Install via apt: `sudo apt-get install libclang-dev`. The library can be found `/usr/lib/llvm-10/lib/libclang-10.so`
 
 # Compilation Database
-### Create compilation database for example CMake project
+## Create compilation database for example CMake project
 ````
 cd cpp_sources
 mkdir build && cd build
