@@ -6,17 +6,39 @@ import samo_tidy.checker.samo_suffix_case_checker as samo_suffix_case_checker
 from samo_tidy.checker.violation import Violation
 
 
-class TestFacade(unittest.TestCase):
-    def test_dummy(self):
-        self.assertTrue(True)
+class TestFixit(unittest.TestCase):
+    def assert_fix(self, violation, fixed_line):
+        with open(violation.file_path) as the_file:
+            self.assertEqual(the_file.readlines()[violation.line].strip(), fixed_line)
 
-    def test_fixit(self):
+    def test_fixit_template_for_suffix(self):
         filename = test_support.create_tempfile(["std::uint8_t var = 1u;"])
         violation = Violation("TIDY_SAMO_SUFFIX_CASE", "", filename, 0, 20)
 
-        samo_suffix_case_checker.fixit(violation)
-        with open(violation.file_path) as the_file:
-            self.assertEqual(the_file.readlines()[violation.line].strip(), "std::uint8_t var = 1U;")
+        fixed_lines = fixit.fix_violation(violation, samo_suffix_case_checker.fix)
+        self.assertTrue(fixed_lines)
+        self.assert_fix(violation, "std::uint8_t var = 1U;")
+
+    def test_fixit_template_for_suffix(self):
+        filename = test_support.create_tempfile(["std::uint8_t var = 1u;"])
+        violation = Violation("TIDY_SAMO_INVALID_ID", "", filename, 0, 20)
+
+        fixed_lines = fixit.fix_violation(violation, samo_suffix_case_checker.fix)
+        self.assertFalse(fixed_lines)
+        self.assert_fix(violation, "std::uint8_t var = 1u;")
+
+    def test_fixit_template_for_suffix_multiple(self):
+        filename = test_support.create_tempfile(
+            ["std::uint8_t my_first_var = 1u;", "std::uint32_t my_second_var = 123u;"]
+        )
+        violation1 = Violation("TIDY_SAMO_SUFFIX_CASE", "", filename, 0, 29)
+        violation2 = Violation("TIDY_SAMO_SUFFIX_CASE", "", filename, 1, 33)
+        violations = [violation1, violation2]
+
+        fixit.fix_violations(violations, samo_suffix_case_checker.fix)
+
+        self.assert_fix(violation1, "std::uint8_t my_first_var = 1U;")
+        self.assert_fix(violation2, "std::uint32_t my_second_var = 123U;")
 
 
 if __name__ == "__main__":
