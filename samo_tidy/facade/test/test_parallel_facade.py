@@ -9,7 +9,7 @@ import samo_tidy.test.test_support as test_support
 
 class TestParallelFacade(test_facade_lib.TestFacadeLib):
     def test_default_arguments_valid_but_empty_db(self):
-        self.set_arguments(
+        test_support.set_arguments(
             ["--compdb", self.multiple_compdb_root, "--log_level", test_support.get_default_log_level_for_tests()]
         )
         self.assert_exit_code(parallel_facade.main, 0)

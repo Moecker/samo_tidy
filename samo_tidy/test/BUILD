@@ -17,6 +17,12 @@ filegroup(
 )
 
 filegroup(
+    name = "test_sources_compdb",
+    srcs = ["data/cpp_files_compdb/compile_commands.json"],
+    visibility = ["//samo_tidy:__subpackages__"],
+)
+
+filegroup(
     name = "test_compdb",
     srcs = ["data/single_file_compdb/compile_commands.json"],
     visibility = ["//samo_tidy:__subpackages__"],

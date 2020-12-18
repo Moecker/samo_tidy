@@ -16,10 +16,6 @@ class TestFacadeLib(unittest.TestCase):
         self.single_compdb_root = os.path.join(test_data_root, "single_file_compdb")
         self.multiple_compdb_root = os.path.join(test_data_root, "multiple_files_compdb")
 
-    def set_arguments(self, arguments):
-        sys.argv = [sys.argv[0]]
-        sys.argv.extend(arguments)
-
     def assert_exit_code(self, function, exit_code):
         with self.assertRaises(SystemExit) as context:
             function()

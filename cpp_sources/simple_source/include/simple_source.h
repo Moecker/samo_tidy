@@ -1,8 +1,15 @@
+#include <cstdint>
+
 int MyHeaderFunction();
-int MyHeaderFunction() { return 5; }
+int MyHeaderFunction()
+{
+    return 5;
+}
 std::uint8_t Function();
 
-void foo()
+int Foo();
+int Foo()
 {
     std::uint8_t a = 0u;
+    return a;
 }

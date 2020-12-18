@@ -10,16 +10,16 @@ import samo_tidy.test.test_support as test_support
 
 class TestFacade(test_facade_lib.TestFacadeLib):
     def test_missing_arguments(self):
-        self.set_arguments([])
+        test_support.set_arguments([])
         # Raised by arg-parser on missing mandatory fields
         self.assert_exit_code(facade.main, 2)
 
     def test_default_arguments_missing_db(self):
-        self.set_arguments(["--compdb", "/tmp", "--log_level", test_support.get_default_log_level_for_tests()])
+        test_support.set_arguments(["--compdb", "/tmp", "--log_level", test_support.get_default_log_level_for_tests()])
         self.assert_exit_code(facade.main, "Loading of compdb failed")
 
     def test_default_arguments_valid_but_empty_db(self):
-        self.set_arguments(
+        test_support.set_arguments(
             ["--compdb", self.single_compdb_root, "--log_level", test_support.get_default_log_level_for_tests()]
         )
         self.assert_exit_code(facade.main, 0)
@@ -27,7 +27,7 @@ class TestFacade(test_facade_lib.TestFacadeLib):
     @patch("platform.system")
     def test_windows_unsupported(self, mock_system):
         mock_system.return_value = "Windows"
-        self.set_arguments(["--compdb", "/tmp", "--log_level", test_support.get_default_log_level_for_tests()])
+        test_support.set_arguments(["--compdb", "/tmp", "--log_level", test_support.get_default_log_level_for_tests()])
         self.assert_exit_code(facade.main, "Windows is not supported")
 
     def test_apply_checkers_for_translation_units(self):

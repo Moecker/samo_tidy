@@ -4,7 +4,7 @@
 uint8_t Function()
 {
     int foo = MyHeaderFunction();
-    return 0u + foo;
+    return 0u + static_cast<uint8_t>(foo);
 }
 
 namespace a

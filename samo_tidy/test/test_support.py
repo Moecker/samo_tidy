@@ -1,12 +1,18 @@
 import logging
 import os
 import shutil
+import sys
 import tempfile
 import unittest
 
 import samo_tidy.utils.clang_setup as clang_setup
 import samo_tidy.utils.logger as logger
 import samo_tidy.utils.utils as utils
+
+
+def set_arguments(arguments):
+    sys.argv = [sys.argv[0]]
+    sys.argv.extend(arguments)
 
 
 def get_default_log_level_for_tests():
