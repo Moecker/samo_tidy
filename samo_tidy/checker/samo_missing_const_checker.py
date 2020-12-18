@@ -38,9 +38,10 @@ def translation_unit_based_rule(translation_unit):
         ):
             for child in token.get_children():
                 if child.kind == cindex.CursorKind.DECL_REF_EXPR:
-                    for reference in child.referenced.walk_preorder():
-                        if reference.kind == cindex.CursorKind.VAR_DECL:
-                            all_non_const_variable_declarations[hash(reference)] = None
+                    if child.referenced:
+                        for reference in child.referenced.walk_preorder():
+                            if reference.kind == cindex.CursorKind.VAR_DECL:
+                                all_non_const_variable_declarations[hash(reference)] = None
 
     # Create violations based on non-const read-only variables
     for _, the_used_token in all_non_const_variable_declarations.items():

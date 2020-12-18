@@ -23,15 +23,18 @@ class Violation:
         return (
             f"(Violation("
             f"id={self.id}, "
-            f"message={self.message:1.50}, "
-            f"file_name={str(self.file_name)}, "
+            f"message={self.message}, "
+            f"file_name={str(utils.make_link(self.file_path))}, "
             f"line={str(self.line)}, "
             f"column={str(self.column)}"
             f")"
         )
 
+    def limit_message(self):
+        return "{self.message: 1.50}"
+
     def file_path_link(self):
         return f"file://{self.file_path}"
 
     def style(self):
-        return f"{self.id}:{utils.make_link(self.file_name)}:{self.line}:{self.column}"
+        return f"{self.id}:{self.file_name}:{self.line}:{self.column}"

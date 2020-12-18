@@ -24,16 +24,15 @@ def load_compdb(directory):
 
 
 def parse_single_command(command):
+    absolute_file_name = os.path.join(command.directory, command.filename)
     logging.info(
         colored("Parsing file '%s'", "green"),
-        utils.make_link(command.filename),
+        utils.make_link(absolute_file_name),
     )
-    logging.debug("Using file name '%s'", utils.only_filename(command.filename))
+    logging.debug("Using file name (not absolute path) '%s'", utils.only_filename(command.filename))
     logging.debug("Using directory '%s'", command.directory)
     logging.debug("Using arguments '%s'", list(command.arguments))
-    translation_unit = tu_parser.create_translation_unit(
-        os.path.join(command.directory, command.filename), list(command.arguments), command.directory
-    )
+    translation_unit = tu_parser.create_translation_unit(absolute_file_name, list(command.arguments), command.directory)
     return translation_unit
 
 
