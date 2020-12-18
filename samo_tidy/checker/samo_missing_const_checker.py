@@ -4,10 +4,10 @@ import samo_tidy.checker.checker as checker
 
 
 def hash(token):
-    return f"{token.location.line}:{token.location.column}"
+    return f"{token.location.file.name}:{token.location.line}:{token.location.column}"
 
 
-def playground():
+def print_references():
     for token in translation_unit.cursor.walk_preorder():
         if token.kind == cindex.CursorKind.DECL_REF_EXPR:
             if token.referenced:
@@ -23,11 +23,14 @@ def playground():
 def translation_unit_based_rule(translation_unit):
     violations = []
 
-    all_var_decls = {}
+    # All non-const variable declaration are suspected to be read-only
+    all_non_const_variable_declarations = {}
     for token in translation_unit.cursor.walk_preorder():
         if token.kind == cindex.CursorKind.VAR_DECL:
-            all_var_decls[hash(token)] = token
+            if not token.type.is_const_qualified():
+                all_non_const_variable_declarations[hash(token)] = token
 
+    # Check which of those variable declarations are being used as a reference in a binary operation (:= written)
     for token in translation_unit.cursor.walk_preorder():
         if (
             token.kind == cindex.CursorKind.BINARY_OPERATOR
@@ -37,9 +40,10 @@ def translation_unit_based_rule(translation_unit):
                 if child.kind == cindex.CursorKind.DECL_REF_EXPR:
                     for reference in child.referenced.walk_preorder():
                         if reference.kind == cindex.CursorKind.VAR_DECL:
-                            all_var_decls[hash(reference)] = None
+                            all_non_const_variable_declarations[hash(reference)] = None
 
-    for _, the_used_token in all_var_decls.items():
+    # Create violations based on non-const read-only variables
+    for _, the_used_token in all_non_const_variable_declarations.items():
         if the_used_token:
             violation = checker.extract_violation(
                 the_used_token,

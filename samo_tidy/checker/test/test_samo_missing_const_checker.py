@@ -15,7 +15,14 @@ class TestSamoMissingConstChecker(test_checker_lib.TestCheckerLib):
         self.assertEqual(len(diagnostics), 0)
         self.assertEqual(len(violations), 0)
 
-    @unittest.skip
+    def test_check_for_missing_const_simple_const_var(self):
+        violations, diagnostics = self.apply_checker(
+            the_checker.translation_unit_based_rule,
+            test_support.create_tempfile(["int main()", "{", "const int a = 0;", "return a;", "}"]),
+        )
+        self.assertEqual(len(diagnostics), 0)
+        self.assertEqual(len(violations), 0)
+
     def test_check_for_missing_const_simple_var_def(self):
         violations, diagnostics = self.apply_checker(
             the_checker.translation_unit_based_rule,

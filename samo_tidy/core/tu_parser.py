@@ -4,7 +4,7 @@ import os
 
 import samo_tidy.utils.utils as utils
 
-DEFAULT_ACTIVE_ARGUMENTS = ["-Weverything"]
+DEFAULT_ACTIVE_ARGUMENTS = ["--std=c++11", "-Weverything"]
 DEFAULT_IGNORED_ARGUMENTS = [
     "-Wno-unused-command-line-argument",
     "-Wno-c++98-compat",
