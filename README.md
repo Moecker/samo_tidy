@@ -15,8 +15,12 @@ Check the help output
   -h, --help            show this help message and exit
   --compdb COMPDB       Directory which contains the 'compile_comands.json' file
   --files FILES [FILES ...]
-                        List of files from compdb to be analyzed. Used substring search. Default: All files
+                        List of files from compdb to be analyzed. Treated as substrings. Default: All files
                         Example: '--files .cpp' would match every file which has '.cpp' in its name
+  --checkers CHECKERS [CHECKERS ...]
+                        List of checkers to be applied. Treated as substrings. Default: All checkers
+                        Example: '--checkers SAMO_TIDY_SUFFIX' would apply every checker which has 'SAMO_TIDY_SUFFIX' in its name
+  --fix                 Apply fixes. Caution! This will change source files
   --log_file LOG_FILE   Full path to a log file
   --log_level LOG_LEVEL
                         Log level. One of {DEBUG, INFO, WARN, ERROR}. Default: INFO
@@ -34,7 +38,8 @@ Check the help output
   --arguments ARGUMENTS [ARGUMENTS ...]
                         Arguments for parsing the file (such as -I flags)
   --diagnostics_only    Only show diagnostics
-  --max-depth MAX_DEPTH
+  --details             Show more details per node
+  --max_depth MAX_DEPTH
                         Limit cursor expansion to depth
 ````
 

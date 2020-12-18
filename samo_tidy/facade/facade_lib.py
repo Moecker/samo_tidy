@@ -27,10 +27,9 @@ def apply_checkers_for_translation_units(translation_units):
     for translation_unit in translation_units:
         all_violations += run_for_translation_unit(translation_unit)
 
-    # TODO Integrate this better
-    import samo_tidy.checker.samo_suffix_case_checker as samo_suffix_case_checker
-
-    fixit.fix_violations(all_violations, samo_suffix_case_checker.fix)
+    # TODO Integrate this better and only if --fix option is active
+    # import samo_tidy.checker.samo_suffix_case_checker as samo_suffix_case_checker
+    # fixit.fix_violations(all_violations, samo_suffix_case_checker.fix)
 
     return all_violations
 
@@ -82,6 +81,10 @@ def parse_args():
             "Example: '--checkers SAMO_TIDY_SUFFIX' would apply every checker which has 'SAMO_TIDY_SUFFIX' in its name"
         ),
         default=None,
+    )
+    # TODO Implement this
+    parser.add_argument(
+        "--fix", help="Apply fixes. Caution! This will change source files", action="store_true", default=False
     )
     parser.add_argument("--log_file", help="Full path to a log file", default=None)
     parser.add_argument(

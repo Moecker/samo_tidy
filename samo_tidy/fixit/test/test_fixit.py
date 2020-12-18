@@ -9,7 +9,7 @@ from samo_tidy.checker.violation import Violation
 class TestFixit(unittest.TestCase):
     def assert_fix(self, violation, fixed_line):
         with open(violation.file_path) as the_file:
-            self.assertEqual(the_file.readlines()[violation.line].strip(), fixed_line)
+            self.assertEqual(the_file.readlines()[violation.line - 1].strip(), fixed_line)
 
     def test_fixit_template_for_suffix(self):
         filename = test_support.create_tempfile(["std::uint8_t var = 1u;"])
