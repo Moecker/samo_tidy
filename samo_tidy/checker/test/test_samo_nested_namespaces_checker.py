@@ -36,5 +36,8 @@ class TestSamoMultipleClassesChecker(test_checker_lib.TestCheckerLib):
         self.validate(filename, violations)
 
 
+# TODO Add test to check the violation message
+
+
 if __name__ == "__main__":
     test_support.default_test_setup()
