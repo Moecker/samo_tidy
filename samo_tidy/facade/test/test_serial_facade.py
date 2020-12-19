@@ -6,6 +6,7 @@ import samo_tidy.facade.serial_facade as serial_facade
 import samo_tidy.facade.facade_lib as facade_lib
 import samo_tidy.facade.test.test_facade_lib as test_facade_lib
 import samo_tidy.test.test_support as test_support
+import samo_tidy.core.summary as summary
 
 
 class TestFacade(test_facade_lib.TestFacadeLib):
@@ -33,8 +34,15 @@ class TestFacade(test_facade_lib.TestFacadeLib):
     def test_apply_checkers_for_translation_units(self):
         source_file = test_support.create_tempfile([""])
         tu = tu_parser.create_translation_unit(source_file)
-        facade_lib.apply_checkers_for_translation_units([tu], self.the_config)
-        # TODO Expect no call to the checkers as we have an invalid tu
+        all_violations = facade_lib.apply_checkers_for_translation_units([tu], self.the_config)
+        self.assertEqual([], all_violations)
+
+    @patch("samo_tidy.facade.facade_lib.apply_checkers_for_commands")
+    @patch("samo_tidy.core.compdb_parser.parse_compdb")
+    def test_run_serial(self, mock_parse_compdb, mock_apply_checkers_for_commands):
+        mock_parse_compdb.return_value = []
+        serial_facade.run_serial(self.the_config, None)
+        mock_apply_checkers_for_commands.assert_called_with(mock_parse_compdb.return_value, self.the_config)
 
 
 if __name__ == "__main__":

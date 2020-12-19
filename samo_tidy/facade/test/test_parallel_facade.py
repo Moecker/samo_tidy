@@ -17,11 +17,16 @@ class TestParallelFacade(test_facade_lib.TestFacadeLib):
     def test_apply_checkers_for_translation_units(self):
         self.the_config.compdb = self.multiple_compdb_root
         result = facade_lib.run(parallel_facade.run_parallel, self.the_config)
-        # TODO Expect results in summary module
+        self.assertEqual(result.analyzed_translation_units, set())
+        # From multiple_file_compdb/compile_commands.json
+        self.assertEqual(result.failed_translation_units, {"file1.cpp", "file2.cpp"})
 
     def test_apply_checkers_for_single_entry(self):
         self.the_config.compdb = self.single_compdb_root
         result = facade_lib.run(parallel_facade.run_parallel, self.the_config)
+        self.assertEqual(result.analyzed_translation_units, set())
+        # The file name in single_file_compdb/compile_commands.json is actually an empty string
+        self.assertEqual(result.failed_translation_units, {""})
 
 
 if __name__ == "__main__":

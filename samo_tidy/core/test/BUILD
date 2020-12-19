@@ -29,3 +29,12 @@ py_test(
         "//samo_tidy/core/test:test_core_lib",
     ],
 )
+
+py_test(
+    name = "test_summary",
+    srcs = glob(["**/*.py"]),
+    deps = [
+        "//samo_tidy/core",
+        "//samo_tidy/test:test_support",
+    ],
+)

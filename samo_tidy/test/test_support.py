@@ -17,7 +17,7 @@ def set_arguments(arguments):
 
 # Control the verbosity of the tests
 def get_default_log_level_for_tests():
-    return "critical"
+    return "debug"
 
 
 def default_test_setup():

@@ -3,6 +3,7 @@ import logging
 import os
 
 import samo_tidy.utils.utils as utils
+import samo_tidy.core.summary as summary
 
 DEFAULT_ACTIVE_ARGUMENTS = ["--std=c++14", "-Weverything"]
 DEFAULT_IGNORED_ARGUMENTS = [
@@ -52,4 +53,5 @@ def create_translation_unit(source_file, args=[], directory=None):
         logging.error(the_exception)
         logging.error("Failed to parse '%s'", utils.only_filename(source_file))
         logging.debug(the_exception, exc_info=True)
+        summary.get_summary().add_failed_translation_units(source_file)
         return None

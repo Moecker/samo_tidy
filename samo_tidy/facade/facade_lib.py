@@ -40,7 +40,7 @@ def apply_checkers_for_translation_unit(translation_unit, the_config):
     # TODO Do not differentiation between tu and token based checker
     if translation_unit:
         logging.info(colored("Applying checkers for '%s'", "magenta"), utils.only_filename(translation_unit.spelling))
-        summary.get_summary().add_translation_unit(translation_unit.spelling)
+        summary.get_summary().add_analyzed_translation_unit(translation_unit.spelling)
 
         # Apply the checker
         for the_checker in the_config.active_checkers:
