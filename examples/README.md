@@ -1,2 +1,2 @@
 # Content
-Example cpp sources and bazel compb generation targets
+Example cpp sources and bazel compdb generation targets

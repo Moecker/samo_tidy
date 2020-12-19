@@ -2,6 +2,7 @@ from pathlib import Path
 import collections
 import coverage
 import logging
+import os
 import sys
 import unittest
 
@@ -32,6 +33,14 @@ def invoke_coverage(*deps):
     cov.stop()
     cov.save()
     cov.report()
+
+    directory = os.path.join("/tmp", "coverage", target_name_of_label)
+    xml_report = os.path.join(directory, "coverage.xml")
+    html_report = os.path.join(directory, "index.html")
+    cov.xml_report(outfile=xml_report)
+    cov.html_report(directory=directory)
+    logging.info("Coverage XML report written to file://%s", xml_report)
+    logging.info("Coverage HTML report written to file://%s", html_report)
 
     results = Result(runs=result.testsRun, errors=len(result.errors), failures=len(result.failures))
     logging.info("Runs: %s, Errors %s, Failures: %s", results.runs, results.errors, results.failures)

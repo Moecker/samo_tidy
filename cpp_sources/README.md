@@ -1,2 +1,2 @@
 # Content
-Example cpp sources and CMake compb generation options
+Example cpp sources and CMake compdb generation options
