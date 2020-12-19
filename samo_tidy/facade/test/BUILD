@@ -1,7 +1,7 @@
 load("@rules_python//python:defs.bzl", "py_library", "py_test")
 
 py_test(
-    name = "test_facade",
+    name = "test_serial_facade",
     srcs = glob(["**/*.py"]),
     deps = [
         "//samo_tidy/facade/test:test_facade_lib",

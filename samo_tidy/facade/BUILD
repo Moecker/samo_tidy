@@ -15,7 +15,7 @@ py_library(
 py_binary(
     name = "run",
     srcs = glob(["**/*.py"]),
-    main = "facade.py",
+    main = "serial_facade.py",
     deps = [
         "//samo_tidy/facade",
     ],
