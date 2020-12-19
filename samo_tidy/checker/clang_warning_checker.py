@@ -9,8 +9,7 @@ ID_PREFIX = "TIDY_CLANG_"
 
 def check_for_clang_warnings(translation_unit):
     """Interprets clang diagnostics warnings (aka compiler warnings) as violations
-    The checker differs from the other ones as it operates on the translation unit directly
-    """
+    The checker differs from the other ones as it operates on the translation unit directly"""
     violations = []
     logging.info(
         colored("Analyzing translation unit '%s' with checker '%s'", "cyan"),

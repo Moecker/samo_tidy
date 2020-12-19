@@ -21,16 +21,6 @@ py_test(
 )
 
 py_test(
-    name = "test_parallel_parser",
-    srcs = glob(["**/*.py"]),
-    data = ["//samo_tidy/test:test_sources"],
-    deps = [
-        "//samo_tidy/core",
-        "//samo_tidy/core/test:test_core_lib",
-    ],
-)
-
-py_test(
     name = "test_summary",
     srcs = glob(["**/*.py"]),
     deps = [

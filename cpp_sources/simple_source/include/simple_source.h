@@ -10,6 +10,6 @@ std::uint8_t Function();
 int Foo();
 int Foo()
 {
-    std::uint8_t a = 0U;
+    std::uint8_t a = 0u;
     return a;
 }

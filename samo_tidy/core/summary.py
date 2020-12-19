@@ -2,14 +2,18 @@ import os
 
 
 def get_summary():
+    """Summars is being used as a singleton, returns the singleton instance.
+    Note that there will be a instance per process"""
     return the_summary
 
 
 def clear_summary():
+    """Clears summary, purpose is testing or multiprocessing"""
     the_summary = Summary()
 
 
 def limit_set_display(the_set):
+    """Beautify output"""
     MAX_DISPLAY = 10
     list_to_show = list(the_set)[0:MAX_DISPLAY]
     remaining = len(the_set) - MAX_DISPLAY
@@ -22,6 +26,7 @@ def limit_set_display(the_set):
 
 
 def merge(list_of_summaries):
+    """Merges multiple summaries, return the merged one"""
     result = Summary()
     for a_summary in list_of_summaries:
         result.analyzed_file_names.update(a_summary.analyzed_file_names)
@@ -46,13 +51,13 @@ class Summary:
 
     def present(self):
         return {
-            "Analyzed Files (success)": limit_set_display(self.analyzed_file_names),
-            "Analyzed Translation Units (success)": limit_set_display(self.analyzed_translation_units),
-            "Failed Translation Units (parse errors)": limit_set_display(self.failed_translation_units),
-            "Ignored Translation Units (external)": limit_set_display(self.ignored_translation_units),
-            "Skipped Commands (as desired)": limit_set_display(self.skipped_commands),
-            "Skipped Files (external)": limit_set_display(self.skipped_filenames),
-            "Number of Violations (per tu)": limit_set_display(self.number_of_violations),
+            "Analyzed Files": limit_set_display(self.analyzed_file_names),
+            "Analyzed Translation Units": limit_set_display(self.analyzed_translation_units),
+            "Failed Translation Units with parse errors": limit_set_display(self.failed_translation_units),
+            "Ignored External Translation Units": limit_set_display(self.ignored_translation_units),
+            "Skipped Commands from Files Filter": limit_set_display(self.skipped_commands),
+            "Skipped External Files": limit_set_display(self.skipped_filenames),
+            "Number of Violations per Translation Unit": limit_set_display(self.number_of_violations),
         }
 
     def add_analyzed_filename(self, file_path):

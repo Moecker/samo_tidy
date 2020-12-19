@@ -10,6 +10,8 @@ import samo_tidy.utils.utils as utils
 
 
 def load_compdb(directory):
+    """Loads compdb from directory, expects a compile_commands.json file here
+    Return the compdb on success, None on fail"""
     try:
         logging.info(
             colored("Opening compilation database '%s'", "green"),
@@ -24,6 +26,7 @@ def load_compdb(directory):
 
 
 def parse_single_command(command):
+    """Parses a command and returns a translation unit"""
     absolute_file_name = os.path.join(command.directory, command.filename)
     logging.info(
         colored("Parsing file '%s'", "green"),
@@ -37,6 +40,7 @@ def parse_single_command(command):
 
 
 def parse_compdb(compdb):
+    """Reads compdb and returns a list of commands"""
     commands = compdb.getAllCompileCommands()
     if not commands:
         err_msg = "Compilation Database invalid"
@@ -48,6 +52,7 @@ def parse_compdb(compdb):
 
 
 def parse_commands(commands, list_of_files=None):
+    """Parse commands and returns a list of translation units"""
     translation_units = []
     number_of_skipped_files = 0
 
@@ -68,20 +73,3 @@ def parse_commands(commands, list_of_files=None):
     if number_of_skipped_files > 0:
         logging.info("Skipped %d file(s)", number_of_skipped_files)
     return translation_units
-
-
-def clean_args(args):
-    # Some arguments cause problems - remove them
-    to_remove_idx = []
-    for idx, arg in enumerate(args):
-        if arg.startswith("-c"):
-            to_remove_idx.append(arg)
-            to_remove_idx.append(args[idx + 1])
-    for idx_to_remove in to_remove_idx:
-        args.remove(idx_to_remove)
-    return args
-
-
-def debug_tokens(translation_unit):
-    for token in translation_unit.cursor.walk_preorder():
-        logging.debug("Token kind: '%s'", token.kind)

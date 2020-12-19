@@ -10,6 +10,15 @@ py_test(
     ],
 )
 
+py_test(
+    name = "test_parallel",
+    srcs = glob(["**/*.py"]),
+    data = ["//samo_tidy/test:test_support"],
+    deps = [
+        "//samo_tidy/utils",
+    ],
+)
+
 pycoverage(
     name = "pycoverage",
     deps = [":test_utils"],

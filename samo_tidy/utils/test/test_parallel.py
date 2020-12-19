@@ -1,8 +1,6 @@
 import unittest
 import time
 
-import samo_tidy.core.parallel_parser as parallel_parser
-import samo_tidy.core.test.test_core_lib as test_core_lib
 import samo_tidy.test.test_support as test_support
 import samo_tidy.utils.utils as utils
 import samo_tidy.utils.parallel as parallel
@@ -18,7 +16,7 @@ def computation(args):
     return ret
 
 
-class TestParallelParser(test_core_lib.TestCoreLib):
+class TestParallel(unittest.TestCase):
     def setUp(self):
         super().setUp()
         self.the_list = [0, 1, 2, 3, 4, 5, 6, 7]
@@ -36,11 +34,6 @@ class TestParallelParser(test_core_lib.TestCoreLib):
     def test_dummy_parallel_1_worker(self):
         output = parallel.execute_parallel(self.the_list, 1, computation)
         self.assertEqual(len(output), 8)
-
-    def test_parallel_parse_compdb(self):
-        compdb = self.create_and_parse_comdb(["source_id1.cpp"])
-        translation_units = parallel_parser.parallel_parse_compdb(compdb)
-        self.assertEqual(len(translation_units), 1)
 
 
 if __name__ == "__main__":

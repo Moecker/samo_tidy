@@ -1,5 +1,5 @@
-import unittest
 import os
+import unittest
 
 import samo_tidy.checker.samo_missing_const_checker as the_checker
 import samo_tidy.checker.test.test_checker_lib as test_checker_lib
