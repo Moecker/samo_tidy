@@ -1,3 +1,5 @@
+import os
+
 import samo_tidy.checker.samo_multiple_classes_checker as samo_multiple_classes_checker
 import samo_tidy.checker.samo_nested_namespaces_checker as samo_nested_namespaces_checker
 import samo_tidy.checker.samo_suffix_case_checker as samo_suffix_case_checker
@@ -10,6 +12,10 @@ ALL_CHECKERS = [
     samo_nested_namespaces_checker.translation_unit_based_rule,
     samo_suffix_case_checker.token_based_rule,
     samo_unsigned_int_checker.token_based_rule,
+]
+
+ALL_FIXITS = [
+    samo_suffix_case_checker.fix,
 ]
 
 
@@ -29,3 +35,13 @@ class Config:
     @compdb.setter
     def compdb(self, value):
         self._compdb = value
+
+    def present(self):
+        return {
+            "Active checkers": [checker.__module__ for checker in self.active_checkers],
+            "Compdb path": os.path.join(self.compdb, "compile_commands.json"),
+            "File filter": self.files,
+            "Log level": self.log_level,
+            "Number of workers": self.workers,
+            "Apply fixes": self.fix,
+        }

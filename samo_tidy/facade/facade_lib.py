@@ -27,9 +27,8 @@ def apply_checkers_for_translation_units(translation_units, the_config):
     for translation_unit in translation_units:
         all_violations += apply_checkers_for_translation_unit(translation_unit, the_config)
 
-    # TODO Integrate this better and only if --fix option is active
-    # import samo_tidy.checker.samo_suffix_case_checker as samo_suffix_case_checker
-    # fixit.fix_violations(all_violations, samo_suffix_case_checker.fix)
+    if the_config.fix:
+        apply_fixes_for_translation_unit(all_violations, the_config)
 
     return all_violations
 
@@ -60,6 +59,12 @@ def apply_checkers_for_translation_unit(translation_unit, the_config):
     return violations_per_tu
 
 
+def apply_fixes_for_translation_unit(all_violations, the_config):
+    # Apply the fixes
+    for the_checker in config.ALL_FIXITS:
+        fixit.fix_violations(all_violations, the_checker)
+
+
 def parse_args():
     parser = argparse.ArgumentParser("Samo Tidy", formatter_class=RawTextHelpFormatter)
     parser.add_argument("--compdb", required=True, help="Directory which contains the 'compile_comands.json' file")
@@ -88,13 +93,15 @@ def parse_args():
     )
     parser.add_argument("--log_file", help="Full path to a log file", default=None)
     parser.add_argument(
-        "--log_level", help="Log level. One of {DEBUG, INFO, WARN, ERROR}. Default: INFO", default="info"
+        "--log_level", help="Log level. One of {DEBUG, INFO, WARN, ERROR, CRITICAL}. Default: INFO", default="info"
     )
     parser.add_argument(
         "--workers",
-        help="Number of workers for parallel execution. Default: Number of CPUs - 1",
+        help=f"Number of workers for parallel execution. Default: Number of CPUs which is {multiprocessing.cpu_count()}",
         type=int,
-        default=multiprocessing.cpu_count() - 1,
+        metavar=f"[1-{multiprocessing.cpu_count()}]",
+        choices=range(1, multiprocessing.cpu_count() + 1),
+        default=multiprocessing.cpu_count(),
     )
 
     args = parser.parse_args()
@@ -115,6 +122,7 @@ def run(runner, the_config):
 # Entry point for serial and parallel runner
 def main(runner):
     args = parse_args()
+    logger.setup_logger(args.log_level, args.log_file)
 
     the_config = config.Config(
         active_checkers=config.ALL_CHECKERS,
@@ -125,7 +133,7 @@ def main(runner):
         fix=args.fix,
     )
 
-    logger.setup_logger(args.log_level, args.log_file)
+    logging.critical(colored("CONFIG:\n" + pformat(the_config.present()), attrs=["dark"]))
     logging.critical(colored("Welcome. Lets run some static code analysis checks...", "magenta"))
 
     clang_setup.setup_clang()

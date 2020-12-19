@@ -3,6 +3,8 @@ import samo_tidy.utils.clang_setup as clang_setup
 import samo_tidy.utils.parallel as parallel
 import samo_tidy.utils.utils as utils
 
+# TODO Remove this file
+
 
 class TranslationUnitWrapper:
     def __init__(self):
