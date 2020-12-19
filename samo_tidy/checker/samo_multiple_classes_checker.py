@@ -13,7 +13,7 @@ def translation_unit_based_rule(translation_unit):
 
     for token in translation_unit.cursor.walk_preorder():
         if token.kind == cindex.CursorKind.CLASS_DECL:
-            if token.is_definition:
+            if token.is_definition():
                 if token.location.file.name == translation_unit.spelling:
                     print(token.spelling)
                     classes.append(token)

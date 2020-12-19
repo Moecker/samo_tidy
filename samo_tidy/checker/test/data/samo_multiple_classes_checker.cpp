@@ -1,4 +1,4 @@
-// FalsePositive class ExternClass;  // OK
+class ExternClass;  // OK
 
 class FirstClass  // TIDY_SAMO_MULTIPLE_CLASSES
 {
