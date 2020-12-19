@@ -15,8 +15,9 @@ def set_arguments(arguments):
     sys.argv.extend(arguments)
 
 
+# Control the verbosity of the tests
 def get_default_log_level_for_tests():
-    return "debug"
+    return "critical"
 
 
 def default_test_setup():

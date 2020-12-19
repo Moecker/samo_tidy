@@ -7,6 +7,7 @@ import unittest
 
 import samo_tidy.core.tu_parser as tu_parser
 import samo_tidy.facade.facade as facade
+import samo_tidy.facade.config as config
 import samo_tidy.test.test_support as test_support
 
 
@@ -15,6 +16,14 @@ class TestFacadeLib(unittest.TestCase):
         test_data_root = os.path.join(os.path.dirname(__file__), "../../test/data")
         self.single_compdb_root = os.path.join(test_data_root, "single_file_compdb")
         self.multiple_compdb_root = os.path.join(test_data_root, "multiple_files_compdb")
+        self.the_config = config.Config(
+            active_checkers=config.ALL_CHECKERS,
+            compdb=self.single_compdb_root,
+            files=None,
+            log_level=test_support.get_default_log_level_for_tests(),
+            workers=1,
+            fix=False,
+        )
 
     def assert_exit_code(self, function, exit_code):
         with self.assertRaises(SystemExit) as context:

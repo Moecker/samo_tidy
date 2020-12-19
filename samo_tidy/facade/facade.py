@@ -2,10 +2,10 @@ import samo_tidy.core.compdb_parser as compdb_parser
 import samo_tidy.core.summary as summary
 import samo_tidy.facade.facade_lib as facade_lib
 
-
-def run_serial(compdb, log_level, workers, files):
+# TODO Rename file into "serial_facade"
+def run_serial(the_config, compdb):
     commands = compdb_parser.parse_compdb(compdb)
-    facade_lib.run_all(commands, files)
+    facade_lib.apply_checkers_for_commands(commands, the_config)
     return summary.get_summary()
 
 

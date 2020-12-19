@@ -11,21 +11,21 @@ import samo_tidy.checker.clang_warning_checker as clang_warning_checker
 import samo_tidy.core.compdb_parser as compdb_parser
 import samo_tidy.core.summary as summary
 import samo_tidy.facade.config as config
+import samo_tidy.fixit.fixit as fixit
 import samo_tidy.utils.clang_setup as clang_setup
 import samo_tidy.utils.logger as logger
 import samo_tidy.utils.utils as utils
-import samo_tidy.fixit.fixit as fixit
 
 
-def run_all(commands, files):
-    translation_units = compdb_parser.parse_commands(commands, files)
-    return apply_checkers_for_translation_units(translation_units)
+def apply_checkers_for_commands(commands, the_config):
+    translation_units = compdb_parser.parse_commands(commands, the_config.files)
+    return apply_checkers_for_translation_units(translation_units, the_config)
 
 
-def apply_checkers_for_translation_units(translation_units):
+def apply_checkers_for_translation_units(translation_units, the_config):
     all_violations = []
     for translation_unit in translation_units:
-        all_violations += run_for_translation_unit(translation_unit)
+        all_violations += apply_checkers_for_translation_unit(translation_unit, the_config)
 
     # TODO Integrate this better and only if --fix option is active
     # import samo_tidy.checker.samo_suffix_case_checker as samo_suffix_case_checker
@@ -34,7 +34,7 @@ def apply_checkers_for_translation_units(translation_units):
     return all_violations
 
 
-def run_for_translation_unit(translation_unit):
+def apply_checkers_for_translation_unit(translation_unit, the_config):
     violations_per_tu = []
     # For each translation unit, apply the checkers
     # TODO Do not differentiation between tu and token based checker
@@ -43,7 +43,7 @@ def run_for_translation_unit(translation_unit):
         summary.get_summary().add_translation_unit(translation_unit.spelling)
 
         # Apply the checker
-        for the_checker in config.get_checker_registry():
+        for the_checker in the_config.active_checkers:
             violations_per_tu += checker.apply_checker(translation_unit, the_checker)
 
         # Always apply the clang warning checker
@@ -101,26 +101,36 @@ def parse_args():
     return args
 
 
-def run(runner, compdb_root_dir, log_level, workers, files):
-    compdb = compdb_parser.load_compdb(compdb_root_dir)
+def run(runner, the_config):
+    compdb = compdb_parser.load_compdb(the_config.compdb)
     the_summary = summary.get_summary()
     if compdb:
-        the_summary = runner(compdb, log_level, workers, files)
+        the_summary = runner(the_config, compdb)
     else:
         logging.error("Could not load compdb")
         sys.exit("Loading of compdb failed")
     return the_summary
 
 
+# Entry point for serial and parallel runner
 def main(runner):
     args = parse_args()
+
+    the_config = config.Config(
+        active_checkers=config.ALL_CHECKERS,
+        compdb=args.compdb,
+        files=args.files,
+        log_level=args.log_level,
+        workers=args.workers,
+        fix=args.fix,
+    )
 
     logger.setup_logger(args.log_level, args.log_file)
     logging.critical(colored("Welcome. Lets run some static code analysis checks...", "magenta"))
 
     clang_setup.setup_clang()
 
-    the_summary = run(runner, args.compdb, args.log_level, args.workers, args.files)
+    the_summary = run(runner, the_config)
 
     logging.critical(colored("SUMMARY:\n" + pformat(the_summary.present()), attrs=["dark"]))
 

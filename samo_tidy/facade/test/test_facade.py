@@ -33,7 +33,7 @@ class TestFacade(test_facade_lib.TestFacadeLib):
     def test_apply_checkers_for_translation_units(self):
         source_file = test_support.create_tempfile([""])
         tu = tu_parser.create_translation_unit(source_file)
-        facade_lib.apply_checkers_for_translation_units([tu])
+        facade_lib.apply_checkers_for_translation_units([tu], self.the_config)
         # TODO Expect no call to the checkers as we have an invalid tu
 
 

@@ -28,26 +28,29 @@ def wrap_commands(commands):
 
 def single_run(args):
     start, end, commands, function_args = args
-    files, log_level = function_args
+    the_config = function_args
 
     # TODO Respect the log_file attribute
-    logger.setup_logger(log_level)
+    logger.setup_logger(the_config.log_level)
     worker_id = multiprocessing.current_process()._identity[0]
     logging.debug("Spawning worker with id %s", worker_id)
 
     clang_setup.setup_clang()
-    violations = facade_lib.run_all(commands[start:end], files)
+    violations = facade_lib.apply_checkers_for_commands(commands[start:end], the_config)
 
     # TODO Return the violations
     return [summary.get_summary()]
 
 
-def run_parallel(compdb, log_level, workers, files):
-    logging.info(colored("Using %d parallel worker(s)", attrs=["dark"]), workers)
+def run_parallel(the_config, compdb):
+    logging.info(colored("Using %d parallel worker(s)", attrs=["dark"]), the_config.workers)
     commands = compdb_parser.parse_compdb(compdb)
     wrapped_commands = wrap_commands(commands)
+
     logging.info(colored("Starting parallel tasks", attrs=["dark"]))
-    all_summaries = parallel.execute_parallel(wrapped_commands, workers, single_run, function_args=(files, log_level))
+    all_summaries = parallel.execute_parallel(
+        wrapped_commands, the_config.workers, single_run, function_args=(the_config)
+    )
     return summary.merge(all_summaries)
 
 
