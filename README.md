@@ -81,6 +81,6 @@ make
 ````
 
 # Ressources
-* https://github.com/llvm-mirror/clang/tree/master/bindings/python
+* https://github.com/llvm/llvm-project/tree/main/clang/bindings/python
 * https://github.com/pybee/seasnake/tree/master/seasnake
 * https://github.com/jbcoe/clang_cpp_code_model
