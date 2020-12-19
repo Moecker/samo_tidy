@@ -64,6 +64,7 @@ def apply_checkers_for_translation_unit(translation_unit, the_config):
 def apply_fixes_for_translation_unit(all_violations, the_config):
     """Apply the fixes"""
     for the_checker in config.ALL_FIXITS:
+        logging.info(colored("Applying fixes for '%s'", "magenta"), the_checker.__module__)
         fixit.fix_violations(all_violations, the_checker)
 
 
