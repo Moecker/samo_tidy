@@ -18,11 +18,13 @@ import samo_tidy.utils.utils as utils
 
 
 def apply_checkers_for_commands(commands, the_config):
+    """For each extarcted command from comdb, apply checkers"""
     translation_units = compdb_parser.parse_commands(commands, the_config.files)
     return apply_checkers_for_translation_units(translation_units, the_config)
 
 
 def apply_checkers_for_translation_units(translation_units, the_config):
+    """For each tu apply the checkers and optionally the fixes"""
     all_violations = []
     for translation_unit in translation_units:
         all_violations += apply_checkers_for_translation_unit(translation_unit, the_config)
@@ -34,14 +36,14 @@ def apply_checkers_for_translation_units(translation_units, the_config):
 
 
 def apply_checkers_for_translation_unit(translation_unit, the_config):
-    violations_per_tu = []
-    # For each translation unit, apply the checkers
+    """For each translation unit, apply the checkers"""
     # TODO Do not differentiation between tu and token based checker
+    violations_per_tu = []
     if translation_unit:
         logging.info(colored("Applying checkers for '%s'", "magenta"), utils.only_filename(translation_unit.spelling))
         summary.get_summary().add_analyzed_translation_unit(translation_unit.spelling)
 
-        # Apply the checker
+        # Apply the checkers
         for the_checker in the_config.active_checkers:
             violations_per_tu += checker.apply_checker(translation_unit, the_checker)
 
@@ -60,12 +62,35 @@ def apply_checkers_for_translation_unit(translation_unit, the_config):
 
 
 def apply_fixes_for_translation_unit(all_violations, the_config):
-    # Apply the fixes
+    """Apply the fixes"""
     for the_checker in config.ALL_FIXITS:
         fixit.fix_violations(all_violations, the_checker)
 
 
+def run(runner, the_config):
+    compdb = compdb_parser.load_compdb(the_config.compdb)
+    the_summary = summary.get_summary()
+    if compdb:
+        the_summary = runner(the_config, compdb)
+    else:
+        logging.error("Could not load compdb")
+        sys.exit("Loading of compdb failed")
+    return the_summary
+
+
+def extract_checkers_from_string(checkers_string_list):
+    active_checkers = []
+    if not checkers_string_list:
+        return config.ALL_CHECKERS
+    for checker_string in checkers_string_list:
+        for available_checker in config.ALL_CHECKERS:
+            if checker_string.lower() in available_checker.__module__.lower():
+                active_checkers.append(available_checker)
+    return active_checkers
+
+
 def parse_args():
+    """Define and parse arguments"""
     parser = argparse.ArgumentParser("Samo Tidy", formatter_class=RawTextHelpFormatter)
     parser.add_argument("--compdb", required=True, help="Directory which contains the 'compile_comands.json' file")
     parser.add_argument(
@@ -77,7 +102,6 @@ def parse_args():
         ),
         default=None,
     )
-    # TODO Implement this
     parser.add_argument(
         "--checkers",
         nargs="+",
@@ -87,7 +111,6 @@ def parse_args():
         ),
         default=None,
     )
-    # TODO Implement this
     parser.add_argument(
         "--fix", help="Apply fixes. Caution! This will change source files", action="store_true", default=False
     )
@@ -108,24 +131,15 @@ def parse_args():
     return args
 
 
-def run(runner, the_config):
-    compdb = compdb_parser.load_compdb(the_config.compdb)
-    the_summary = summary.get_summary()
-    if compdb:
-        the_summary = runner(the_config, compdb)
-    else:
-        logging.error("Could not load compdb")
-        sys.exit("Loading of compdb failed")
-    return the_summary
-
-
-# Entry point for serial and parallel runner
 def main(runner):
+    """Entry point for serial and parallel runner"""
     args = parse_args()
     logger.setup_logger(args.log_level, args.log_file)
 
+    active_checkers = extract_checkers_from_string(args.checkers)
+
     the_config = config.Config(
-        active_checkers=config.ALL_CHECKERS,
+        active_checkers=active_checkers,
         compdb=args.compdb,
         files=args.files,
         log_level=args.log_level,

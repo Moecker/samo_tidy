@@ -8,13 +8,27 @@ import samo_tidy.test.test_support as test_support
 
 class TestSamoMultipleClassesChecker(test_checker_lib.TestCheckerLib):
     def test_positiv(self):
-        filename = test_support.create_tempfile(["namespace a { namespace b { } }"])
+        filename = test_support.create_tempfile(["namespace a {", "namespace b {", "}", "}"])
         violations, diagnostics = self.apply_checker(
             the_checker.translation_unit_based_rule,
             filename,
         )
         self.assertEqual(len(diagnostics), 0)
         self.assertEqual(len(violations), 1)
+        self.assertEqual(violations[0].id, "TIDY_SAMO_NESTED_NAMESPACE")
+        self.assertEqual(violations[0].line, 2)
+        self.assertEqual(violations[0].column, 11)
+
+    def test_three_levels(self):
+        filename = test_support.create_tempfile(["namespace a { namespace b { namespace c { } } }"])
+        violations, diagnostics = self.apply_checker(
+            the_checker.translation_unit_based_rule,
+            filename,
+        )
+        self.assertEqual(len(diagnostics), 0)
+        self.assertEqual(len(violations), 2)
+        self.assertIn("2 nested", violations[0].message)
+        self.assertIn("3 nested", violations[1].message)
 
     def test_negativ(self):
         violations, diagnostics = self.apply_checker(
@@ -31,12 +45,7 @@ class TestSamoMultipleClassesChecker(test_checker_lib.TestCheckerLib):
             filename,
         )
         self.assertEqual(len(diagnostics), 0)
-        # Can be omitted as already checked in 'validate'
-        self.assertEqual(len(violations), self.get_number_of_expected_violations(filename))
         self.validate(filename, violations)
-
-
-# TODO Add test to check the violation message
 
 
 if __name__ == "__main__":

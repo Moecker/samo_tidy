@@ -12,7 +12,11 @@ class TestSamoMultipleClassesChecker(test_checker_lib.TestCheckerLib):
             test_support.create_tempfile(["class A", "{", "};", "class B", "{", "};"]),
         )
         self.assertEqual(len(diagnostics), 0)
-        self.assertEqual(len(violations), 1)
+        self.assertEqual(len(violations), 2)
+        self.assertEqual(violations[0].id, "TIDY_SAMO_MULTIPLE_CLASSES")
+        self.assertIn("Multiple of 2 classes", violations[0].message)
+        self.assertIn("'A'", violations[0].message)
+        self.assertIn("'B'", violations[1].message)
 
     def test_check_for_multiple_classes_only_usage(self):
         violations, diagnostics = self.apply_checker(

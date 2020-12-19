@@ -2,12 +2,16 @@ from clang import cindex
 
 import samo_tidy.checker.checker as checker
 
+ID = "TIDY_SAMO_MISSING_CONST"
+
 
 def hash(token):
+    """Hash the location to be used in the set"""
     return f"{token.location.file.name}:{token.location.line}:{token.location.column}"
 
 
 def print_references():
+    """Debug output"""
     for token in translation_unit.cursor.walk_preorder():
         if token.kind == cindex.CursorKind.DECL_REF_EXPR:
             if token.referenced:
@@ -21,6 +25,8 @@ def print_references():
 
 
 def translation_unit_based_rule(translation_unit):
+    """Find variable declrations which could be made const"""
+    # TODO Check usage of a variable when handing over as a non-const reference
     violations = []
 
     # All non-const variable declaration are suspected to be read-only
@@ -48,7 +54,7 @@ def translation_unit_based_rule(translation_unit):
         if the_used_token:
             violation = checker.extract_violation(
                 the_used_token,
-                "TIDY_SAMO_MISSING_CONST",
+                ID,
                 f"The variable {the_used_token.spelling} could be made const",
             )
             if violation:

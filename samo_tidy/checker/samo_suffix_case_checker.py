@@ -5,8 +5,9 @@ import samo_tidy.checker.checker as checker
 
 ID = "TIDY_SAMO_SUFFIX_CASE"
 
-# Checks whether an upper case "u" is provided for unsigned int literals
+
 def token_based_rule(token):
+    """Checks whether an upper case "u" is provided for unsigned int literals"""
     violation = None
     if token.kind == cindex.CursorKind.INTEGER_LITERAL:
         if token.type.spelling == "unsigned int":
@@ -17,6 +18,7 @@ def token_based_rule(token):
 
 
 def fix(lines, violation):
+    """Apply fix for lower case 'u'"""
     if violation.id != ID:
         return []
     true_index = violation.line - 1

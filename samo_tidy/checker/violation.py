@@ -2,6 +2,8 @@ import samo_tidy.utils.utils as utils
 
 
 class Violation:
+    """Represents a violation"""
+
     def __init__(self, id, message, file_path, line, column):
         self.id = id
         self.message = message
