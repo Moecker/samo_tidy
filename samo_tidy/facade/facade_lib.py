@@ -69,6 +69,7 @@ def apply_fixes_for_translation_unit(all_violations, the_config):
 
 
 def run(runner, the_config):
+    """Main common runner for serial and parallel"""
     compdb = compdb_parser.load_compdb(the_config.compdb)
     the_summary = summary.get_summary()
     if compdb:
@@ -80,6 +81,7 @@ def run(runner, the_config):
 
 
 def extract_checkers_from_string(checkers_string_list):
+    """Returns a list of checker modules based on its name"""
     active_checkers = []
     if not checkers_string_list:
         return config.ALL_CHECKERS

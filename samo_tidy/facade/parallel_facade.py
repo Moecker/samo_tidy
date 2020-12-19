@@ -12,6 +12,8 @@ import samo_tidy.utils.utils as utils
 
 
 class CompileCommandsWrapper:
+    """Wrapper for a compile commands class from clang binding, as it originally has pointers"""
+
     def __init__(self, filename, directory, arguments):
         self.filename = filename
         self.directory = directory
@@ -19,6 +21,7 @@ class CompileCommandsWrapper:
 
 
 def wrap_commands(commands):
+    """Wraps a list of clang commands into own type"""
     wrapped_commands = []
     for command in commands:
         wrapped_command = CompileCommandsWrapper(command.filename, command.directory, list(command.arguments))
@@ -27,6 +30,7 @@ def wrap_commands(commands):
 
 
 def single_run(args):
+    """Execution of a single worker, similar to the serial runner"""
     start, end, commands, function_args = args
     the_config = function_args
 
@@ -43,6 +47,8 @@ def single_run(args):
 
 
 def run_parallel(the_config, compdb):
+    """Main entry point for parallel runner. Divides and conquer to every worker"""
+    # TODO Actually, the commands are distributed evenly to every worker.
     logging.info(colored("Using %d parallel worker(s)", attrs=["dark"]), the_config.workers)
     commands = compdb_parser.parse_compdb(compdb)
     wrapped_commands = wrap_commands(commands)
