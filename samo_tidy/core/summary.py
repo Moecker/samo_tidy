@@ -1,4 +1,5 @@
 import os
+from collections import defaultdict
 
 
 def get_summary():
@@ -22,7 +23,7 @@ def limit_set_display(the_set):
             f"and {remaining} more",
         )
 
-    return ", ".join(list_to_show)
+    return list_to_show
 
 
 def merge(list_of_summaries):
@@ -45,7 +46,7 @@ class Summary:
         self.analyzed_translation_units = set()
         self.failed_translation_units = set()
         self.ignored_translation_units = set()
-        self.number_of_violations = set()
+        self.number_of_violations = defaultdict(set)
         self.skipped_commands = set()
         self.skipped_filenames = set()
 
@@ -57,7 +58,9 @@ class Summary:
             "Ignored External Translation Units": limit_set_display(self.ignored_translation_units),
             "Skipped Commands from Files Filter": limit_set_display(self.skipped_commands),
             "Skipped External Files": limit_set_display(self.skipped_filenames),
-            "Number of Violations per Translation Unit": limit_set_display(self.number_of_violations),
+            "Number of Violations": limit_set_display(
+                [f"{key}:{entry}" for key, entry in self.number_of_violations.items()]
+            ),
         }
 
     def add_analyzed_filename(self, file_path):
@@ -75,8 +78,8 @@ class Summary:
     def add_skipped_filename(self, file_path):
         self.skipped_filenames.add(os.path.basename(file_path))
 
-    def add_number_of_violations(self, violations_tuple):
-        self.number_of_violations.add(str(violations_tuple))
+    def add_number_of_violations(self, tu_name, violations_tuple):
+        self.number_of_violations[os.path.basename(tu_name)] = violations_tuple
 
     def add_failed_translation_units(self, file_path):
         self.failed_translation_units.add(os.path.basename(file_path))

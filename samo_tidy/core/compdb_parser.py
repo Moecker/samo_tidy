@@ -51,6 +51,11 @@ def parse_compdb(compdb):
     return commands
 
 
+def is_included_in_files_filter(command, list_of_files):
+    """True if file filter applies"""
+    return any(word in utils.only_filename(command.filename) for word in list_of_files)
+
+
 def parse_commands(commands, list_of_files=None):
     """Parse commands and returns a list of translation units"""
     translation_units = []
@@ -58,7 +63,7 @@ def parse_commands(commands, list_of_files=None):
 
     for command in commands:
         # Check if we want to parse the translation unit based on the file name pattern
-        if list_of_files and not any(word in command.filename for word in list_of_files):
+        if list_of_files and not is_included_in_files_filter(command, list_of_files):
             summary.get_summary().add_skipped_commands(command.filename)
             continue
         if utils.shall_ignore_based_on_file_name(command.filename):

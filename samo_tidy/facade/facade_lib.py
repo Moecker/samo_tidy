@@ -55,7 +55,9 @@ def apply_checkers_for_translation_unit(translation_unit, the_config):
             len(violations_per_tu),
             len(clang_warnings),
         )
-        summary.get_summary().add_number_of_violations((len(violations_per_tu), len(clang_warnings)))
+        summary.get_summary().add_number_of_violations(
+            translation_unit.spelling, (len(violations_per_tu), len(clang_warnings))
+        )
     else:
         logging.warning("Skipping invalid translation unit")
     return violations_per_tu
