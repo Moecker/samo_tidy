@@ -15,7 +15,6 @@ def translation_unit_based_rule(translation_unit):
         if token.kind == cindex.CursorKind.CLASS_DECL:
             if token.is_definition():
                 if token.location.file.name == translation_unit.spelling:
-                    print(token.spelling)
                     classes.append(token)
 
     if len(classes) > ALLOWED_NUMBER_OF_CLASSES_PER_FILE:
