@@ -46,17 +46,17 @@ Check the help output
 # Examples
 ## Run on a example compilation database
 ### Serial execution:
-Run on all files in a compdb: `bazel run //samo_tidy/facade:run -- --compdb <WORKSPACE>/samo_tidy/samo_tidy/test/data/single_file_compdb`
+Run on all files in a compdb: `bazel run //samo_tidy/facade:run -- --compdb /path/to/compdb/directory`
 
-Only on selected files in a compdb: `bazel run //samo_tidy/facade:run -- --compdb <WORKSPACE>/samo_tidy/samo_tidy/test/data/single_file_compdb --files source_id1.cpp source_id2.cpp`
+Only on selected files in a compdb: `bazel run //samo_tidy/facade:run -- --compdb /path/to/compdb/directory --files source_id1.cpp source_id2.cpp`
 
 ### Parallel execution:
-Run in parallel on all files in a compdb:: `bazel run //samo_tidy/facade:run_parallel -- --compdb <WORKSPACE>/samo_tidy/samo_tidy/test/data/single_file_compdb`
+Run in parallel on all files in a compdb:: `bazel run //samo_tidy/facade:run_parallel -- --compdb /path/to/compdb/directory`
 
 ## Dump AST for an example file
 Dump a file w/o arguments: `bazel run //samo_tidy/dump:cindex_dump -- --file <WORKSPACE>/samo_tidy/samo_tidy/test/data/source_id1.cpp`
 
-Dump a file with arguments from compdb:  `bazel run //samo_tidy/dump:cindex_dump -- --file source_id1.cpp --compdb <WORKSPACE>/samo_tidy/samo_tidy/test/data/single_file_compdb`
+Dump a file with arguments from compdb:  `bazel run //samo_tidy/dump:cindex_dump -- --file source_id1.cpp --compdb /path/to/compdb/directory`
 
 # Tests
 ## Execute all project tests
@@ -80,7 +80,9 @@ cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
 make
 ````
 
+# Clang-Tidy
+Run clang-tidy: `bazel run //tools/clang_tidy:run-clang-tidy -- -p /path/to/compdb/directory -checks "*"`
+
 # Ressources
 * https://github.com/llvm/llvm-project/tree/main/clang/bindings/python
-* https://github.com/pybee/seasnake/tree/master/seasnake
-* https://github.com/jbcoe/clang_cpp_code_model
+* https://github.com/llvm/llvm-project/blob/main/clang-tools-extra/clang-tidy
