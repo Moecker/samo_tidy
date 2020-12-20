@@ -55,7 +55,7 @@ def translation_unit_based_rule(translation_unit):
             violation = checker.extract_violation(
                 the_used_token,
                 ID,
-                f"The variable {the_used_token.spelling} could be made const",
+                f"The variable '{the_used_token.spelling}' could be made const",
             )
             if violation:
                 violations.append(violation)

@@ -45,7 +45,7 @@ def parse_compdb(compdb):
     if not commands:
         err_msg = "Compilation Database invalid"
         logging.error(err_msg)
-        sys.exit(err_msg)
+        sys.exit("ERROR: %s", err_msg)
 
     logging.info(colored("Found %d command(s) in compilation database", attrs=["dark"]), len(commands))
     return commands

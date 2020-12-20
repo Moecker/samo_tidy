@@ -21,6 +21,7 @@ class TestFacadeLib(unittest.TestCase):
             compdb=self.single_compdb_root,
             files=None,
             log_level=test_support.get_default_log_level_for_tests(),
+            log_file="/tmp/log.txt",
             workers=1,
             fix=False,
         )

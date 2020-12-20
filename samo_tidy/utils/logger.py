@@ -1,4 +1,5 @@
 import logging
+import sys
 
 
 class LoggerAdapter(logging.LoggerAdapter):
@@ -11,14 +12,15 @@ class LoggerAdapter(logging.LoggerAdapter):
 
 
 def setup_logger(loglevel, log_file=None):
+    """Sets up the global, default logger instance which can be used via logging"""
     the_logger = logging.getLogger()
 
     if loglevel:
         level = getattr(logging, loglevel.upper(), None)
         if not isinstance(level, int):
-            raise ValueError("Invalid log level: %s" % loglevel)
+            sys.exit("ERROR: Invalid log level: %s" % loglevel)
     else:
-        level = logging.INFO
+        sys.exit("ERROR: No log level defined")
 
     formater = logging.Formatter("[%(levelname)-10.10s] %(message)s")
     the_logger.setLevel(level)

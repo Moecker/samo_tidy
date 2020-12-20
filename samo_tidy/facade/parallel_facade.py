@@ -34,9 +34,9 @@ def single_run(args):
     start, end, commands, function_args = args
     the_config = function_args
 
-    # TODO Respect the log_file attribute
-    logger.setup_logger(the_config.log_level)
     worker_id = multiprocessing.current_process()._identity[0]
+
+    logger.setup_logger(the_config.log_level, f"{the_config.log_file}_{worker_id}")
     logging.debug("Spawning worker with id %s", worker_id)
 
     clang_setup.setup_clang()
@@ -49,6 +49,8 @@ def single_run(args):
 def run_parallel(the_config, compdb):
     """Main entry point for parallel runner. Divides and conquer to every worker"""
     # TODO Actually, the commands are distributed evenly to every worker.
+    #      This prevents to distribute load equally, if i.e. one worker has largers files
+    #      than the other ones.
     logging.info(colored("Using %d parallel worker(s)", attrs=["dark"]), the_config.workers)
     commands = compdb_parser.parse_compdb(compdb)
     wrapped_commands = wrap_commands(commands)
@@ -61,6 +63,7 @@ def run_parallel(the_config, compdb):
 
 
 def main():
+    """Binary main entry point"""
     facade_lib.main(run_parallel)
 
 

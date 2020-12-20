@@ -76,7 +76,7 @@ def run(runner, the_config):
         the_summary = runner(the_config, compdb)
     else:
         logging.error("Could not load compdb")
-        sys.exit("Loading of compdb failed")
+        sys.exit("ERROR: Loading of compdb failed")
     return the_summary
 
 
@@ -137,18 +137,18 @@ def parse_args():
 def main(runner):
     """Entry point for serial and parallel runner"""
     args = parse_args()
-    logger.setup_logger(args.log_level, args.log_file)
-
-    active_checkers = extract_checkers_from_string(args.checkers)
 
     the_config = config.Config(
-        active_checkers=active_checkers,
+        active_checkers=extract_checkers_from_string(args.checkers),
         compdb=args.compdb,
         files=args.files,
         log_level=args.log_level,
+        log_file=args.log_file,
         workers=args.workers,
         fix=args.fix,
     )
+
+    logger.setup_logger(the_config.log_level, the_config.log_file)
 
     logging.critical(colored("CONFIG:\n" + pformat(the_config.present()), attrs=["dark"]))
     logging.critical(colored("Welcome. Lets run some static code analysis checks...", "magenta"))

@@ -1,9 +1,9 @@
 import unittest
 
+from samo_tidy.checker.violation import Violation
+import samo_tidy.checker.samo_suffix_case_checker as samo_suffix_case_checker
 import samo_tidy.fixit.fixit as fixit
 import samo_tidy.test.test_support as test_support
-import samo_tidy.checker.samo_suffix_case_checker as samo_suffix_case_checker
-from samo_tidy.checker.violation import Violation
 
 
 class TestFixit(unittest.TestCase):

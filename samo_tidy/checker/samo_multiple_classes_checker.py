@@ -23,7 +23,7 @@ def translation_unit_based_rule(translation_unit):
             violation = checker.extract_violation(
                 the_class_token,
                 ID,
-                f"Multiple of {len(classes)} classes '{the_class_token.spelling}' in one translation unit",
+                f"Multiple of {len(classes)} classes 'class {the_class_token.spelling}' in one translation unit",
             )
             if violation:
                 violations.append(violation)

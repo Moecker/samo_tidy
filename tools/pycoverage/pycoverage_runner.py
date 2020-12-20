@@ -10,6 +10,7 @@ Result = collections.namedtuple("Result", "runs errors failures")
 
 
 def invoke_coverage(*deps):
+    """Employs coverage API to measure code coverage for all targets given in deps"""
     cov = coverage.Coverage(branch=True, omit="*/external/*")
 
     cov.start()
@@ -34,6 +35,7 @@ def invoke_coverage(*deps):
     cov.save()
     cov.report()
 
+    # TODO Do not hardcode the output location
     directory = os.path.join("/tmp", "coverage", target_name_of_label)
     xml_report = os.path.join(directory, "coverage.xml")
     html_report = os.path.join(directory, "index.html")

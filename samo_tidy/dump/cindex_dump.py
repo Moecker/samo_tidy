@@ -1,20 +1,21 @@
 from clang import cindex
 from optparse import OptionParser, OptionGroup
 from pprint import pprint, pformat
+from termcolor import colored
 import argparse
 import logging
 import os
 import sys
-from termcolor import colored
 
-import samo_tidy.core.tu_parser as tu_parser
 import samo_tidy.core.compdb_parser as compdb_parser
+import samo_tidy.core.tu_parser as tu_parser
+import samo_tidy.dump.dump as dump
 import samo_tidy.utils.clang_setup as clang_setup
 import samo_tidy.utils.utils as utils
-import samo_tidy.dump.dump as dump
 
 
 def get_info(node, max_depth, depth, details):
+    """Recursive call to get_info to obtain node properties returned as a dict"""
     if max_depth is not None and depth >= max_depth:
         children = None
     else:
@@ -44,6 +45,7 @@ def get_info(node, max_depth, depth, details):
 
 
 def parse_from_compdb(compdb, file_to_parse):
+    """Extracts the absolute file path of the file to parse and its arguments from compdb"""
     absolute_filepath = None
     file_arguments = []
 
@@ -57,11 +59,12 @@ def parse_from_compdb(compdb, file_to_parse):
                 file_arguments = tu_parser.clean_args(file_arguments)
                 file_arguments = tu_parser.absolute_path_include(file_arguments, command.directory)
     else:
-        sys.exit("Failed to load compdb")
+        sys.exit("ERROR: Failed to load compdb")
     return absolute_filepath, file_arguments
 
 
 def parse_args():
+    """Parse args and returns args dict"""
     parser = argparse.ArgumentParser("CIndex Dump")
     parser.add_argument("--file", help="Filepath to be analyzed", required=True)
     parser.add_argument("--compdb", help="Compilation Database for detailed build instructions")
@@ -85,6 +88,7 @@ def parse_args():
 
 
 def main():
+    """Binary main entry point"""
     args = parse_args()
     logging.basicConfig(level=logging.DEBUG)
     clang_setup.setup_clang()
@@ -98,13 +102,13 @@ def main():
     if args.compdb:
         the_file, the_arguments = parse_from_compdb(args.compdb, args.file)
         if the_file == None:
-            sys.exit(f"File '{args.file}'' not found in compdb")
+            sys.exit(f"ERROR: File '{args.file}'' not found in compdb")
 
     # Only parse the file provided by the args
     logging.info("Parsing %s with %s", the_file, the_arguments)
     translation_unit = tu_parser.create_translation_unit(the_file, the_arguments)
     if not translation_unit:
-        sys.exit(f"Unable to load input for file '{the_file}'")
+        sys.exit(f"ERROR: Unable to load input for file '{the_file}'")
 
     # Dump the tu content
     if not args.diagnostics_only:

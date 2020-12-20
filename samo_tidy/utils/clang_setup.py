@@ -6,8 +6,9 @@ import sys
 
 
 def setup_clang():
-    # The cindex.Config class is of global state.
-    # TODO When executing test in parallel - for instance - we run into problems.
+    """Sets up thee cindex.Config class which is of global state."""
+    # TODO When executing test in parallel - for instance - we run into (unknown) problems.
+    #      This results in flaky tests
     cindex.Config.loaded = False
     if platform.system() == "Linux":
         lib_location_file = "/usr/lib/llvm-10/lib/libclang-10.so"
@@ -18,6 +19,6 @@ def setup_clang():
         logging.info(colored("Searching libclang path in '%s'", attrs=["dark"]), lib_location_path)
         cindex.Config.set_library_path(lib_location_path)
     elif platform.system() == "Windows":
-        sys.exit("Windows is not supported")
+        sys.exit("ERROR: Windows is not supported")
     else:
-        sys.exit("Unknown OS")
+        sys.exit("ERROR: Unknown OS")
