@@ -1,5 +1,6 @@
 import os
 
+import samo_tidy.checker.samo_class_file_name_checker.samo_class_file_name_checker as samo_class_file_name_checker
 import samo_tidy.checker.samo_missing_const_checker as samo_missing_const_checker
 import samo_tidy.checker.samo_multiple_classes_checker as samo_multiple_classes_checker
 import samo_tidy.checker.samo_nested_namespaces_checker as samo_nested_namespaces_checker
@@ -7,6 +8,7 @@ import samo_tidy.checker.samo_suffix_case_checker as samo_suffix_case_checker
 import samo_tidy.checker.samo_unsigned_int_checker as samo_unsigned_int_checker
 
 ALL_CHECKERS = [
+    samo_class_file_name_checker.translation_unit_based_rule,
     samo_missing_const_checker.translation_unit_based_rule,
     samo_multiple_classes_checker.translation_unit_based_rule,
     samo_nested_namespaces_checker.translation_unit_based_rule,

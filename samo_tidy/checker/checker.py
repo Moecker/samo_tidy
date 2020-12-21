@@ -7,6 +7,8 @@ import samo_tidy.checker.violation as violations
 import samo_tidy.core.summary as summary
 import samo_tidy.utils.utils as utils
 
+# TODO Refactor all checkers into own subdirectories
+
 
 def debug_token_contains(token):
     for child_token in token.get_tokens():

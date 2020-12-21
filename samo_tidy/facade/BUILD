@@ -6,6 +6,7 @@ py_library(
     visibility = ["//samo_tidy/facade/test:__pkg__"],
     deps = [
         "//samo_tidy/checker",
+        "//samo_tidy/checker/samo_class_file_name_checker",
         "//samo_tidy/core",
         "//samo_tidy/fixit",
         "//samo_tidy/utils",
