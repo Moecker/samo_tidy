@@ -86,10 +86,16 @@ echo "INFO: Creating new checker test BUILD file '${CHECKER_BUILD_TEST_FILE_LOCA
 cp "${DIR}/templates/py_test.BUILD" "${CHECKER_BUILD_TEST_FILE_LOCATION}"
 
 function replace {
-    sed -i '' "s/@TIDY_NAME/${NAME_OF_CHECKER}/g" "${1}"
-    sed -i '' "s/@TIDY_ID/${NAME_UPPER_CASE}/g" "${1}"
-    sed -i '' "s/@TIDY_CAMEL_CASE/${NAME_CAMEL_CASE}/g" "${1}"
-    sed -i '' "s/@TIDY_MESSAGE/Violation of ${NAME_UPPER_CASE}/g" "${1}"
+    ARG=""
+    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+      ARG="-e"
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+      ARG=""
+    fi
+    sed -i "${ARG}" "s/@TIDY_NAME/${NAME_OF_CHECKER}/g" "${1}"
+    sed -i "${ARG}" "s/@TIDY_ID/${NAME_UPPER_CASE}/g" "${1}"
+    sed -i "${ARG}" "s/@TIDY_CAMEL_CASE/${NAME_CAMEL_CASE}/g" "${1}"
+    sed -i "${ARG}" "s/@TIDY_MESSAGE/Violation of ${NAME_UPPER_CASE}/g" "${1}"
 }
 
 replace "${CHECKER_FILE_LOCATION}"
