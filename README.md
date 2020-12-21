@@ -9,9 +9,11 @@ The tool takes a compilation database (`compile_commands.json`) which can be gen
 
 # Usage (Samo Tidy)
 Check the help output
-`bazel run //samo_tidy/facade:run -- --help`
-
-````
+```
+bazel run //samo_tidy/facade:run -- --help
+```
+Results in
+```
   -h, --help            show this help message and exit
   --compdb COMPDB       Directory which contains the 'compile_comands.json' file
   --files FILES [FILES ...]
@@ -23,15 +25,17 @@ Check the help output
   --fix                 Apply fixes. Caution! This will change source files
   --log_file LOG_FILE   Full path to a log file
   --log_level LOG_LEVEL
-                        Log level. One of {DEBUG, INFO, WARN, ERROR}. Default: INFO
-  --workers WORKERS     Number of workers for parallel execution. Default: Number of CPUs - 1
-````
+                        Log level. One of {DEBUG, INFO, WARN, ERROR, CRITICAL}. Default: INFO
+  --workers [1-12]      Number of workers for parallel execution. Default: Number of CPUs which is 12
+```
 
 # Usage (CIndex Dump)
 Check the help output
-` bazel run //samo_tidy/dump:cindex_dump -- --help`
-
-````
+```
+bazel run //samo_tidy/dump:cindex_dump -- --help
+```
+Results in
+```
   -h, --help            show this help message and exit
   --file FILE           Filepath to be analyzed
   --compdb COMPDB       Compilation Database for detailed build instructions
@@ -41,26 +45,43 @@ Check the help output
   --details             Show more details per node
   --max_depth MAX_DEPTH
                         Limit cursor expansion to depth
-````
+```
 
 # Examples
 ## Run on a example compilation database
 ### Serial execution:
-Run on all files in a compdb: `bazel run //samo_tidy/facade:run -- --compdb /path/to/compdb/directory`
+Run on all files in a compdb
+```
+bazel run //samo_tidy/facade:run -- --compdb /path/to/compdb/directory
+```
 
-Only on selected files in a compdb: `bazel run //samo_tidy/facade:run -- --compdb /path/to/compdb/directory --files source_id1.cpp source_id2.cpp`
+Only on selected files in a compdb
+```
+bazel run //samo_tidy/facade:run -- --compdb /path/to/compdb/directory --files source_id1.cpp source_id2.cpp
+```
 
 ### Parallel execution:
-Run in parallel on all files in a compdb:: `bazel run //samo_tidy/facade:run_parallel -- --compdb /path/to/compdb/directory`
+Run in parallel on all files in a compdb:
+```
+bazel run //samo_tidy/facade:run_parallel -- --compdb /path/to/compdb/directory
+```
 
 ## Dump AST for an example file
-Dump a file w/o arguments: `bazel run //samo_tidy/dump:cindex_dump -- --file <WORKSPACE>/samo_tidy/samo_tidy/test/data/source_id1.cpp`
+Dump a file w/o arguments
+```
+bazel run //samo_tidy/dump:cindex_dump -- --file <WORKSPACE>/samo_tidy/samo_tidy/test/data/source_id1.cpp
+```
 
-Dump a file with arguments from compdb:  `bazel run //samo_tidy/dump:cindex_dump -- --file source_id1.cpp --compdb /path/to/compdb/directory`
+Dump a file with arguments from compdb
+```
+bazel run //samo_tidy/dump:cindex_dump -- --file source_id1.cpp --compdb /path/to/compdb/directory
+```
 
 # Tests
 ## Execute all project tests
-`bazel test /...`
+```
+bazel test /...
+```
 
 # Installation
 ## Mac
@@ -73,15 +94,18 @@ Install via apt: `sudo apt-get install libclang-dev`. The library can be found `
 
 # Compilation Database
 ## Create compilation database for example CMake project
-````
+```
 cd cpp_sources
 mkdir build && cd build
 cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
 make
-````
+```
 
 # Clang-Tidy
-Run clang-tidy: `bazel run //tools/clang_tidy:run-clang-tidy -- -p /path/to/compdb/directory -checks "*"`
+Run clang-tidy
+```
+bazel run //tools/clang_tidy:run-clang-tidy -- -p /path/to/compdb/directory -header-filter=".*"
+```
 
 # Ressources
 * https://github.com/llvm/llvm-project/tree/main/clang/bindings/python
