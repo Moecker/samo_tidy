@@ -1,0 +1,3 @@
+class Token  // TIDY_SAMO_CLASS_FILE_NAME_CHECKERg
+{
+};
