@@ -1,10 +1,10 @@
 import os
 
+import samo_tidy.checker.samo_missing_const_checker as samo_missing_const_checker
 import samo_tidy.checker.samo_multiple_classes_checker as samo_multiple_classes_checker
 import samo_tidy.checker.samo_nested_namespaces_checker as samo_nested_namespaces_checker
 import samo_tidy.checker.samo_suffix_case_checker as samo_suffix_case_checker
 import samo_tidy.checker.samo_unsigned_int_checker as samo_unsigned_int_checker
-import samo_tidy.checker.samo_missing_const_checker as samo_missing_const_checker
 
 ALL_CHECKERS = [
     samo_missing_const_checker.translation_unit_based_rule,
