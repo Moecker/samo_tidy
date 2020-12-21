@@ -16,8 +16,8 @@ def translation_unit_based_rule(translation_unit):
     violations = []
     for token in translation_unit.cursor.walk_preorder():
         violation = checker.extract_violation(token, ID, f"{MSG} for {translation_unit.spelling}")
-    if violation:
-        violations.append(violation)
+        if violation:
+            violations.append(violation)
     return violations
 
 

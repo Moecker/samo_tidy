@@ -7,7 +7,7 @@ py_library(
         "//samo_tidy/checker/test:test_sources",
         "//samo_tidy/test:test_sources",
     ],
-    visibility = [":__subpackages__"],
+    visibility = ["//samo_tidy/checker:__subpackages__"],
     deps = [
         "//samo_tidy/checker",
         "//samo_tidy/dump",
