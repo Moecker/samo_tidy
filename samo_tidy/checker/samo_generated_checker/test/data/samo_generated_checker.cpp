@@ -1,1 +1,0 @@
-class Token;  // TIDY_SAMO_GENERATED_CHECKER
