@@ -13,5 +13,6 @@ py_library(
         requirement("clang"),
         requirement("termcolor"),
         "//samo_tidy/core",
+        "//samo_tidy/dump",
     ],
 )
