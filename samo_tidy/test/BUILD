@@ -33,3 +33,11 @@ filegroup(
     srcs = ["data/multiple_files_compdb/compile_commands.json"],
     visibility = ["//samo_tidy:__subpackages__"],
 )
+
+# This is a lazy test which calls the facade on a working local setup.
+# Deactivate or adapt to your needs.
+sh_test(
+    name = "test_run",
+    srcs = ["test_run.sh"],
+    tags = ["manual"],
+)
