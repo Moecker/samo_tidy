@@ -2,10 +2,10 @@ load("@rules_python//python:defs.bzl", "py_library")
 load("@pip//:requirements.bzl", "requirement")
 
 py_library(
-    name = "samo_class_file_name_checker",
+    name = "samo_class_name_checker",
     srcs = glob(["**/*.py"]),
     visibility = [
-        "//samo_tidy/checker/samo_class_file_name_checker/test:__pkg__",
+        "//samo_tidy/checker:__subpackages__",
         "//samo_tidy/facade:__pkg__",
         "//samo_tidy/fixit:__pkg__",
     ],

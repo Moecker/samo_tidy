@@ -1,12 +1,16 @@
 import os
 import unittest
 
-import samo_tidy.checker.samo_multiple_classes_checker as the_checker
+import samo_tidy.checker.samo_multiple_classes_checker.samo_multiple_classes_checker as the_checker
 import samo_tidy.checker.test.test_checker_lib as test_checker_lib
 import samo_tidy.test.test_support as test_support
 
 
 class TestSamoMultipleClassesChecker(test_checker_lib.TestCheckerLib):
+    def setUp(self):
+        super().setUp()
+        self.checker_test_files = os.path.join(os.path.dirname(__file__), "data")
+
     def test_check_for_multiple_classes_positiv(self):
         violations, diagnostics = self.apply_checker(
             the_checker.translation_unit_based_rule,

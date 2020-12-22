@@ -7,5 +7,8 @@ py_library(
         "//samo_tidy/facade:__pkg__",
         "//samo_tidy/fixit/test:__pkg__",
     ],
-    deps = ["//samo_tidy/checker"],
+    deps = [
+        "//samo_tidy/checker",
+        "//samo_tidy/checker:checkers",
+    ],
 )

@@ -4,7 +4,7 @@ from os.path import splitext, basename
 
 import samo_tidy.checker.checker as checker
 
-ID = "SAMO_CLASS_FILE_NAME_CHECKER"
+ID = "SAMO_CLASS_NAME_CHECKER"
 MSG = "File name should be named as the class it contains"
 
 

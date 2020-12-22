@@ -7,8 +7,6 @@ import samo_tidy.checker.violation as violations
 import samo_tidy.core.summary as summary
 import samo_tidy.utils.utils as utils
 
-# TODO Refactor all checkers into own subdirectories
-
 
 def debug_token_contains(token):
     for child_token in token.get_tokens():
@@ -23,7 +21,6 @@ def present_violation(violation):
     # The actual log out which can be mechanically read
     logging.warning(colored(violation, "blue"))
     logging.error(colored(violation.style(), "yellow"))
-    # TODO logging.info(colored(violation.file_path_link(), "green"))
 
 
 def extract_violation(token, rule_id, message):
@@ -47,14 +44,18 @@ def extract_violation(token, rule_id, message):
     return violation
 
 
-def apply_checker(translation_unit, checker):
-    # TODO Most checkers traverse the tu again and again, this can be speed up
-    violations = []
+def log_progress_for_checker(translation_unit, name):
     logging.info(
         colored("Analyzing translation unit '%s' with checker '%s'", "cyan"),
         utils.only_filename(translation_unit.spelling),
-        checker.__module__,
+        name.split(".")[-1],
     )
+
+
+def apply_checker(translation_unit, checker):
+    # TODO Most checkers traverse the tu again and again, this can be speed up
+    violations = []
+    log_progress_for_checker(translation_unit, checker.__module__)
 
     # Only check non-external translation units
     if utils.shall_ignore_based_on_file_name(translation_unit.spelling):

@@ -5,7 +5,7 @@ py_library(
     name = "samo_generated_checker",
     srcs = glob(["**/*.py"]),
     visibility = [
-        "//samo_tidy/checker/samo_generated_checker/test:__pkg__",
+        "//samo_tidy/checker:__subpackages__",
         "//samo_tidy/facade:__pkg__",
         "//samo_tidy/fixit:__pkg__",
     ],

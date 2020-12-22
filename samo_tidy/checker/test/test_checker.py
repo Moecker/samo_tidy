@@ -1,7 +1,7 @@
 import unittest
 
 import samo_tidy.checker.checker as checker
-import samo_tidy.checker.samo_suffix_case_checker as samo_suffix_case_checker
+import samo_tidy.checker.samo_suffix_case_checker.samo_suffix_case_checker as samo_suffix_case_checker
 import samo_tidy.checker.test.test_checker_lib as test_checker_lib
 import samo_tidy.test.test_support as test_support
 

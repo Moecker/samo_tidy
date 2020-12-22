@@ -2,7 +2,7 @@ load("@rules_python//python:defs.bzl", "py_library")
 load("@pip//:requirements.bzl", "requirement")
 
 py_library(
-    name = "@TIDY_NAME",
+    name = "samo_suffix_case_checker",
     srcs = glob(["**/*.py"]),
     visibility = [
         "//samo_tidy/checker:__subpackages__",

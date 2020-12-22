@@ -1,12 +1,16 @@
 import os
 import unittest
 
-import samo_tidy.checker.samo_suffix_case_checker as the_checker
+import samo_tidy.checker.samo_suffix_case_checker.samo_suffix_case_checker as the_checker
 import samo_tidy.checker.test.test_checker_lib as test_checker_lib
 import samo_tidy.test.test_support as test_support
 
 
 class TestSamoSuffixCaseChecker(test_checker_lib.TestCheckerLib):
+    def setUp(self):
+        super().setUp()
+        self.checker_test_files = os.path.join(os.path.dirname(__file__), "data")
+
     def test_check_for_ints_id1(self):
         violations, diagnostics = self.apply_checker(
             the_checker.token_based_rule, self.get_source_file_path("source_id1.cpp")

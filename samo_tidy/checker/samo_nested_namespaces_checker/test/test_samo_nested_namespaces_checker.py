@@ -1,12 +1,16 @@
 import os
 import unittest
 
-import samo_tidy.checker.samo_nested_namespaces_checker as the_checker
+import samo_tidy.checker.samo_nested_namespaces_checker.samo_nested_namespaces_checker as the_checker
 import samo_tidy.checker.test.test_checker_lib as test_checker_lib
 import samo_tidy.test.test_support as test_support
 
 
 class TestSamoMultipleClassesChecker(test_checker_lib.TestCheckerLib):
+    def setUp(self):
+        super().setUp()
+        self.checker_test_files = os.path.join(os.path.dirname(__file__), "data")
+
     def test_positiv(self):
         filename = test_support.create_tempfile(["namespace a {", "namespace b {", "}", "}"])
         violations, diagnostics = self.apply_checker(

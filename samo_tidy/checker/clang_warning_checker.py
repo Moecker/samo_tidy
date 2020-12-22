@@ -11,11 +11,7 @@ def check_for_clang_warnings(translation_unit):
     """Interprets clang diagnostics warnings (aka compiler warnings) as violations
     The checker differs from the other ones as it operates on the translation unit directly"""
     violations = []
-    logging.info(
-        colored("Analyzing translation unit '%s' with checker '%s'", "cyan"),
-        utils.only_filename(translation_unit.spelling),
-        __name__,
-    )
+    checker.log_progress_for_checker(translation_unit, __name__)
 
     for diagnostic in translation_unit.diagnostics:
         if diagnostic.option and diagnostic.location.file:

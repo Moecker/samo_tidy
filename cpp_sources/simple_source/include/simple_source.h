@@ -4,16 +4,16 @@
 #include <cstdint>
 
 int MyHeaderFunction();
-int MyHeaderFunction()
+inline int MyHeaderFunction()
 {
     return 5;
 }
 std::uint8_t Function();
 
 int Foo();
-int Foo()
+inline int Foo()
 {
-    std::uint8_t a = 0u;
+    std::uint8_t a = 0U;
     return a;
 }
 
