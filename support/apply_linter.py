@@ -86,6 +86,20 @@ def apply_removing_duplicates(lines, file_path):
         pass
 
 
+def apply_sort_function(lines, file_path):
+    functions = defaultdict(tuple)
+    start = len(lines)
+    functionname = ""
+    for i, line in enumerate(lines):
+        if line.startswith("def "):
+            functionname = line
+            start = i
+        if start < i:
+            end = i
+            functions[functionname] = (start + 1, end - 1)
+    print(functions)
+
+
 def loop(file_paths, apply_function):
     for file_path in file_paths:
         lines = read_lines(file_path)
@@ -94,10 +108,12 @@ def loop(file_paths, apply_function):
 
 def main():
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    file_paths = recursive_glob(rootdir="..", suffix=".py")
+    file_paths = recursive_glob(rootdir="samo_tidy/fixit", suffix=".py")
+    print(f"Using files {file_paths}")
 
     loop(file_paths, apply_sorting_includes)
     loop(file_paths, apply_removing_duplicates)
+    loop(file_paths, apply_sort_function)
 
 
 if __name__ == "__main__":
