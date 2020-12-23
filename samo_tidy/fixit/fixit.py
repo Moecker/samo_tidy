@@ -1,3 +1,4 @@
+import importlib
 import logging
 
 
@@ -45,6 +46,9 @@ def fix_violation_line(violation, fix_function):
 
 def fix_per_line(lines, violation, fix_function):
     """Apply fix function for lines"""
+    checker_module = importlib.import_module(fix_function.__module__)
+    if violation.id != checker_module.ID:
+        return []
     true_index = violation.line - 1
     violated_line = list(lines[true_index])
     logging.info(f"Fixing {violation}")
