@@ -2,6 +2,7 @@ import unittest
 
 from samo_tidy.checker.violation import Violation
 import samo_tidy.checker.samo_suffix_case_checker.samo_suffix_case_checker as samo_suffix_case_checker
+import samo_tidy.checker.samo_missing_const_checker.samo_missing_const_checker as samo_missing_const_checker
 import samo_tidy.fixit.fixit as fixit
 import samo_tidy.test.test_support as test_support
 
@@ -9,7 +10,10 @@ import samo_tidy.test.test_support as test_support
 class TestFixit(unittest.TestCase):
     def assert_fix(self, violation, fixed_line):
         with open(violation.file_path) as the_file:
-            self.assertEqual(the_file.readlines()[violation.line - 1].strip(), fixed_line)
+            the_lines = the_file.readlines()
+            desired_line_number = violation.line - 1
+            self.assertGreater(len(the_lines), desired_line_number)
+            self.assertEqual(the_lines[violation.line - 1].strip(), fixed_line)
 
     def test_fixit_template_for_suffix(self):
         filename = test_support.create_tempfile(["std::uint8_t var = 1u;"])
@@ -39,6 +43,23 @@ class TestFixit(unittest.TestCase):
 
         self.assert_fix(violation1, "std::uint8_t my_first_var = 1U;")
         self.assert_fix(violation2, "std::uint32_t my_second_var = 123U;")
+
+    def test_fix_violation_line_for_missing_const(self):
+        filename = test_support.create_tempfile(["int var = 0;"])
+        violation = Violation("", "", filename, 1, 5)
+
+        fixit.fix_violation_line(violation, samo_missing_const_checker.fix_rule)
+        self.assert_fix(violation, "int const var = 0;")
+
+    def test_fix_violation_line(self):
+        filename = test_support.create_tempfile(["std::uint8_t var = 1u;"])
+        violation = Violation("TIDY_FOO", "", filename, 1, 0)
+
+        def fix_function(violated_line, violation):
+            return ["Deleted Line"]
+
+        fixit.fix_violation_line(violation, fix_function)
+        self.assert_fix(violation, "Deleted Line")
 
 
 if __name__ == "__main__":

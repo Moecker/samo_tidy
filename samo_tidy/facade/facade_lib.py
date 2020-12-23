@@ -69,6 +69,10 @@ def apply_fixes_for_translation_unit(all_violations, the_config):
         logging.info(colored("Applying fixes for '%s'", "magenta"), the_checker.__module__)
         fixit.fix_violations(all_violations, the_checker)
 
+    for the_checker in config.ALL_FIXITS_LINE:
+        logging.info(colored("Applying fixes for '%s'", "magenta"), the_checker.__module__)
+        fixit.fix_violations_line(all_violations, the_checker)
+
 
 def run(runner, the_config):
     """Main common runner for serial and parallel"""

@@ -19,6 +19,10 @@ ALL_FIXITS = [
     samo_suffix_case_checker.fix,
 ]
 
+ALL_FIXITS_LINE = [
+    samo_missing_const_checker.fix_rule,
+]
+
 
 class Config:
     def __init__(self, active_checkers, compdb, files, log_level, log_file, workers, fix):

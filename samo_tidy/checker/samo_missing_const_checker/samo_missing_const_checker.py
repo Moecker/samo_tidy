@@ -59,6 +59,13 @@ def get_substring_from_list(line, start, end):
     return "".join(line[start:end])
 
 
+def fix_rule(violated_line, violation):
+    first_part = get_substring_from_list(violated_line, 0, violation.column - 1)
+    second_part = get_substring_from_list(violated_line, violation.column - 1, len(violated_line))
+    fixed_line = f"{first_part}const {second_part}"
+    return fixed_line
+
+
 def fix(lines, violation):
     """Apply fix for missing const"""
     if violation.id != ID:

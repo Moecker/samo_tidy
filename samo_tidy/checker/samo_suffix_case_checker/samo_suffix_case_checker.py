@@ -24,7 +24,9 @@ def fix(lines, violation):
     true_index = violation.line - 1
     violated_line = list(lines[true_index])
     logging.info(f"Fixing {violation}")
+
     violated_line[violation.column] = violated_line[violation.column].upper()
+
     fixed_line = "".join(violated_line)
     lines[true_index] = fixed_line
     return lines
