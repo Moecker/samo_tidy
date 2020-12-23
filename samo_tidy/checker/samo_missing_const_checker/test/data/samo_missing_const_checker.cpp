@@ -1,7 +1,3 @@
-int NoChange(int& value);
-void Change(int& reference);
-void UsedInFunctions();
-
 int main()
 {
     int value = 0;  // OK
@@ -37,23 +33,4 @@ int main()
     const int all_combined = using_ints + static_cast<int>(using_floats);  // OK
 
     return all_combined;
-}
-
-int NoChange(int& value)
-{
-    return value + 1;
-}
-
-void Change(int& reference)
-{
-    reference++;
-}
-
-void UsedInFunctions()
-{
-    int change_me;  // TIDY_SAMO_MISSING_CONST (TODO This is actually wrong)
-    Change(change_me);
-
-    int not_changed = 8;  // TIDY_SAMO_MISSING_CONST
-    NoChange(not_changed);
 }

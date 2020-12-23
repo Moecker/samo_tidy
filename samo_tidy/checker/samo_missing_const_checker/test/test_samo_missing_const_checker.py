@@ -52,6 +52,15 @@ class TestSamoMissingConstChecker(test_checker_lib.TestCheckerLib):
         self.assertEqual(len(diagnostics), 0)
         self.validate(filename, violations)
 
+    def test_validate_references(self):
+        filename = os.path.join(self.checker_test_files, "samo_missing_const_checker_references.cpp")
+        violations, diagnostics = self.apply_checker(
+            the_checker.translation_unit_based_rule,
+            filename,
+        )
+        self.assertEqual(len(diagnostics), 0)
+        self.validate(filename, violations)
+
 
 if __name__ == "__main__":
     test_support.default_test_setup()
