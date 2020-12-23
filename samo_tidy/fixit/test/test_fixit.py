@@ -4,6 +4,7 @@ from samo_tidy.checker.violation import Violation
 import samo_tidy.checker.samo_suffix_case_checker.samo_suffix_case_checker as samo_suffix_case_checker
 import samo_tidy.checker.samo_missing_const_checker.samo_missing_const_checker as samo_missing_const_checker
 import samo_tidy.fixit.fixit as fixit
+import samo_tidy.fixit.test.sample_fix_function as sample_fix_function
 import samo_tidy.test.test_support as test_support
 
 
@@ -46,19 +47,16 @@ class TestFixit(unittest.TestCase):
 
     def test_fix_violation_line_for_missing_const(self):
         filename = test_support.create_tempfile(["int var = 0;"])
-        violation = Violation("", "", filename, 1, 5)
+        violation = Violation("TIDY_SAMO_MISSING_CONST", "", filename, 1, 5)
 
         fixit.fix_violation_line(violation, samo_missing_const_checker.fix_rule)
         self.assert_fix(violation, "int const var = 0;")
 
     def test_fix_violation_line(self):
         filename = test_support.create_tempfile(["std::uint8_t var = 1u;"])
-        violation = Violation("TIDY_FOO", "", filename, 1, 0)
+        violation = Violation("TIDY_DUMMY", "", filename, 1, 0)
 
-        def fix_function(violated_line, violation):
-            return ["Deleted Line"]
-
-        fixit.fix_violation_line(violation, fix_function)
+        fixit.fix_violation_line(violation, sample_fix_function.fix_function)
         self.assert_fix(violation, "Deleted Line")
 
 
