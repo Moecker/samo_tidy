@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 
-from pathlib import Path
-import os
 from collections import OrderedDict
 from collections import defaultdict
-
+from pathlib import Path
 
 import os
 
@@ -18,12 +16,16 @@ def recursive_glob(rootdir=".", suffix=""):
     ]
 
 
+def is_import(line):
+    return line.startswith("from ") or line.startswith("import ")
+
+
 def get_includes(lines):
     clusters = []
     clusters_idx = 0
     clusters.append([])
     for i, line in enumerate(lines):
-        if line.startswith("from ") or line.startswith("import "):
+        if is_import(line):
             clusters[clusters_idx].append((line, i))
         if line == "\n":
             clusters_idx += 1
@@ -65,7 +67,7 @@ def remove_duplicated_imports(lines, file_path):
     has_changed = False
     for line in lines:
         line_dict[line] += 1
-        if line.startswith("import ") or line.startswith("from "):
+        if is_import(line):
             for i in range(1, line_dict[line]):
                 new_lines.remove(line)
                 has_changed = True
@@ -74,16 +76,29 @@ def remove_duplicated_imports(lines, file_path):
     return has_changed
 
 
-def main():
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    file_paths = recursive_glob(rootdir="../samo_tidy/fixit", suffix=".py")
+def apply_sorting_includes(lines, file_path):
+    clusters = get_includes(lines)
+    sorted_clusters = sort_includes(clusters)
+    write_back(sorted_clusters, file_path)
+
+
+def apply_removing_duplicates(lines, file_path):
+    while remove_duplicated_imports(lines, file_path):
+        pass
+
+
+def loop(file_paths, apply_function):
     for file_path in file_paths:
         lines = read_lines(file_path)
-        clusters = get_includes(lines)
-        sorted_clusters = sort_includes(clusters)
-        write_back(sorted_clusters, file_path)
-        while remove_duplicated_imports(lines, file_path):
-            pass
+        apply_function(lines, file_path)
+
+
+def main():
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    file_paths = recursive_glob(rootdir="..", suffix=".py")
+
+    loop(file_paths, apply_sorting_includes)
+    loop(file_paths, apply_removing_duplicates)
 
 
 if __name__ == "__main__":
