@@ -12,6 +12,7 @@ import samo_tidy.core.tu_parser as tu_parser
 import samo_tidy.dump.dump as dump
 import samo_tidy.utils.clang_setup as clang_setup
 import samo_tidy.utils.utils as utils
+import samo_tidy.utils.diagnostics as diagnostics
 
 
 def get_basic_node_info(node, children):
@@ -146,7 +147,7 @@ def main():
         )
 
     # Dump the diagnostics
-    tu_diags = [dump.get_diag_info(diagnostic) for diagnostic in translation_unit.diagnostics]
+    tu_diags = [diagnostics.get_diag_info(diagnostic) for diagnostic in translation_unit.diagnostics]
     logging.info(colored(pformat(("diagnostics", tu_diags)), "yellow"))
 
     sys.exit(0)

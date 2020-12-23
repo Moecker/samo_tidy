@@ -1,15 +1,6 @@
 import samo_tidy.utils.utils as utils
 
 
-def get_diag_info(diag):
-    return {
-        "severity": diag.severity,
-        "location": diag.location,
-        "spelling": diag.spelling,
-        "ranges": diag.ranges,
-    }
-
-
 def dump_node(node):
     return "\n" + pformat(
         {

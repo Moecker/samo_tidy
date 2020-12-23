@@ -1,3 +1,3 @@
-clang
-termcolor
-coverage
+clang==11.0
+termcolor==1.1.0
+coverage==5.3.1

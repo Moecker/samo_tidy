@@ -3,6 +3,7 @@ import logging
 import os
 
 import samo_tidy.utils.utils as utils
+import samo_tidy.utils.diagnostics as diagnostics
 import samo_tidy.core.summary as summary
 
 DEFAULT_ACTIVE_ARGUMENTS = ["--std=c++14", "-Weverything"]
@@ -52,7 +53,7 @@ def create_translation_unit(source_file, args=[], directory=None):
         args = absolute_path_include(args, directory)
         logging.debug("Parsing '%s' with args '%s'", utils.only_filename(source_file), args)
         translation_unit = index.parse(source_file, args=args)
-        utils.log_diagnostics_info_summary(translation_unit)
+        diagnostics.log_diagnostics_info_summary(translation_unit)
         return translation_unit
     except cindex.TranslationUnitLoadError as the_exception:
         logging.error(the_exception)

@@ -88,7 +88,7 @@ bazel test /...
 ## Mac
 Use XCode. The library can be found in `/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib`
 
-Or get LLVM libraries: `brew install llvm`. The library can be found in `/usr/local/opt/llvm/lib/libclang.dylib`
+Or get LLVM libraries: `brew install llvm@11`. The library can be found in `/usr/local/opt/llvm/lib/libclang.dylib`
 
 ## Linux
 Install via apt: `sudo apt-get install libclang-dev`. The library can be found `/usr/lib/llvm-10/lib/libclang-10.so`
