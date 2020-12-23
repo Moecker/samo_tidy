@@ -1,6 +1,6 @@
 from clang import cindex
 from optparse import OptionParser, OptionGroup
-from pprint import pprint, pformat
+from pprint import pformat
 from termcolor import colored
 import argparse
 import logging
@@ -16,8 +16,9 @@ import samo_tidy.utils.diagnostics as diagnostics
 
 
 def get_basic_node_info(node, children):
+    cleaned_children = [v for v in children if v is not None]
     return {
-        "<--": children,
+        "": cleaned_children,
         "kind": node.kind,
         "location": dump.pretty_location(node.location),
         "spelling": node.spelling,
@@ -57,7 +58,7 @@ def get_info(node, max_depth, depth, use_details, use_references):
         children = [get_info(child, max_depth, depth + 1, use_details, use_references) for child in node.get_children()]
 
     if node.location.file and utils.shall_ignore_based_on_file_name(node.location.file.name):
-        return
+        return None
 
     info_dict = get_basic_node_info(node, children)
 
@@ -122,8 +123,6 @@ def main():
     the_file = args.file
     the_arguments = args.arguments
 
-    index = cindex.Index.create()
-
     # Use compdb infos if available
     if args.compdb:
         the_file, the_arguments = parse_from_compdb(args.compdb, args.file)
@@ -131,7 +130,8 @@ def main():
             sys.exit(f"ERROR: File '{args.file}'' not found in compdb")
 
     # Only parse the file provided by the args
-    logging.info(colored("Parsing %s with %s", "cyan"), the_file, the_arguments)
+    logging.info(colored("Parsing file %s", "cyan"), the_file)
+    logging.info(colored("Using arguments\n%s", "cyan"), pformat(the_arguments))
     translation_unit = tu_parser.create_translation_unit(the_file, the_arguments)
     if not translation_unit:
         sys.exit(f"ERROR: Unable to load input for file '{the_file}'")
@@ -141,7 +141,7 @@ def main():
         tu_dump = get_info(translation_unit.cursor, args.max_depth, 0, args.details, args.references)
         logging.info(
             colored(
-                pformat(("nodes", tu_dump)),
+                pformat(("nodes", tu_dump), width=120),
                 attrs=["dark"],
             )
         )
