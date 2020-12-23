@@ -1,4 +1,5 @@
 from clang import cindex
+import logging
 
 import samo_tidy.checker.checker as checker
 import samo_tidy.dump.dump as dump
@@ -52,6 +53,27 @@ def translation_unit_based_rule(translation_unit):
             if violation:
                 violations.append(violation)
     return violations
+
+
+def get_substring_from_list(line, start, end):
+    return "".join(line[start:end])
+
+
+def fix(lines, violation):
+    """Apply fix for missing const"""
+    if violation.id != ID:
+        return []
+    true_index = violation.line - 1
+    violated_line = list(lines[true_index])
+    logging.info(f"Fixing {violation}")
+
+    first_part = get_substring_from_list(violated_line, 0, violation.column - 1)
+    second_part = get_substring_from_list(violated_line, violation.column - 1, len(violated_line))
+    violated_line = f"{first_part}const {second_part}"
+
+    fixed_line = "".join(violated_line)
+    lines[true_index] = fixed_line
+    return lines
 
 
 def check_references(token):
