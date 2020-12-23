@@ -62,7 +62,7 @@ def log_diagnostics_info_summary(translation_unit):
             file_path = "Unknown"
 
         log_function = logging.debug
-        if diagnostic.severity > 3:
+        if diagnostic.severity > 2:
             log_function = logging.warning
 
         log_function(

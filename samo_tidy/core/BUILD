@@ -9,6 +9,7 @@ py_library(
         "//samo_tidy/core/test:__pkg__",
         "//samo_tidy/dump:__pkg__",
         "//samo_tidy/facade:__pkg__",
+        "//samo_tidy/utils/test:__pkg__",
     ],
     deps = [
         requirement("clang"),

@@ -26,7 +26,7 @@ class TestCompdbParser(test_core_lib.TestCoreLib):
         self.assertEqual(len(translation_units), 1)
         self.assertIn("source_id2.cpp", translation_units[0].spelling)
 
-    def test_parse_compdb_multipl_files(self):
+    def test_parse_compdb_multiple_files(self):
         compdb = self.create_and_parse_comdb(["source_id1.cpp", "source_id2.cpp"])
         translation_units = self.parse_compdb(compdb)
         self.assertEqual(len(translation_units), 2)

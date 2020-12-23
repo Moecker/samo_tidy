@@ -15,6 +15,7 @@ import samo_tidy.fixit.fixit as fixit
 import samo_tidy.utils.clang_setup as clang_setup
 import samo_tidy.utils.logger as logger
 import samo_tidy.utils.utils as utils
+import samo_tidy.utils.diagnostics as diagnostics
 
 
 def apply_checkers_for_commands(commands, the_config):
@@ -55,6 +56,11 @@ def apply_checkers_for_translation_unit(translation_unit, the_config):
             len(violations_per_tu),
             len(clang_warnings),
         )
+
+        diags = diagnostics.get_diagnostics_by_severity_one_tu(translation_unit)
+
+        summary.get_summary().add_number_of_diagnostics(translation_unit.spelling, diags)
+
         summary.get_summary().add_number_of_violations(
             translation_unit.spelling, (len(violations_per_tu), len(clang_warnings))
         )
