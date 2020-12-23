@@ -91,7 +91,7 @@ Use XCode. The library can be found in `/Applications/Xcode.app/Contents/Develop
 Or get LLVM libraries: `brew install llvm@11`. The library can be found in `/usr/local/opt/llvm/lib/libclang.dylib`
 
 ## Linux
-Install via apt: `sudo apt-get install libclang-dev`. The library can be found `/usr/lib/llvm-10/lib/libclang-10.so`
+Install via apt: `sudo apt-get install libclang-dev=1:10.0-50~exp1`. The library can be found `/usr/lib/llvm-10/lib/libclang-10.so`
 
 # Compilation Database
 ## Create compilation database for example CMake project
