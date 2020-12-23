@@ -21,6 +21,7 @@ pip_install(
 # https://github.com/grailbio/bazel-compilation-database/blob/0.4.5/README.md
 http_archive(
     name = "bazel_compdb",
+    sha256 = "bcecfd622c4ef272fd4ba42726a52e140b961c4eac23025f18b346c968a8cfb4",
     strip_prefix = "bazel-compilation-database-0.4.5",
     urls = ["https://github.com/grailbio/bazel-compilation-database/archive/0.4.5.tar.gz"],
 )

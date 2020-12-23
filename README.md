@@ -43,6 +43,7 @@ Results in
                         Arguments for parsing the file (such as -I flags)
   --diagnostics_only    Only show diagnostics
   --details             Show more details per node
+  --references          Show references of each node
   --max_depth MAX_DEPTH
                         Limit cursor expansion to depth
 ```
