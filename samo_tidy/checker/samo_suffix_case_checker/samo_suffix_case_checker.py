@@ -17,6 +17,12 @@ def token_based_rule(token):
     return violation
 
 
+def fix_rule(violated_line, violation):
+    fixed_line = violated_line
+    fixed_line[violation.column] = violated_line[violation.column].upper()
+    return fixed_line
+
+
 def fix(lines, violation):
     """Apply fix for lower case 'u'"""
     if violation.id != ID:

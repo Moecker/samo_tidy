@@ -4,11 +4,6 @@
 uint8_t Function()
 {
     int foo = MyHeaderFunction();
-    return 0U + static_cast<uint8_t>(foo);
+    return 0u + static_cast<uint8_t>(foo);
 }
-
-
-
-
-
 

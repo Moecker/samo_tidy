@@ -16,11 +16,8 @@ ALL_CHECKERS = [
 ]
 
 ALL_FIXITS = [
-    samo_suffix_case_checker.fix,
-]
-
-ALL_FIXITS_LINE = [
     samo_missing_const_checker.fix_rule,
+    samo_suffix_case_checker.fix_rule,
 ]
 
 
