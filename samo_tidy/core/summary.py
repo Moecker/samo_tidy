@@ -1,6 +1,6 @@
-import os
 from collections import defaultdict
 from functools import partial
+import os
 
 
 def get_summary():

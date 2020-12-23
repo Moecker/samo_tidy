@@ -58,7 +58,7 @@ def write_back(sorted_clusters, file_path):
 
 def main():
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    file_paths = recursive_glob(rootdir="../samo_tidy/fixit", suffix=".py")
+    file_paths = recursive_glob(rootdir="..", suffix=".py")
     for file_path in file_paths:
         lines = read_lines(file_path)
         clusters = get_includes(lines)

@@ -11,8 +11,8 @@ import samo_tidy.core.compdb_parser as compdb_parser
 import samo_tidy.core.tu_parser as tu_parser
 import samo_tidy.dump.dump as dump
 import samo_tidy.utils.clang_setup as clang_setup
-import samo_tidy.utils.utils as utils
 import samo_tidy.utils.diagnostics as diagnostics
+import samo_tidy.utils.utils as utils
 
 
 def get_basic_node_info(node, children):

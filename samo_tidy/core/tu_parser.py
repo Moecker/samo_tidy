@@ -2,9 +2,9 @@ from clang import cindex
 import logging
 import os
 
-import samo_tidy.utils.utils as utils
-import samo_tidy.utils.diagnostics as diagnostics
 import samo_tidy.core.summary as summary
+import samo_tidy.utils.diagnostics as diagnostics
+import samo_tidy.utils.utils as utils
 
 DEFAULT_ACTIVE_ARGUMENTS = ["--std=c++14", "-Weverything"]
 DEFAULT_IGNORED_ARGUMENTS = [

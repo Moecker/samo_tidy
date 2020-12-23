@@ -1,6 +1,6 @@
-import logging
 from collections import defaultdict
 from functools import partial
+import logging
 
 import samo_tidy.utils.utils as utils
 

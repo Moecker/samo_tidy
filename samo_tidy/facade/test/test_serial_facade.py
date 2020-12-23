@@ -1,12 +1,12 @@
 from unittest.mock import patch
 import unittest
 
+import samo_tidy.core.summary as summary
 import samo_tidy.core.tu_parser as tu_parser
-import samo_tidy.facade.serial_facade as serial_facade
 import samo_tidy.facade.facade_lib as facade_lib
+import samo_tidy.facade.serial_facade as serial_facade
 import samo_tidy.facade.test.test_facade_lib as test_facade_lib
 import samo_tidy.test.test_support as test_support
-import samo_tidy.core.summary as summary
 
 
 class TestFacade(test_facade_lib.TestFacadeLib):

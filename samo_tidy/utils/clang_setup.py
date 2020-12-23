@@ -1,6 +1,6 @@
 from clang import cindex
-import logging
 from termcolor import colored
+import logging
 import platform
 import sys
 

@@ -1,6 +1,6 @@
 from clang import cindex
-import re
 from os.path import splitext, basename
+import re
 
 import samo_tidy.checker.checker as checker
 

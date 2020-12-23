@@ -13,9 +13,9 @@ import samo_tidy.core.summary as summary
 import samo_tidy.facade.config as config
 import samo_tidy.fixit.fixit as fixit
 import samo_tidy.utils.clang_setup as clang_setup
+import samo_tidy.utils.diagnostics as diagnostics
 import samo_tidy.utils.logger as logger
 import samo_tidy.utils.utils as utils
-import samo_tidy.utils.diagnostics as diagnostics
 
 
 def apply_checkers_for_commands(commands, the_config):

@@ -5,9 +5,9 @@ import os
 import sys
 import unittest
 
+import samo_tidy.core.summary as summary
 import samo_tidy.core.tu_parser as tu_parser
 import samo_tidy.facade.config as config
-import samo_tidy.core.summary as summary
 import samo_tidy.test.test_support as test_support
 
 

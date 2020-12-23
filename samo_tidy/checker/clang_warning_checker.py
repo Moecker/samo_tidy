@@ -1,5 +1,5 @@
-import logging
 from termcolor import colored
+import logging
 
 import samo_tidy.checker.checker as checker
 import samo_tidy.utils.utils as utils

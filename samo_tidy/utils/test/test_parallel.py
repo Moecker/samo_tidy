@@ -1,9 +1,9 @@
-import unittest
 import time
+import unittest
 
 import samo_tidy.test.test_support as test_support
-import samo_tidy.utils.utils as utils
 import samo_tidy.utils.parallel as parallel
+import samo_tidy.utils.utils as utils
 
 
 def computation(args):

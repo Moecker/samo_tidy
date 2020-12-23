@@ -1,8 +1,8 @@
-import unittest
 import logging
 import os
 import shutil
 import tempfile
+import unittest
 
 import samo_tidy.core.compdb_parser as compdb_parser
 import samo_tidy.utils.utils as utils

@@ -1,5 +1,5 @@
-import unittest
 from clang import cindex
+import unittest
 
 import samo_tidy.test.test_support as test_support
 

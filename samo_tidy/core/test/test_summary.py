@@ -1,7 +1,7 @@
 import unittest
 
-import samo_tidy.test.test_support as test_support
 import samo_tidy.core.summary as summary
+import samo_tidy.test.test_support as test_support
 
 
 class TestSummary(unittest.TestCase):
