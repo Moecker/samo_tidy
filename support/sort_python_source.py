@@ -2,6 +2,9 @@
 
 from pathlib import Path
 import os
+from collections import OrderedDict
+from collections import defaultdict
+
 
 import os
 
@@ -20,7 +23,7 @@ def get_includes(lines):
     clusters_idx = 0
     clusters.append([])
     for i, line in enumerate(lines):
-        if line.startswith("from") or line.startswith("import"):
+        if line.startswith("from ") or line.startswith("import "):
             clusters[clusters_idx].append((line, i))
         if line == "\n":
             clusters_idx += 1
@@ -56,14 +59,31 @@ def write_back(sorted_clusters, file_path):
         file_back.writelines(lines)
 
 
+def remove_duplicated_imports(lines, file_path):
+    new_lines = lines
+    line_dict = defaultdict(int)
+    has_changed = False
+    for line in lines:
+        line_dict[line] += 1
+        if line.startswith("import ") or line.startswith("from "):
+            for i in range(1, line_dict[line]):
+                new_lines.remove(line)
+                has_changed = True
+    with open(file_path, "w") as file_back:
+        file_back.writelines(new_lines)
+    return has_changed
+
+
 def main():
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    file_paths = recursive_glob(rootdir="..", suffix=".py")
+    file_paths = recursive_glob(rootdir="../samo_tidy/fixit", suffix=".py")
     for file_path in file_paths:
         lines = read_lines(file_path)
         clusters = get_includes(lines)
         sorted_clusters = sort_includes(clusters)
         write_back(sorted_clusters, file_path)
+        while remove_duplicated_imports(lines, file_path):
+            pass
 
 
 if __name__ == "__main__":
