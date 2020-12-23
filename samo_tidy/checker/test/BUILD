@@ -11,6 +11,7 @@ py_library(
         "//samo_tidy/checker",
         "//samo_tidy/checker:checkers",
         "//samo_tidy/dump",
+        "//samo_tidy/fixit",
         "//samo_tidy/test:test_support",
         "//samo_tidy/utils",
     ],

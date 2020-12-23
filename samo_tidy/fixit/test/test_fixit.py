@@ -20,7 +20,7 @@ class TestFixit(unittest.TestCase):
         filename = test_support.create_tempfile(["std::uint8_t var = 1u;"])
         violation = Violation("TIDY_SAMO_SUFFIX_CASE", "", filename, 1, 20)
 
-        fixed_lines = fixit.fix_violation(violation, samo_suffix_case_checker.fix)
+        fixed_lines = fixit.fix_violation_per_line(violation, samo_suffix_case_checker.fix_rule)
         self.assertTrue(fixed_lines)
         self.assert_fix(violation, "std::uint8_t var = 1U;")
 
@@ -28,7 +28,7 @@ class TestFixit(unittest.TestCase):
         filename = test_support.create_tempfile(["std::uint8_t var = 1u;"])
         violation = Violation("TIDY_SAMO_INVALID_ID", "", filename, 1, 20)
 
-        fixed_lines = fixit.fix_violation(violation, samo_suffix_case_checker.fix)
+        fixed_lines = fixit.fix_violation_per_line(violation, samo_suffix_case_checker.fix_rule)
         self.assertFalse(fixed_lines)
         self.assert_fix(violation, "std::uint8_t var = 1u;")
 
@@ -40,23 +40,23 @@ class TestFixit(unittest.TestCase):
         violation2 = Violation("TIDY_SAMO_SUFFIX_CASE", "", filename, 2, 33)
         violations = [violation1, violation2]
 
-        fixit.fix_violations(violations, samo_suffix_case_checker.fix)
+        fixit.fix_violations_per_line(violations, samo_suffix_case_checker.fix_rule)
 
         self.assert_fix(violation1, "std::uint8_t my_first_var = 1U;")
         self.assert_fix(violation2, "std::uint32_t my_second_var = 123U;")
 
-    def test_fix_violation_line_for_missing_const(self):
+    def test_fix_violation_per_line_for_missing_const(self):
         filename = test_support.create_tempfile(["int var = 0;"])
         violation = Violation("TIDY_SAMO_MISSING_CONST", "", filename, 1, 5)
 
-        fixit.fix_violation_line(violation, samo_missing_const_checker.fix_rule)
+        fixit.fix_violation_per_line(violation, samo_missing_const_checker.fix_rule)
         self.assert_fix(violation, "int const var = 0;")
 
-    def test_fix_violation_line(self):
+    def test_fix_violation_per_line(self):
         filename = test_support.create_tempfile(["std::uint8_t var = 1u;"])
         violation = Violation("TIDY_DUMMY", "", filename, 1, 0)
 
-        fixit.fix_violation_line(violation, sample_fix_function.fix_function)
+        fixit.fix_violation_per_line(violation, sample_fix_function.fix_function)
         self.assert_fix(violation, "Deleted Line")
 
 

@@ -4,6 +4,7 @@ import unittest
 from samo_tidy.checker.violation import Violation
 import samo_tidy.checker.samo_missing_const_checker.samo_missing_const_checker as the_checker
 import samo_tidy.checker.test.test_checker_lib as test_checker_lib
+import samo_tidy.fixit.fixit as fixit
 import samo_tidy.test.test_support as test_support
 
 
@@ -65,8 +66,14 @@ class TestSamoMissingConstChecker(test_checker_lib.TestCheckerLib):
     def test_fixit(self):
         lines = ["int a;"]
         line_index = 1
-        violation = Violation(the_checker.ID, "message", "filepath", line_index, 5)
-        new_lines = the_checker.fix(lines, violation)
+        violation = Violation(
+            the_checker.ID,
+            "message",
+            "filepath",
+            line_index,
+            5,
+        )
+        new_lines = fixit.apply_fix_per_line(lines, violation, the_checker.fix_rule)
         self.assertEqual(new_lines[line_index - 1], "int const a;")
 
 

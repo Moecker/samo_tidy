@@ -4,6 +4,7 @@ py_library(
     name = "fixit",
     srcs = glob(["**/*.py"]),
     visibility = [
+        "//samo_tidy/checker/test:__pkg__",
         "//samo_tidy/facade:__pkg__",
         "//samo_tidy/fixit/test:__pkg__",
     ],

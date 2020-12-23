@@ -21,18 +21,3 @@ def fix_rule(violated_line, violation):
     fixed_line = violated_line
     fixed_line[violation.column] = violated_line[violation.column].upper()
     return fixed_line
-
-
-def fix(lines, violation):
-    """Apply fix for lower case 'u'"""
-    if violation.id != ID:
-        return []
-    true_index = violation.line - 1
-    violated_line = list(lines[true_index])
-    logging.info(f"Fixing {violation}")
-
-    violated_line[violation.column] = violated_line[violation.column].upper()
-
-    fixed_line = "".join(violated_line)
-    lines[true_index] = fixed_line
-    return lines

@@ -4,6 +4,7 @@ import logging
 import samo_tidy.checker.checker as checker
 import samo_tidy.dump.dump as dump
 
+
 ID = "TIDY_SAMO_MISSING_CONST"
 
 
@@ -64,23 +65,6 @@ def fix_rule(violated_line, violation):
     second_part = get_substring_from_list(violated_line, violation.column - 1, len(violated_line))
     fixed_line = f"{first_part}const {second_part}"
     return fixed_line
-
-
-def fix(lines, violation):
-    """Apply fix for missing const"""
-    if violation.id != ID:
-        return []
-    true_index = violation.line - 1
-    violated_line = list(lines[true_index])
-    logging.info(f"Fixing {violation}")
-
-    first_part = get_substring_from_list(violated_line, 0, violation.column - 1)
-    second_part = get_substring_from_list(violated_line, violation.column - 1, len(violated_line))
-    violated_line = f"{first_part}const {second_part}"
-
-    fixed_line = "".join(violated_line)
-    lines[true_index] = fixed_line
-    return lines
 
 
 def check_references(token):

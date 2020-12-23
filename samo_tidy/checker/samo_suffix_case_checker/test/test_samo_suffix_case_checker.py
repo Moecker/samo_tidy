@@ -1,8 +1,10 @@
 import os
 import unittest
 
+from samo_tidy.checker.violation import Violation
 import samo_tidy.checker.samo_suffix_case_checker.samo_suffix_case_checker as the_checker
 import samo_tidy.checker.test.test_checker_lib as test_checker_lib
+import samo_tidy.fixit.fixit as fixit
 import samo_tidy.test.test_support as test_support
 
 
@@ -95,6 +97,19 @@ class TestSamoSuffixCaseChecker(test_checker_lib.TestCheckerLib):
         )
         self.assertEqual(len(diagnostics), 0)
         self.validate(filename, violations)
+
+    def test_fixit(self):
+        lines = ["std::uint8_t F()", "{", "return 0u;", "}"]
+        line_index = 3
+        violation = Violation(
+            "TIDY_SAMO_SUFFIX_CASE",
+            "message",
+            "filepath",
+            line_index,
+            8,
+        )
+        new_lines = fixit.apply_fix_per_line(lines, violation, the_checker.fix_rule)
+        self.assertEqual(new_lines[line_index - 1], "return 0U;")
 
 
 if __name__ == "__main__":
