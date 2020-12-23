@@ -2,6 +2,7 @@
 
 from collections import defaultdict
 from pathlib import Path
+from pprint import pprint
 
 import os
 
@@ -87,17 +88,34 @@ def apply_removing_duplicates(lines, file_path):
 
 
 def apply_sort_function(lines, file_path):
+    new_lines = lines.copy()
     functions = defaultdict(tuple)
-    start = len(lines)
+    start = 0
     functionname = ""
+    is_start = True
     for i, line in enumerate(lines):
-        if line.startswith("def "):
-            functionname = line
-            start = i
-        if start < i:
-            end = i
-            functions[functionname] = (start + 1, end - 1)
-    print(functions)
+        if line.strip().startswith("def "):
+            if is_start:
+                start = i
+                functionname = line
+                is_start = False
+            else:
+                end = i
+                functions[functionname] = (start, end)
+                is_start = True
+
+    sorted_dict = dict(sorted(functions.items(), key=lambda item: item[0]))
+
+    pprint(functions)
+
+    for function, loc in functions.items():
+        for the_loc in range(loc[0], loc[1] + 1):
+            pass
+
+    print(str(len(new_lines)) + " | " + str(len(lines)))
+
+    with open(file_path, "w") as file_back:
+        file_back.writelines(new_lines)
 
 
 def loop(file_paths, apply_function):
@@ -108,7 +126,7 @@ def loop(file_paths, apply_function):
 
 def main():
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    file_paths = recursive_glob(rootdir="samo_tidy/fixit", suffix=".py")
+    file_paths = recursive_glob(rootdir="samo_tidy/fixit", suffix="test_fixit.py")
     print(f"Using files {file_paths}")
 
     loop(file_paths, apply_sorting_includes)
