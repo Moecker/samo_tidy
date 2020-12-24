@@ -4,7 +4,10 @@ pycoverage_requirements = [
     "//tools/pycoverage",
 ]
 
-def pycoverage(name = None, deps = None, tags = None):
+def pycoverage(name, deps):
+    if not name or not deps:
+        fail("Arguments 'name' and 'deps' are required")
+
     py_test(
         name = name,
         main = "pycoverage_runner.py",
@@ -12,5 +15,4 @@ def pycoverage(name = None, deps = None, tags = None):
         imports = ["."],
         args = deps,
         deps = depset(direct = deps + pycoverage_requirements).to_list(),
-        tags = tags,
     )

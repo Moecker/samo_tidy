@@ -1,5 +1,6 @@
 load("@rules_python//python:defs.bzl", "py_test")
 load("//tools/pycoverage:pycoverage.bzl", "pycoverage")
+load("//tools/pylint:pylint.bzl", "pylint")
 
 py_test(
     name = "test_utils",
@@ -31,5 +32,19 @@ py_test(
 
 pycoverage(
     name = "pycoverage",
-    deps = [":test_utils"],
+    deps = [
+        ":test_diagnostics",
+        ":test_parallel",
+        ":test_utils",
+    ],
+)
+
+pylint(
+    name = "pylint",
+    modules = ["samo_tidy.utils.test"],
+    deps = [
+        ":test_diagnostics",
+        ":test_parallel",
+        ":test_utils",
+    ],
 )
