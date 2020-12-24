@@ -21,17 +21,7 @@ def apply_sort_function(lines, file_path):
     new_lines = lines.copy()
     functions = find_functions(lines)
 
-    sorted_dict = list(sorted(functions.items(), key=lambda item: item[0]))
-    sorted_dict_lines = list(sorted(functions.items(), key=lambda item: item[1][0]))
-
-    for function, loc in functions.items():
-        for the_loc in range(loc[0], loc[1] - 1):
-            new_lines[the_loc] = "\n"
-
-    fill_new_lines(sorted_dict_lines, sorted_dict, lines, new_lines)
-
-    with open(file_path, "w") as file_back:
-        file_back.writelines(new_lines)
+    sort_and_write(functions, new_lines, lines, file_path)
 
 
 def apply_sorting_includes(lines, file_path):
@@ -40,8 +30,20 @@ def apply_sorting_includes(lines, file_path):
     write_back(sorted_clusters, file_path)
 
 
+def apply_target_sort_function(lines, file_path):
+    new_lines = lines.copy()
+    targets = find_targets(lines)
+    print(targets)
+
+
 def bazel_based_lint():
-    pass
+    file_paths = recursive_glob(rootdir="samo_tidy/utils/test", suffix="BUILD")
+
+    print(f"Using bazel files")
+    pprint(file_paths)
+
+    print("Sorting targets...")
+    loop(file_paths, apply_target_sort_function)
 
 
 def fill_new_lines(sorted_dict_lines, sorted_dict, lines, new_lines):
@@ -68,6 +70,20 @@ def find_functions(lines):
                     functions[function_line] = (start, len(lines) + 1)
                     break
     return functions
+
+
+def find_targets(lines):
+    targets = defaultdict(tuple)
+
+    for idx, line in enumerate(lines):
+        if is_target_def(line):
+            start = idx
+            target_line = line.strip() + lines[idx + 1].strip()
+            for j in range(start + 1, len(lines)):
+                if lines[j].startswith(")"):
+                    targets[target_line] = (start, j)
+                    break
+    return targets
 
 
 def get_includes(lines):
@@ -103,6 +119,10 @@ def is_patch_def(line):
     return line.strip().startswith("@patch ")
 
 
+def is_target_def(line):
+    return line.strip().startswith("py") or line.strip().startswith("sh") or line.strip().startswith("filegroup")
+
+
 def loop(file_paths, apply_function):
     for file_path in file_paths:
         lines = read_lines(file_path)
@@ -117,7 +137,7 @@ def main():
 def python_based_lint():
     file_paths = recursive_glob(rootdir=".", suffix=".py")
 
-    print(f"Using files")
+    print(f"Using python files")
     pprint(file_paths)
 
     print("Sorting imports...")
@@ -160,6 +180,20 @@ def remove_duplicated_imports(lines, file_path):
     with open(file_path, "w") as file_back:
         file_back.writelines(new_lines)
     return has_changed
+
+
+def sort_and_write(functions, new_lines, lines, file_path):
+    sorted_dict = list(sorted(functions.items(), key=lambda item: item[0]))
+    sorted_dict_lines = list(sorted(functions.items(), key=lambda item: item[1][0]))
+
+    for function, loc in functions.items():
+        for the_loc in range(loc[0], loc[1] - 1):
+            new_lines[the_loc] = "\n"
+
+    fill_new_lines(sorted_dict_lines, sorted_dict, lines, new_lines)
+
+    with open(file_path, "w") as file_back:
+        file_back.writelines(new_lines)
 
 
 def sort_includes(clusters):
