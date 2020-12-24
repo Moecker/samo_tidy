@@ -17,25 +17,22 @@ def apply_removing_duplicates(lines, file_path):
         pass
 
 
-def apply_sort_function(lines, file_path):
+def apply_sort_functions(lines, file_path):
     new_lines = lines.copy()
     functions = find_functions(lines)
-
     sort_and_write(functions, new_lines, lines, file_path)
+
+
+def apply_sort_targets(lines, file_path):
+    new_lines = lines.copy()
+    targets = find_targets(lines)
+    sort_and_write(targets, new_lines, lines, file_path)
 
 
 def apply_sorting_includes(lines, file_path):
     clusters = get_includes(lines)
     sorted_clusters = sort_includes(clusters)
     write_back(sorted_clusters, file_path)
-
-
-def apply_target_sort_function(lines, file_path):
-    new_lines = lines.copy()
-    targets = find_targets(lines)
-    print(targets)
-
-    sort_and_write(targets, new_lines, lines, file_path)
 
 
 def bazel_based_lint():
@@ -45,7 +42,7 @@ def bazel_based_lint():
     pprint(file_paths)
 
     print("Sorting targets...")
-    loop(file_paths, apply_target_sort_function)
+    loop(file_paths, apply_sort_targets)
 
 
 def fill_new_lines(sorted_dict_lines, sorted_dict, lines, new_lines):
@@ -160,7 +157,7 @@ def python_based_lint():
     print("Removing duplicated imports...")
     loop(file_paths, apply_removing_duplicates)
     print("Sorting methods...")
-    loop(file_paths, apply_sort_function)
+    loop(file_paths, apply_sort_functions)
 
     print("Applying black...")
     apply_black()
