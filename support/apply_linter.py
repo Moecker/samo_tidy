@@ -93,8 +93,12 @@ def is_function_def(line):
     return line.strip().startswith("def ")
 
 
-def is_main_attr(line):
+def is_main_attribute(line):
     return line.strip().startswith("if __name__")
+
+
+def is_class_attribute(line):
+    return line.strip().startswith("class ")
 
 
 def apply_sort_function(lines, file_path):
@@ -105,13 +109,12 @@ def apply_sort_function(lines, file_path):
         if is_function_def(line):
             function_line = line
             for j in range(i + 1, len(lines)):
-                if is_function_def(lines[j]) or is_main_attr(line):
+                if is_function_def(lines[j]) or is_main_attribute(lines[j]) or is_class_attribute(lines[j]):
                     functions[function_line] = (i, j)
                     break
                 if j == len(lines) - 1:
                     functions[function_line] = (i, len(lines) + 1)
                     break
-    print(functions)
     sorted_dict = list(sorted(functions.items(), key=lambda item: item[0]))
     sorted_dict_lines = list(sorted(functions.items(), key=lambda item: item[1][0]))
 
@@ -140,11 +143,14 @@ def loop(file_paths, apply_function):
 
 def main():
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    file_paths = recursive_glob(rootdir="samo_tidy/test", suffix=".py")
+    file_paths = recursive_glob(rootdir="samo_tidy/utils/test", suffix="test_parallel.py")
     print(f"Using files {file_paths}")
 
+    print("Sorting imports...")
     loop(file_paths, apply_sorting_includes)
+    print("Removing duplicated imports...")
     loop(file_paths, apply_removing_duplicates)
+    print("Sorting methods...")
     loop(file_paths, apply_sort_function)
 
     subprocess.call([f"black {os.path.join(dir_path, '..')} --line-length 120"], shell=True)
