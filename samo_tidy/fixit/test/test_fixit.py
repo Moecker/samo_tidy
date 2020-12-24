@@ -24,7 +24,7 @@ class TestFixit(unittest.TestCase):
         self.assertTrue(fixed_lines)
         self.assert_fix(violation, "std::uint8_t var = 1U;")
 
-    def test_fixit_template_for_suffix(self):
+    def test_fixit_template_for_suffix_invalid(self):
         filename = test_support.create_tempfile(["std::uint8_t var = 1u;"])
         violation = Violation("TIDY_SAMO_INVALID_ID", "", filename, 1, 20)
 

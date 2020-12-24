@@ -87,22 +87,25 @@ def apply_removing_duplicates(lines, file_path):
         pass
 
 
+def is_function_def(line):
+    return line.strip().startswith("def ")
+
+
+def is_main_attr(line):
+    return line.strip().startswith("if __name__")
+
+
 def apply_sort_function(lines, file_path):
     new_lines = lines.copy()
     functions = defaultdict(tuple)
-    start = 0
-    functionname = ""
-    is_start = True
+
     for i, line in enumerate(lines):
-        if line.strip().startswith("def "):
-            if is_start:
-                start = i
-                functionname = line
-                is_start = False
-            else:
-                end = i
-                functions[functionname] = (start, end)
-                is_start = True
+        if is_function_def(line):
+            function_line = line
+            for j in range(i + 1, len(lines)):
+                if is_function_def(lines[j]) or is_main_attr(line) or j == len(lines) - 1:
+                    functions[function_line] = (i, j - 1)
+                    break
 
     sorted_dict = dict(sorted(functions.items(), key=lambda item: item[0]))
 
