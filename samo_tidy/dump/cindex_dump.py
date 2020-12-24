@@ -37,19 +37,6 @@ def get_detail_node_info(node, references):
     }
 
 
-def get_references(node, max_depth, depth):
-    """Recursive call to get_references to obtain referenced nodes returned as a dict"""
-    if max_depth is not None and depth >= max_depth:
-        references = get_basic_node_info(node, [])
-    else:
-        references = (
-            [get_references(reference, max_depth, depth + 1) for reference in node.referenced.walk_preorder()]
-            if node.referenced is not None
-            else None
-        )
-    return references
-
-
 def get_info(node, max_depth, depth, use_details, use_references):
     """Recursive call to get_info to obtain node properties returned as a dict"""
     if max_depth is not None and depth >= max_depth:
@@ -70,48 +57,17 @@ def get_info(node, max_depth, depth, use_details, use_references):
     return info_dict
 
 
-def parse_from_compdb(compdb, file_to_parse):
-    """Extracts the absolute file path of the file to parse and its arguments from compdb"""
-    absolute_filepath = None
-    file_arguments = []
-
-    compdb = compdb_parser.load_compdb(compdb)
-    if compdb:
-        commands = compdb.getAllCompileCommands()
-        for command in commands:
-            if file_to_parse in command.filename:
-                absolute_filepath = os.path.join(command.directory, command.filename)
-                file_arguments = list(command.arguments)
-                file_arguments = tu_parser.clean_args(file_arguments)
-                file_arguments = tu_parser.absolute_path_include(file_arguments, command.directory)
+def get_references(node, max_depth, depth):
+    """Recursive call to get_references to obtain referenced nodes returned as a dict"""
+    if max_depth is not None and depth >= max_depth:
+        references = get_basic_node_info(node, [])
     else:
-        sys.exit("ERROR: Failed to load compdb")
-    return absolute_filepath, file_arguments
-
-
-def parse_args():
-    """Parse args and returns args dict"""
-    parser = argparse.ArgumentParser("CIndex Dump")
-    parser.add_argument("--file", help="Filepath to be analyzed", required=True)
-    parser.add_argument("--compdb", help="Compilation Database for detailed build instructions")
-    parser.add_argument(
-        "--arguments",
-        help="Arguments for parsing the file (such as -I flags)",
-        default=[],
-        nargs="+",
-    )
-    parser.add_argument("--diagnostics_only", help="Only show diagnostics", action="store_true", default=False)
-    parser.add_argument("--details", help="Show more details per node", action="store_true", default=False)
-    parser.add_argument("--references", help="Show references of each node", action="store_true", default=False)
-    parser.add_argument(
-        "--max_depth",
-        help="Limit cursor expansion to depth",
-        type=int,
-        default=None,
-    )
-
-    args = parser.parse_args()
-    return args
+        references = (
+            [get_references(reference, max_depth, depth + 1) for reference in node.referenced.walk_preorder()]
+            if node.referenced is not None
+            else None
+        )
+    return references
 
 
 def main():
@@ -151,6 +107,50 @@ def main():
     logging.info(colored(pformat(("diagnostics", tu_diags)), "yellow"))
 
     sys.exit(0)
+
+
+def parse_args():
+    """Parse args and returns args dict"""
+    parser = argparse.ArgumentParser("CIndex Dump")
+    parser.add_argument("--file", help="Filepath to be analyzed", required=True)
+    parser.add_argument("--compdb", help="Compilation Database for detailed build instructions")
+    parser.add_argument(
+        "--arguments",
+        help="Arguments for parsing the file (such as -I flags)",
+        default=[],
+        nargs="+",
+    )
+    parser.add_argument("--diagnostics_only", help="Only show diagnostics", action="store_true", default=False)
+    parser.add_argument("--details", help="Show more details per node", action="store_true", default=False)
+    parser.add_argument("--references", help="Show references of each node", action="store_true", default=False)
+    parser.add_argument(
+        "--max_depth",
+        help="Limit cursor expansion to depth",
+        type=int,
+        default=None,
+    )
+
+    args = parser.parse_args()
+    return args
+
+
+def parse_from_compdb(compdb, file_to_parse):
+    """Extracts the absolute file path of the file to parse and its arguments from compdb"""
+    absolute_filepath = None
+    file_arguments = []
+
+    compdb = compdb_parser.load_compdb(compdb)
+    if compdb:
+        commands = compdb.getAllCompileCommands()
+        for command in commands:
+            if file_to_parse in command.filename:
+                absolute_filepath = os.path.join(command.directory, command.filename)
+                file_arguments = list(command.arguments)
+                file_arguments = tu_parser.clean_args(file_arguments)
+                file_arguments = tu_parser.absolute_path_include(file_arguments, command.directory)
+    else:
+        sys.exit("ERROR: Failed to load compdb")
+    return absolute_filepath, file_arguments
 
 
 if __name__ == "__main__":

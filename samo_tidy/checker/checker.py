@@ -8,6 +8,31 @@ import samo_tidy.core.summary as summary
 import samo_tidy.utils.utils as utils
 
 
+def apply_checker(translation_unit, checker):
+    # TODO Most checkers traverse the tu again and again, this can be speed up
+    violations = []
+    log_progress_for_checker(translation_unit, checker.__module__)
+
+    # Only check non-external translation units
+    if utils.shall_ignore_based_on_file_name(translation_unit.spelling):
+        logging.debug("Ignoring translation unit '%s'", utils.only_filename(translation_unit.spelling))
+        summary.get_summary().add_ignored_translation_unit(utils.only_filename(translation_unit.spelling))
+        return []
+
+    # Decide based on the name of the function on which level the check shall be applied
+    if checker.__name__ == "token_based_rule":
+        for token in translation_unit.cursor.walk_preorder():
+            violation = checker(token)
+            if violation:
+                violations.append(violation)
+
+    elif checker.__name__ == "translation_unit_based_rule":
+        violations = checker(translation_unit)
+
+    # TODO Consider returning diagnostics
+    return violations
+
+
 def debug_token_contains(token):
     for child_token in token.get_tokens():
         logging.debug("Token contains: '%s'", child_token.spelling)
@@ -15,12 +40,6 @@ def debug_token_contains(token):
 
 def debug_token_spelling(token):
     logging.debug("Token spelling is '%s':", pformat(token.type.spelling))
-
-
-def present_violation(violation):
-    # The actual log out which can be mechanically read
-    logging.warning(colored(violation, "blue"))
-    logging.error(colored(violation.style(), "yellow"))
 
 
 def extract_violation(token, rule_id, message):
@@ -52,26 +71,7 @@ def log_progress_for_checker(translation_unit, name):
     )
 
 
-def apply_checker(translation_unit, checker):
-    # TODO Most checkers traverse the tu again and again, this can be speed up
-    violations = []
-    log_progress_for_checker(translation_unit, checker.__module__)
-
-    # Only check non-external translation units
-    if utils.shall_ignore_based_on_file_name(translation_unit.spelling):
-        logging.debug("Ignoring translation unit '%s'", utils.only_filename(translation_unit.spelling))
-        summary.get_summary().add_ignored_translation_unit(utils.only_filename(translation_unit.spelling))
-        return []
-
-    # Decide based on the name of the function on which level the check shall be applied
-    if checker.__name__ == "token_based_rule":
-        for token in translation_unit.cursor.walk_preorder():
-            violation = checker(token)
-            if violation:
-                violations.append(violation)
-
-    elif checker.__name__ == "translation_unit_based_rule":
-        violations = checker(translation_unit)
-
-    # TODO Consider returning diagnostics
-    return violations
+def present_violation(violation):
+    # The actual log out which can be mechanically read
+    logging.warning(colored(violation, "blue"))
+    logging.error(colored(violation.style(), "yellow"))

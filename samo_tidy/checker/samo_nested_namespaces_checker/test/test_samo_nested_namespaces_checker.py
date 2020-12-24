@@ -11,6 +11,14 @@ class TestSamoMultipleClassesChecker(test_checker_lib.TestCheckerLib):
         super().setUp()
         self.checker_test_files = os.path.join(os.path.dirname(__file__), "data")
 
+    def test_negativ(self):
+        violations, diagnostics = self.apply_checker(
+            the_checker.translation_unit_based_rule,
+            test_support.create_tempfile(["namespace a {} namespace b {}"]),
+        )
+        self.assertEqual(len(diagnostics), 0)
+        self.assertEqual(len(violations), 0)
+
     def test_positiv(self):
         filename = test_support.create_tempfile(["namespace a {", "namespace b {", "}", "}"])
         violations, diagnostics = self.apply_checker(
@@ -33,14 +41,6 @@ class TestSamoMultipleClassesChecker(test_checker_lib.TestCheckerLib):
         self.assertEqual(len(violations), 2)
         self.assertIn("2 nested", violations[0].message)
         self.assertIn("3 nested", violations[1].message)
-
-    def test_negativ(self):
-        violations, diagnostics = self.apply_checker(
-            the_checker.translation_unit_based_rule,
-            test_support.create_tempfile(["namespace a {} namespace b {}"]),
-        )
-        self.assertEqual(len(diagnostics), 0)
-        self.assertEqual(len(violations), 0)
 
     def test_validate(self):
         filename = os.path.join(self.checker_test_files, "samo_nested_namespaces_checker.cpp")

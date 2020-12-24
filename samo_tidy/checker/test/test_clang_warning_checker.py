@@ -6,15 +6,6 @@ import samo_tidy.test.test_support as test_support
 
 
 class TestChecker(unittest.TestCase):
-    def test_unused_variable(self):
-        tu = tu_parser.create_translation_unit(
-            test_support.create_tempfile(["int main()", "{", "int a;", "return 0;", "}"])
-        )
-        violations = clang_warning_checker.check_for_clang_warnings(tu)
-        self.assertEqual(len(violations), 1)
-        self.assertEqual(violations[0].id, "TIDY_CLANG_UNUSED_VARIABLE")
-        self.assertEqual(violations[0].message, "unused variable 'a'")
-
     def test_impl_conversion(self):
         tu = tu_parser.create_translation_unit(
             test_support.create_tempfile(
@@ -33,6 +24,15 @@ class TestChecker(unittest.TestCase):
         tu = tu_parser.create_translation_unit(test_support.create_tempfile([""]), args=["clang++"])
         violations = clang_warning_checker.check_for_clang_warnings(tu)
         self.assertEqual(len(violations), 0)
+
+    def test_unused_variable(self):
+        tu = tu_parser.create_translation_unit(
+            test_support.create_tempfile(["int main()", "{", "int a;", "return 0;", "}"])
+        )
+        violations = clang_warning_checker.check_for_clang_warnings(tu)
+        self.assertEqual(len(violations), 1)
+        self.assertEqual(violations[0].id, "TIDY_CLANG_UNUSED_VARIABLE")
+        self.assertEqual(violations[0].message, "unused variable 'a'")
 
 
 if __name__ == "__main__":

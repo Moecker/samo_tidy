@@ -8,9 +8,60 @@ import samo_tidy.dump.dump as dump
 ID = "TIDY_SAMO_MISSING_CONST"
 
 
+def check_references(token):
+    """Check whether a variable definition is used as a reference in a function"""
+    if token.kind == cindex.CursorKind.CALL_EXPR:
+        for child in token.get_children():
+            # Important is the difference between CursorKind.UNEXPOSED_EXPR and CursorKind.DECL_REF_EXPR.
+            # Only the latter indicates that a reference is directly used.
+            if child.kind == cindex.CursorKind.DECL_REF_EXPR:
+                if child.referenced:
+                    for reference in child.referenced.walk_preorder():
+                        if reference.kind == cindex.CursorKind.VAR_DECL:
+                            return reference
+    return None
+
+
+def fix_rule(violated_line, violation):
+    first_part = get_substring_from_list(violated_line, 0, violation.column - 1)
+    second_part = get_substring_from_list(violated_line, violation.column - 1, len(violated_line))
+    fixed_line = f"{first_part}const {second_part}"
+    return fixed_line
+
+
+def get_substring_from_list(line, start, end):
+    return "".join(line[start:end])
+
+
 def hash(token):
     """Hash the location to be used in the set"""
     return f"{token.location.file.name}:{token.location.line}:{token.location.column}"
+
+
+def helpful_debug_output():
+    print_references(translation_unit, kind=cindex.CursorKind.DECL_REF_EXPR, name="change_me")
+    print_references(translation_unit, kind=cindex.CursorKind.CALL_EXPR, name="Change")
+
+
+def print_references(translation_unit, kind=None, name=None):
+    """Debug output"""
+    for token in translation_unit.cursor.walk_preorder():
+        if kind:
+            if token.kind != kind:
+                continue
+        if name:
+            if token.spelling != name:
+                continue
+        if token.referenced:
+            print(
+                f"The token '{token.kind}' named '{token.spelling}' in '{dump.pretty_location(token.location)}'"
+                f"as definition={token.is_definition()} is used"
+            )
+            for reference in token.referenced.walk_preorder():
+                print(
+                    f"\tby token '{reference.kind}' named '{reference.spelling}' in '{dump.pretty_location(reference.location)}'"
+                    f"as definition={reference.is_definition()}"
+                )
 
 
 def translation_unit_based_rule(translation_unit):
@@ -54,54 +105,3 @@ def translation_unit_based_rule(translation_unit):
             if violation:
                 violations.append(violation)
     return violations
-
-
-def get_substring_from_list(line, start, end):
-    return "".join(line[start:end])
-
-
-def fix_rule(violated_line, violation):
-    first_part = get_substring_from_list(violated_line, 0, violation.column - 1)
-    second_part = get_substring_from_list(violated_line, violation.column - 1, len(violated_line))
-    fixed_line = f"{first_part}const {second_part}"
-    return fixed_line
-
-
-def check_references(token):
-    """Check whether a variable definition is used as a reference in a function"""
-    if token.kind == cindex.CursorKind.CALL_EXPR:
-        for child in token.get_children():
-            # Important is the difference between CursorKind.UNEXPOSED_EXPR and CursorKind.DECL_REF_EXPR.
-            # Only the latter indicates that a reference is directly used.
-            if child.kind == cindex.CursorKind.DECL_REF_EXPR:
-                if child.referenced:
-                    for reference in child.referenced.walk_preorder():
-                        if reference.kind == cindex.CursorKind.VAR_DECL:
-                            return reference
-    return None
-
-
-def print_references(translation_unit, kind=None, name=None):
-    """Debug output"""
-    for token in translation_unit.cursor.walk_preorder():
-        if kind:
-            if token.kind != kind:
-                continue
-        if name:
-            if token.spelling != name:
-                continue
-        if token.referenced:
-            print(
-                f"The token '{token.kind}' named '{token.spelling}' in '{dump.pretty_location(token.location)}'"
-                f"as definition={token.is_definition()} is used"
-            )
-            for reference in token.referenced.walk_preorder():
-                print(
-                    f"\tby token '{reference.kind}' named '{reference.spelling}' in '{dump.pretty_location(reference.location)}'"
-                    f"as definition={reference.is_definition()}"
-                )
-
-
-def helpful_debug_output():
-    print_references(translation_unit, kind=cindex.CursorKind.DECL_REF_EXPR, name="change_me")
-    print_references(translation_unit, kind=cindex.CursorKind.CALL_EXPR, name="Change")

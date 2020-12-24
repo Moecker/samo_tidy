@@ -24,18 +24,6 @@ def apply_checkers_for_commands(commands, the_config):
     return apply_checkers_for_translation_units(translation_units, the_config)
 
 
-def apply_checkers_for_translation_units(translation_units, the_config):
-    """For each tu apply the checkers and optionally the fixes"""
-    all_violations = []
-    for translation_unit in translation_units:
-        all_violations += apply_checkers_for_translation_unit(translation_unit, the_config)
-
-    if the_config.fix:
-        apply_fixes_for_translation_unit(all_violations, the_config)
-
-    return all_violations
-
-
 def apply_checkers_for_translation_unit(translation_unit, the_config):
     """For each translation unit, apply the checkers"""
     # TODO Do not differentiation between tu and token based checker
@@ -69,23 +57,23 @@ def apply_checkers_for_translation_unit(translation_unit, the_config):
     return violations_per_tu
 
 
+def apply_checkers_for_translation_units(translation_units, the_config):
+    """For each tu apply the checkers and optionally the fixes"""
+    all_violations = []
+    for translation_unit in translation_units:
+        all_violations += apply_checkers_for_translation_unit(translation_unit, the_config)
+
+    if the_config.fix:
+        apply_fixes_for_translation_unit(all_violations, the_config)
+
+    return all_violations
+
+
 def apply_fixes_for_translation_unit(all_violations, the_config):
     """Apply the fixes"""
     for the_checker in config.ALL_FIXITS:
         logging.info(colored("Applying fixes for '%s'", "magenta"), the_checker.__module__)
         fixit.fix_violations_per_line(all_violations, the_checker)
-
-
-def run(runner, the_config):
-    """Main common runner for serial and parallel"""
-    compdb = compdb_parser.load_compdb(the_config.compdb)
-    the_summary = summary.get_summary()
-    if compdb:
-        the_summary = runner(the_config, compdb)
-    else:
-        logging.error("Could not load compdb")
-        sys.exit("ERROR: Loading of compdb failed")
-    return the_summary
 
 
 def extract_checkers_from_string(checkers_string_list):
@@ -98,6 +86,34 @@ def extract_checkers_from_string(checkers_string_list):
             if checker_string.lower() in available_checker.__module__.lower():
                 active_checkers.append(available_checker)
     return active_checkers
+
+
+def main(runner):
+    """Entry point for serial and parallel runner"""
+    args = parse_args()
+
+    the_config = config.Config(
+        active_checkers=extract_checkers_from_string(args.checkers),
+        compdb=args.compdb,
+        files=args.files,
+        log_level=args.log_level,
+        log_file=args.log_file,
+        workers=args.workers,
+        fix=args.fix,
+    )
+
+    logger.setup_logger(the_config.log_level, the_config.log_file)
+
+    logging.critical(colored("CONFIG:\n" + pformat(the_config.present()), attrs=["dark"]))
+    logging.critical(colored("Welcome. Lets run some static code analysis checks...", "magenta"))
+
+    clang_setup.setup_clang()
+
+    the_summary = run(runner, the_config)
+
+    logging.critical(colored("SUMMARY:\n" + pformat(the_summary.present()), attrs=["dark"]))
+
+    sys.exit(0)
 
 
 def parse_args():
@@ -142,29 +158,13 @@ def parse_args():
     return args
 
 
-def main(runner):
-    """Entry point for serial and parallel runner"""
-    args = parse_args()
-
-    the_config = config.Config(
-        active_checkers=extract_checkers_from_string(args.checkers),
-        compdb=args.compdb,
-        files=args.files,
-        log_level=args.log_level,
-        log_file=args.log_file,
-        workers=args.workers,
-        fix=args.fix,
-    )
-
-    logger.setup_logger(the_config.log_level, the_config.log_file)
-
-    logging.critical(colored("CONFIG:\n" + pformat(the_config.present()), attrs=["dark"]))
-    logging.critical(colored("Welcome. Lets run some static code analysis checks...", "magenta"))
-
-    clang_setup.setup_clang()
-
-    the_summary = run(runner, the_config)
-
-    logging.critical(colored("SUMMARY:\n" + pformat(the_summary.present()), attrs=["dark"]))
-
-    sys.exit(0)
+def run(runner, the_config):
+    """Main common runner for serial and parallel"""
+    compdb = compdb_parser.load_compdb(the_config.compdb)
+    the_summary = summary.get_summary()
+    if compdb:
+        the_summary = runner(the_config, compdb)
+    else:
+        logging.error("Could not load compdb")
+        sys.exit("ERROR: Loading of compdb failed")
+    return the_summary

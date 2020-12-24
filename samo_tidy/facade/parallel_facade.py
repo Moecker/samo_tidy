@@ -20,13 +20,25 @@ class CompileCommandsWrapper:
         self.arguments = arguments
 
 
-def wrap_commands(commands):
-    """Wraps a list of clang commands into own type"""
-    wrapped_commands = []
-    for command in commands:
-        wrapped_command = CompileCommandsWrapper(command.filename, command.directory, list(command.arguments))
-        wrapped_commands.append(wrapped_command)
-    return wrapped_commands
+def main():
+    """Binary main entry point"""
+    facade_lib.main(run_parallel)
+
+
+def run_parallel(the_config, compdb):
+    """Main entry point for parallel runner. Divides and conquer to every worker"""
+    # TODO Actually, the commands are distributed evenly to every worker.
+    #      This prevents to distribute load equally, if i.e. one worker has largers files
+    #      than the other ones.
+    logging.info(colored("Using %d parallel worker(s)", attrs=["dark"]), the_config.workers)
+    commands = compdb_parser.parse_compdb(compdb)
+    wrapped_commands = wrap_commands(commands)
+
+    logging.info(colored("Starting parallel tasks", attrs=["dark"]))
+    all_summaries = parallel.execute_parallel(
+        wrapped_commands, the_config.workers, single_run, function_args=(the_config)
+    )
+    return summary.merge(all_summaries)
 
 
 def single_run(args):
@@ -46,25 +58,13 @@ def single_run(args):
     return [summary.get_summary()]
 
 
-def run_parallel(the_config, compdb):
-    """Main entry point for parallel runner. Divides and conquer to every worker"""
-    # TODO Actually, the commands are distributed evenly to every worker.
-    #      This prevents to distribute load equally, if i.e. one worker has largers files
-    #      than the other ones.
-    logging.info(colored("Using %d parallel worker(s)", attrs=["dark"]), the_config.workers)
-    commands = compdb_parser.parse_compdb(compdb)
-    wrapped_commands = wrap_commands(commands)
-
-    logging.info(colored("Starting parallel tasks", attrs=["dark"]))
-    all_summaries = parallel.execute_parallel(
-        wrapped_commands, the_config.workers, single_run, function_args=(the_config)
-    )
-    return summary.merge(all_summaries)
-
-
-def main():
-    """Binary main entry point"""
-    facade_lib.main(run_parallel)
+def wrap_commands(commands):
+    """Wraps a list of clang commands into own type"""
+    wrapped_commands = []
+    for command in commands:
+        wrapped_command = CompileCommandsWrapper(command.filename, command.directory, list(command.arguments))
+        wrapped_commands.append(wrapped_command)
+    return wrapped_commands
 
 
 if __name__ == "__main__":

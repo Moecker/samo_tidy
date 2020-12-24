@@ -8,6 +8,19 @@ ID = "SAMO_CLASS_NAME_CHECKER"
 MSG = "File name should be named as the class it contains"
 
 
+def compute_expected_name(first_class, translation_unit_name):
+    the_basename, extension = translation_unit_basename_and_extension(translation_unit_name)
+    pattern = re.compile(r"(?<!^)(?=[A-Z])")
+    computed_name = pattern.sub("_", first_class.spelling).lower()
+    computed_name += extension
+    return computed_name, the_basename
+
+
+def fix(lines, violation):
+    # TODO Either rename the file or the class. This is hardly automatable w/o side effects
+    return lines
+
+
 def translation_unit_based_rule(translation_unit):
     violations = []
     classes = []
@@ -30,20 +43,7 @@ def translation_unit_based_rule(translation_unit):
     return violations
 
 
-def fix(lines, violation):
-    # TODO Either rename the file or the class. This is hardly automatable w/o side effects
-    return lines
-
-
 def translation_unit_basename_and_extension(translation_unit_name):
     filename, extension = splitext(translation_unit_name)
     the_basename = basename(translation_unit_name)
     return the_basename, extension
-
-
-def compute_expected_name(first_class, translation_unit_name):
-    the_basename, extension = translation_unit_basename_and_extension(translation_unit_name)
-    pattern = re.compile(r"(?<!^)(?=[A-Z])")
-    computed_name = pattern.sub("_", first_class.spelling).lower()
-    computed_name += extension
-    return computed_name, the_basename

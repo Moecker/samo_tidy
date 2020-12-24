@@ -12,6 +12,11 @@ import samo_tidy.test.test_support as test_support
 
 
 class TestFacadeLib(unittest.TestCase):
+    def assert_exit_code(self, function, exit_code):
+        with self.assertRaises(SystemExit) as context:
+            function()
+        self.assertEqual(context.exception.code, exit_code)
+
     def setUp(self):
         test_data_root = os.path.join(os.path.dirname(__file__), "../../test/data")
         self.single_compdb_root = os.path.join(test_data_root, "single_file_compdb")
@@ -26,11 +31,6 @@ class TestFacadeLib(unittest.TestCase):
             fix=False,
         )
         summary.clear_summary()
-
-    def assert_exit_code(self, function, exit_code):
-        with self.assertRaises(SystemExit) as context:
-            function()
-        self.assertEqual(context.exception.code, exit_code)
 
 
 if __name__ == "__main__":

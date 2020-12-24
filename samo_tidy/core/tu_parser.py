@@ -16,19 +16,6 @@ DEFAULT_IGNORED_ARGUMENTS = [
 DEFAULT_ARGUMENTS = DEFAULT_ACTIVE_ARGUMENTS + DEFAULT_IGNORED_ARGUMENTS
 
 
-def clean_args(args):
-    """Cleans arguments from compdb.
-    Some arguments cause problems - remove them"""
-    to_remove_idx = []
-    for idx, arg in enumerate(args):
-        if arg.startswith("-c"):
-            to_remove_idx.append(arg)
-            to_remove_idx.append(args[idx + 1])
-    for idx_to_remove in to_remove_idx:
-        args.remove(idx_to_remove)
-    return args
-
-
 def absolute_path_include(args, directory):
     """Changes the relative include directory an absolute path from compdb directory info"""
     if directory:
@@ -40,6 +27,19 @@ def absolute_path_include(args, directory):
                     to_be_changed_indexes.append(idx + 1)
         for to_be_changed_index in to_be_changed_indexes:
             args[to_be_changed_index] = os.path.join(directory, args[to_be_changed_index])
+    return args
+
+
+def clean_args(args):
+    """Cleans arguments from compdb.
+    Some arguments cause problems - remove them"""
+    to_remove_idx = []
+    for idx, arg in enumerate(args):
+        if arg.startswith("-c"):
+            to_remove_idx.append(arg)
+            to_remove_idx.append(args[idx + 1])
+    for idx_to_remove in to_remove_idx:
+        args.remove(idx_to_remove)
     return args
 
 

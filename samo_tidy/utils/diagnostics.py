@@ -5,6 +5,17 @@ import logging
 import samo_tidy.utils.utils as utils
 
 
+def get_diag_info(diag):
+    """Collection of important diag entries"""
+    return {
+        "severity": diag.severity,
+        "location": diag.location,
+        "spelling": diag.spelling,
+        "category_name": diag.category_name,
+        "option": diag.option,
+    }
+
+
 def get_diagnostics_by_severity(translation_unit):
     """Collect diag info as dict for tu name and severity"""
     diags_dict = defaultdict(partial(defaultdict, int))
@@ -20,16 +31,9 @@ def get_diagnostics_by_severity_one_tu(translation_unit):
     return diags_dict
 
 
-def shall_exclude_diagnostic_message(message):
-    """Exclude certain diagnostics messages"""
-    exclusion_list = [
-        "-fno-canonical-system-headers",
-        "-Wunused-but-set-parameter",
-        "-Wno-free-nonheap-object",
-        "-Werror=init-list-lifetime",
-        "-Werror=class-conversion",
-    ]
-    return any(word in message for word in exclusion_list)
+def get_diagnostics_info(translation_unit):
+    """Pretty prints the diag info"""
+    return pformat(("diags", [get_diag_info(d) for d in translation_unit.diagnostics]))
 
 
 def log_diagnostics_info_summary(translation_unit):
@@ -55,17 +59,13 @@ def log_diagnostics_info_summary(translation_unit):
         )
 
 
-def get_diagnostics_info(translation_unit):
-    """Pretty prints the diag info"""
-    return pformat(("diags", [get_diag_info(d) for d in translation_unit.diagnostics]))
-
-
-def get_diag_info(diag):
-    """Collection of important diag entries"""
-    return {
-        "severity": diag.severity,
-        "location": diag.location,
-        "spelling": diag.spelling,
-        "category_name": diag.category_name,
-        "option": diag.option,
-    }
+def shall_exclude_diagnostic_message(message):
+    """Exclude certain diagnostics messages"""
+    exclusion_list = [
+        "-fno-canonical-system-headers",
+        "-Wunused-but-set-parameter",
+        "-Wno-free-nonheap-object",
+        "-Werror=init-list-lifetime",
+        "-Werror=class-conversion",
+    ]
+    return any(word in message for word in exclusion_list)

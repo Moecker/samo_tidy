@@ -13,18 +13,18 @@ class TestSamoMissingConstChecker(test_checker_lib.TestCheckerLib):
         super().setUp()
         self.checker_test_files = os.path.join(os.path.dirname(__file__), "data")
 
-    def test_check_for_missing_const_simple_no_var(self):
-        violations, diagnostics = self.apply_checker(
-            the_checker.translation_unit_based_rule,
-            test_support.create_tempfile(["int main()", "{", "return 0;", "}"]),
-        )
-        self.assertEqual(len(diagnostics), 0)
-        self.assertEqual(len(violations), 0)
-
     def test_check_for_missing_const_simple_const_var(self):
         violations, diagnostics = self.apply_checker(
             the_checker.translation_unit_based_rule,
             test_support.create_tempfile(["int main()", "{", "const int a = 0;", "return a;", "}"]),
+        )
+        self.assertEqual(len(diagnostics), 0)
+        self.assertEqual(len(violations), 0)
+
+    def test_check_for_missing_const_simple_no_var(self):
+        violations, diagnostics = self.apply_checker(
+            the_checker.translation_unit_based_rule,
+            test_support.create_tempfile(["int main()", "{", "return 0;", "}"]),
         )
         self.assertEqual(len(diagnostics), 0)
         self.assertEqual(len(violations), 0)
@@ -45,6 +45,19 @@ class TestSamoMissingConstChecker(test_checker_lib.TestCheckerLib):
         self.assertEqual(len(diagnostics), 0)
         self.assertEqual(len(violations), 0)
 
+    def test_fixit(self):
+        lines = ["int a;"]
+        line_index = 1
+        violation = Violation(
+            the_checker.ID,
+            "message",
+            "filepath",
+            line_index,
+            5,
+        )
+        new_lines = fixit.apply_fix_per_line(lines, violation, the_checker.fix_rule)
+        self.assertEqual(new_lines[line_index - 1], "int const a;")
+
     def test_validate(self):
         filename = os.path.join(self.checker_test_files, "samo_missing_const_checker.cpp")
         violations, diagnostics = self.apply_checker(
@@ -62,19 +75,6 @@ class TestSamoMissingConstChecker(test_checker_lib.TestCheckerLib):
         )
         self.assertEqual(len(diagnostics), 0)
         self.validate(filename, violations)
-
-    def test_fixit(self):
-        lines = ["int a;"]
-        line_index = 1
-        violation = Violation(
-            the_checker.ID,
-            "message",
-            "filepath",
-            line_index,
-            5,
-        )
-        new_lines = fixit.apply_fix_per_line(lines, violation, the_checker.fix_rule)
-        self.assertEqual(new_lines[line_index - 1], "int const a;")
 
 
 if __name__ == "__main__":

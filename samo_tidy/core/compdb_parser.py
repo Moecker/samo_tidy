@@ -9,6 +9,11 @@ import samo_tidy.core.tu_parser as tu_parser
 import samo_tidy.utils.utils as utils
 
 
+def is_included_in_files_filter(command, list_of_files):
+    """True if file filter applies"""
+    return any(word in utils.only_filename(command.filename) for word in list_of_files)
+
+
 def load_compdb(directory):
     """Loads compdb from directory, expects a compile_commands.json file here
     Return the compdb on success, None on fail"""
@@ -23,37 +28,6 @@ def load_compdb(directory):
         logging.error(the_exception)
         logging.debug(the_exception, exc_info=True)
         return None
-
-
-def parse_single_command(command):
-    """Parses a command and returns a translation unit"""
-    absolute_file_name = os.path.join(command.directory, command.filename)
-    logging.info(
-        colored("Parsing file '%s'", "green"),
-        utils.make_link(absolute_file_name),
-    )
-    logging.debug("Using file name (not absolute path) '%s'", utils.only_filename(command.filename))
-    logging.debug("Using directory '%s'", command.directory)
-    logging.debug("Using arguments '%s'", list(command.arguments))
-    translation_unit = tu_parser.create_translation_unit(absolute_file_name, list(command.arguments), command.directory)
-    return translation_unit
-
-
-def parse_compdb(compdb):
-    """Reads compdb and returns a list of commands"""
-    commands = compdb.getAllCompileCommands()
-    if not commands:
-        err_msg = "Compilation Database invalid"
-        logging.error(err_msg)
-        sys.exit("ERROR: %s", err_msg)
-
-    logging.info(colored("Found %d command(s) in compilation database", attrs=["dark"]), len(commands))
-    return commands
-
-
-def is_included_in_files_filter(command, list_of_files):
-    """True if file filter applies"""
-    return any(word in utils.only_filename(command.filename) for word in list_of_files)
 
 
 def parse_commands(commands, list_of_files=None):
@@ -78,3 +52,29 @@ def parse_commands(commands, list_of_files=None):
     if number_of_skipped_files > 0:
         logging.info("Skipped %d file(s)", number_of_skipped_files)
     return translation_units
+
+
+def parse_compdb(compdb):
+    """Reads compdb and returns a list of commands"""
+    commands = compdb.getAllCompileCommands()
+    if not commands:
+        err_msg = "Compilation Database invalid"
+        logging.error(err_msg)
+        sys.exit("ERROR: %s", err_msg)
+
+    logging.info(colored("Found %d command(s) in compilation database", attrs=["dark"]), len(commands))
+    return commands
+
+
+def parse_single_command(command):
+    """Parses a command and returns a translation unit"""
+    absolute_file_name = os.path.join(command.directory, command.filename)
+    logging.info(
+        colored("Parsing file '%s'", "green"),
+        utils.make_link(absolute_file_name),
+    )
+    logging.debug("Using file name (not absolute path) '%s'", utils.only_filename(command.filename))
+    logging.debug("Using directory '%s'", command.directory)
+    logging.debug("Using arguments '%s'", list(command.arguments))
+    translation_unit = tu_parser.create_translation_unit(absolute_file_name, list(command.arguments), command.directory)
+    return translation_unit

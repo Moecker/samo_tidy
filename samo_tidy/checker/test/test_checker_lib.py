@@ -11,19 +11,11 @@ import samo_tidy.utils.utils as utils
 
 
 class TestCheckerLib(unittest.TestCase):
-    def setUp(self):
-        self.test_data_dir = os.path.join(os.path.dirname(__file__), "../../test/data/cpp_files")
-        self.checker_test_files = os.path.join(os.path.dirname(__file__), "data")
-
     def apply_checker(self, rule, source_file, args=[]):
         translation_unit = tu_parser.create_translation_unit(source_file, args)
         self.assertTrue(translation_unit)
         violations = checker.apply_checker(translation_unit, rule)
         return violations, translation_unit.diagnostics
-
-    def get_source_file_path(self, file_name):
-        source_file = os.path.join(self.test_data_dir, file_name)
-        return source_file
 
     def dump(self, source_file, args=[]):
         translation_unit = tu_parser.create_translation_unit(source_file, args)
@@ -37,6 +29,14 @@ class TestCheckerLib(unittest.TestCase):
                 if not utils.is_commented_line(line) and "TIDY_SAMO" in line:
                     number_of_expected_violations += 1
         return number_of_expected_violations
+
+    def get_source_file_path(self, file_name):
+        source_file = os.path.join(self.test_data_dir, file_name)
+        return source_file
+
+    def setUp(self):
+        self.test_data_dir = os.path.join(os.path.dirname(__file__), "../../test/data/cpp_files")
+        self.checker_test_files = os.path.join(os.path.dirname(__file__), "data")
 
     def validate(self, file_name, violations):
         number_of_expected_violations = 0

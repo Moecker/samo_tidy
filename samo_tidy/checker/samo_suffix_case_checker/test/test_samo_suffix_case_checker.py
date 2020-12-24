@@ -46,6 +46,19 @@ class TestSamoSuffixCaseChecker(test_checker_lib.TestCheckerLib):
         self.assertEqual(len(diagnostics), 0)
         self.assertEqual(len(violations), 0)
 
+    def test_fixit(self):
+        lines = ["std::uint8_t F()", "{", "return 0u;", "}"]
+        line_index = 3
+        violation = Violation(
+            "TIDY_SAMO_SUFFIX_CASE",
+            "message",
+            "filepath",
+            line_index,
+            8,
+        )
+        new_lines = fixit.apply_fix_per_line(lines, violation, the_checker.fix_rule)
+        self.assertEqual(new_lines[line_index - 1], "return 0U;")
+
     def test_temp_file_int(self):
         violations, diagnostics = self.apply_checker(
             the_checker.token_based_rule,
@@ -97,19 +110,6 @@ class TestSamoSuffixCaseChecker(test_checker_lib.TestCheckerLib):
         )
         self.assertEqual(len(diagnostics), 0)
         self.validate(filename, violations)
-
-    def test_fixit(self):
-        lines = ["std::uint8_t F()", "{", "return 0u;", "}"]
-        line_index = 3
-        violation = Violation(
-            "TIDY_SAMO_SUFFIX_CASE",
-            "message",
-            "filepath",
-            line_index,
-            8,
-        )
-        new_lines = fixit.apply_fix_per_line(lines, violation, the_checker.fix_rule)
-        self.assertEqual(new_lines[line_index - 1], "return 0U;")
 
 
 if __name__ == "__main__":

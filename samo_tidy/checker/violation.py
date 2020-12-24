@@ -32,11 +32,11 @@ class Violation:
             f")"
         )
 
-    def limit_message(self):
-        return "{self.message: 1.50}"
-
     def file_path_link(self):
         return f"file://{self.file_path}"
+
+    def limit_message(self):
+        return "{self.message: 1.50}"
 
     def style(self):
         return f"{self.id}:{self.file_name}:{self.line}:{self.column}"
