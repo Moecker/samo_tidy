@@ -10,34 +10,6 @@ import samo_tidy.utils.logger as logger
 import samo_tidy.utils.utils as utils
 
 
-def set_arguments(arguments):
-    """For integration tests callin a py-binary"""
-    sys.argv = [sys.argv[0]]
-    sys.argv.extend(arguments)
-
-
-def get_default_log_level_for_tests():
-    """Control the verbosity of the tests"""
-    return "debug"
-
-
-def default_test_setup():
-    """Setups default logger and clang for testing"""
-    logger.setup_logger(get_default_log_level_for_tests())
-    clang_setup.setup_clang()
-    unittest.main()
-
-
-def make_file_string(the_list):
-    """Combines strings in list, treats every entry as own line"""
-    return "\n".join(the_list) + "\n"
-
-
-def is_absolute_path(desired_file):
-    """Whether the path is absolute or not"""
-    return os.path.basename(desired_file) != desired_file
-
-
 def create_tempfile(content, desired_file=None):
     """Makes a temporary file with given content, optionally named as desired file name"""
     the_string = make_file_string(content)
@@ -55,3 +27,31 @@ def create_tempfile(content, desired_file=None):
         shutil.copy(tmp.name, desired_name)
         utils.debug_file_content(desired_name)
     return desired_name
+
+
+def default_test_setup():
+    """Setups default logger and clang for testing"""
+    logger.setup_logger(get_default_log_level_for_tests())
+    clang_setup.setup_clang()
+    unittest.main()
+
+
+def get_default_log_level_for_tests():
+    """Control the verbosity of the tests"""
+    return "debug"
+
+
+def is_absolute_path(desired_file):
+    """Whether the path is absolute or not"""
+    return os.path.basename(desired_file) != desired_file
+
+
+def make_file_string(the_list):
+    """Combines strings in list, treats every entry as own line"""
+    return "\n".join(the_list) + "\n"
+
+
+def set_arguments(arguments):
+    """For integration tests callin a py-binary"""
+    sys.argv = [sys.argv[0]]
+    sys.argv.extend(arguments)

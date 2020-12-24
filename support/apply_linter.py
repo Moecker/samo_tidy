@@ -105,22 +105,25 @@ def apply_sort_function(lines, file_path):
         if is_function_def(line):
             function_line = line
             for j in range(i + 1, len(lines)):
-                if is_function_def(lines[j]) or is_main_attr(line) or j == len(lines) - 1:
-                    functions[function_line] = (i, j - 1)
+                if is_function_def(lines[j]) or is_main_attr(line):
+                    functions[function_line] = (i, j)
                     break
-
+                if j == len(lines) - 1:
+                    functions[function_line] = (i, len(lines) + 1)
+                    break
+    print(functions)
     sorted_dict = list(sorted(functions.items(), key=lambda item: item[0]))
     sorted_dict_lines = list(sorted(functions.items(), key=lambda item: item[1][0]))
 
     for function, loc in functions.items():
-        for the_loc in range(loc[0], loc[1]):
+        for the_loc in range(loc[0], loc[1] - 1):
             new_lines[the_loc] = "\n"
 
     start = sorted_dict_lines[0][1][0]
     end = sorted_dict_lines[-1][1][1]
     new_start = start
     for entry in sorted_dict:
-        the_range = entry[1][1] - entry[1][0]
+        the_range = entry[1][1] - entry[1][0] - 1
         for i in range(the_range):
             new_lines[new_start + i] = lines[entry[1][0] + i]
         new_start += the_range + 1
@@ -137,7 +140,7 @@ def loop(file_paths, apply_function):
 
 def main():
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    file_paths = recursive_glob(rootdir="samo_tidy/fixit", suffix=".py")
+    file_paths = recursive_glob(rootdir="samo_tidy/test", suffix=".py")
     print(f"Using files {file_paths}")
 
     loop(file_paths, apply_sorting_includes)
