@@ -1,6 +1,6 @@
 import argparse
-import pylint.lint
 import multiprocessing
+import pylint.lint
 
 
 def get_disabled_rules():
@@ -12,6 +12,14 @@ def get_disabled_rules():
     ]
 
 
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--modules", nargs="+", help="List of modules to analyze", required=True)
+    args = parser.parse_args()
+
+    run_lint(args.modules)
+
+
 def run_lint(paths):
     disabled_rules = ",".join(get_disabled_rules())
     pylint_args = []
@@ -19,14 +27,6 @@ def run_lint(paths):
     pylint_args.extend([f"--disable={disabled_rules}"])
     pylint_args.extend(paths)
     pylint.lint.Run(pylint_args)
-
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--modules", nargs="+", help="List of modules to analyze", required=True)
-    args = parser.parse_args()
-
-    run_lint(args.modules)
 
 
 if __name__ == "__main__":
