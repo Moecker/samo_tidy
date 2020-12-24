@@ -6,10 +6,6 @@ import samo_tidy.checker.test.test_checker_lib as test_checker_lib
 import samo_tidy.test.test_support as test_support
 
 
-def get_simple_non_conforming_suffix_source():
-    return ["#include <cstdint>", "std::uint8_t F();", "std::uint8_t F()", "{", "std::uint8_t a=0u;", "return a;", "}"]
-
-
 class TestChecker(test_checker_lib.TestCheckerLib):
     def test_ignored_file_name_positive(self):
         violations, diagnostics = self.apply_checker(
@@ -40,6 +36,10 @@ class TestChecker(test_checker_lib.TestCheckerLib):
         self.assertEqual(len(violations), 1)
         self.assertEqual(violations[0].file_name, "header.h")
         self.assertEqual(len(diagnostics), 0)
+
+
+def get_simple_non_conforming_suffix_source():
+    return ["#include <cstdint>", "std::uint8_t F();", "std::uint8_t F()", "{", "std::uint8_t a=0u;", "return a;", "}"]
 
 
 if __name__ == "__main__":

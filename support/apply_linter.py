@@ -143,7 +143,7 @@ def loop(file_paths, apply_function):
 
 def main():
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    file_paths = recursive_glob(rootdir="samo_tidy/core", suffix="summary.py")
+    file_paths = recursive_glob(rootdir="samo_tidy", suffix=".py")
     print(f"Using files {file_paths}")
 
     print("Sorting imports...")

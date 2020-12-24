@@ -8,26 +8,6 @@ import samo_tidy.core.compdb_parser as compdb_parser
 import samo_tidy.utils.utils as utils
 
 
-def create_tempfile(compdb_string, dir, name):
-    desired_path = os.path.join(dir, name)
-    with tempfile.NamedTemporaryFile(dir=dir, delete=False) as tmp:
-        logging.debug("Writing compilation database to: '%s'", desired_path)
-        with open(tmp.name, "w") as f:
-            f.write(compdb_string)
-        shutil.copy(tmp.name, desired_path)
-        utils.debug_file_content(desired_path)
-
-
-def create_compdb_string(directory, command, file_names):
-    list_of_comdb_entires = []
-    for file_name in file_names:
-        compdb_entry_inner = f'"directory": "{directory}", "command": "{command}", "file": "{file_name}"'
-        compdb_entry = "{" + compdb_entry_inner + "}"
-        list_of_comdb_entires.append(compdb_entry)
-    full_compdb = ",".join(list_of_comdb_entires)
-    return "[" + full_compdb + "]"
-
-
 class TestCoreLib(unittest.TestCase):
     def setUp(self):
         self.test_data_dir = os.path.join(os.path.dirname(__file__), "../../test/data/cpp_files")
@@ -52,3 +32,23 @@ class TestCoreLib(unittest.TestCase):
         commands = compdb_parser.parse_compdb(compdb)
         translation_units = compdb_parser.parse_commands(commands, files)
         return translation_units
+
+
+def create_tempfile(compdb_string, dir, name):
+    desired_path = os.path.join(dir, name)
+    with tempfile.NamedTemporaryFile(dir=dir, delete=False) as tmp:
+        logging.debug("Writing compilation database to: '%s'", desired_path)
+        with open(tmp.name, "w") as f:
+            f.write(compdb_string)
+        shutil.copy(tmp.name, desired_path)
+        utils.debug_file_content(desired_path)
+
+
+def create_compdb_string(directory, command, file_names):
+    list_of_comdb_entires = []
+    for file_name in file_names:
+        compdb_entry_inner = f'"directory": "{directory}", "command": "{command}", "file": "{file_name}"'
+        compdb_entry = "{" + compdb_entry_inner + "}"
+        list_of_comdb_entires.append(compdb_entry)
+    full_compdb = ",".join(list_of_comdb_entires)
+    return "[" + full_compdb + "]"
