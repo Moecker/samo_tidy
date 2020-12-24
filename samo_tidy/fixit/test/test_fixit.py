@@ -9,6 +9,9 @@ import samo_tidy.test.test_support as test_support
 
 
 class TestFixit(unittest.TestCase):
+    def test_z(self):
+        self.assertTrue(True)
+
     def test_fixit_template_for_suffix(self):
         filename = test_support.create_tempfile(["std::uint8_t var = 1u;"])
         violation = Violation("TIDY_SAMO_SUFFIX_CASE", "", filename, 1, 20)
