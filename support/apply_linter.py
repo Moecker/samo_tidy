@@ -36,7 +36,7 @@ def apply_sorting_includes(lines, file_path):
 
 
 def bazel_based_lint():
-    file_paths = recursive_glob(rootdir="samo_tidy/utils/test", suffix="BUILD")
+    file_paths = recursive_glob(rootdir=".", suffix="BUILD")
 
     print(f"Using bazel files")
     pprint(file_paths)
@@ -137,7 +137,10 @@ def is_target_def(line):
 
 def loop(file_paths, apply_function):
     for file_path in file_paths:
+        print("Looping " + file_path + "...")
         lines = read_lines(file_path)
+        if len(lines) == 0:
+            continue
         apply_function(lines, file_path)
 
 
