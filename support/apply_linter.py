@@ -35,6 +35,8 @@ def apply_target_sort_function(lines, file_path):
     targets = find_targets(lines)
     print(targets)
 
+    sort_and_write(targets, new_lines, lines, file_path)
+
 
 def bazel_based_lint():
     file_paths = recursive_glob(rootdir="samo_tidy/utils/test", suffix="BUILD")
@@ -81,7 +83,7 @@ def find_targets(lines):
             target_line = line.strip() + lines[idx + 1].strip()
             for j in range(start + 1, len(lines)):
                 if lines[j].startswith(")"):
-                    targets[target_line] = (start, j)
+                    targets[target_line] = (start, j + 2)
                     break
     return targets
 
