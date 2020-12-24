@@ -25,6 +25,7 @@ def run_lint(paths):
     pylint_args = []
     pylint_args.extend(["-j", str(multiprocessing.cpu_count())])
     pylint_args.extend([f"--disable={disabled_rules}"])
+    pylint_args.extend([f"--max-line-length=120"])
     pylint_args.extend(paths)
     pylint.lint.Run(pylint_args)
 

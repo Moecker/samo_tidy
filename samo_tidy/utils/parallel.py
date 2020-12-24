@@ -3,7 +3,8 @@ import multiprocessing
 
 
 def execute_parallel(the_list, workers, the_function, function_args=()):
-    """Uses map-reduce to equally load entries of the_list into multiple workers runing the_function with given args"""
+    """Uses map-reduce to equally load entries of the_list
+    into multiple workers runing the_function with given args"""
     list_length = len(the_list)
     if list_length == 0:
         return []

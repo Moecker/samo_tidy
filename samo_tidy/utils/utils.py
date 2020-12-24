@@ -1,14 +1,14 @@
-from termcolor import colored
 import logging
 import os
-import sys
+
+from termcolor import colored
 
 
 def debug_file_content(file_path):
     """Simple output of file"""
-    with open(file_path) as f:
+    with open(file_path) as the_file:
         logging.debug(
-            "File '%s' looks like: '%s'", only_filename(file_path), join_and_strip_file_content(f.readlines())
+            "File '%s' looks like: '%s'", only_filename(file_path), join_and_strip_file_content(the_file.readlines())
         )
 
 
@@ -41,8 +41,7 @@ def replace_if_none(to_be_checked, replacement_string):
     """Return a replacement is to be checked is empty (None or empty string)"""
     if to_be_checked:
         return to_be_checked
-    else:
-        return replacement_string
+    return replacement_string
 
 
 def shall_ignore_based_on_file_name(file_name):

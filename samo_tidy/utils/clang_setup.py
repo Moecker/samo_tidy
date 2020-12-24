@@ -1,14 +1,13 @@
-from clang import cindex
-from termcolor import colored
 import logging
 import platform
 import sys
 
+from clang import cindex
+from termcolor import colored
+
 
 def setup_clang():
     """Sets up thee cindex.Config class which is of global state."""
-    # TODO When executing test in parallel - for instance - we run into (unknown) problems.
-    #      This results in flaky tests
     cindex.Config.loaded = False
     if platform.system() == "Linux":
         lib_location_file = "/usr/lib/llvm-10/lib/libclang-10.so"
