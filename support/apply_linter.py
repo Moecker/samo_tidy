@@ -7,6 +7,11 @@ import os
 import subprocess
 
 
+def apply_black():
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    subprocess.call([f"black {os.path.join(dir_path, '..')} --line-length 120"], shell=True)
+
+
 def apply_removing_duplicates(lines, file_path):
     while remove_duplicated_imports(lines, file_path):
         pass
@@ -33,6 +38,10 @@ def apply_sorting_includes(lines, file_path):
     clusters = get_includes(lines)
     sorted_clusters = sort_includes(clusters)
     write_back(sorted_clusters, file_path)
+
+
+def bazel_based_lint():
+    pass
 
 
 def fill_new_lines(sorted_dict_lines, sorted_dict, lines, new_lines):
@@ -101,8 +110,13 @@ def loop(file_paths, apply_function):
 
 
 def main():
-    dir_path = os.path.dirname(os.path.realpath(__file__))
+    python_based_lint()
+    bazel_based_lint()
+
+
+def python_based_lint():
     file_paths = recursive_glob(rootdir=".", suffix=".py")
+
     print(f"Using files")
     pprint(file_paths)
 
@@ -114,7 +128,7 @@ def main():
     loop(file_paths, apply_sort_function)
 
     print("Applying black...")
-    subprocess.call([f"black {os.path.join(dir_path, '..')} --line-length 120"], shell=True)
+    apply_black()
 
 
 def read_lines(file_path):

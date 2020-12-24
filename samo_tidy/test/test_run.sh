@@ -10,4 +10,6 @@ BAZEL_ROOT="$(dirname ${ABSPATH})"
 pushd "${BAZEL_ROOT}"
     bazel run //samo_tidy/facade:run -- --help
     bazel run //samo_tidy/facade:run_parallel -- --help
+    bazel run //samo_tidy/dump:cindex_dump -- --help
+    bazel run //tools/clang_tidy:run-clang-tidy -- --help
 popd

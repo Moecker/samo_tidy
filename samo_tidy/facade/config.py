@@ -23,13 +23,13 @@ ALL_FIXITS = [
 
 class Config:
     def __init__(self, active_checkers, compdb, files, log_level, log_file, workers, fix):
-        self.active_checkers = active_checkers
         self._compdb = compdb
+        self.active_checkers = active_checkers
         self.files = files
-        self.log_level = log_level
-        self.log_file = log_file
-        self.workers = workers
         self.fix = fix
+        self.log_file = log_file
+        self.log_level = log_level
+        self.workers = workers
 
     @property
     def compdb(self):
@@ -42,10 +42,10 @@ class Config:
     def present(self):
         return {
             "Active checkers": [checker.__module__ for checker in self.active_checkers],
+            "Apply fixes": self.fix,
             "Compdb path": os.path.join(self.compdb, "compile_commands.json"),
             "File filter": self.files,
-            "Log level": self.log_level,
             "Log file": self.log_file,
+            "Log level": self.log_level,
             "Number of workers": self.workers,
-            "Apply fixes": self.fix,
         }
