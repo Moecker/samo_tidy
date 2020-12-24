@@ -3,6 +3,8 @@
 from collections import defaultdict
 from pathlib import Path
 from pprint import pprint
+import subprocess
+
 
 import os
 
@@ -107,19 +109,21 @@ def apply_sort_function(lines, file_path):
                     functions[function_line] = (i, j - 1)
                     break
 
-    sorted_dict = dict(sorted(functions.items(), key=lambda item: item[0]))
-
-    pprint(functions)
+    sorted_dict = list(sorted(functions.items(), key=lambda item: item[0]))
+    sorted_dict_lines = list(sorted(functions.items(), key=lambda item: item[1][0]))
 
     for function, loc in functions.items():
         for the_loc in range(loc[0], loc[1]):
             new_lines[the_loc] = "\n"
 
-    for function, loc in sorted_dict.items():
-        for the_loc in range(loc[0], loc[1]):
-            new_lines[the_loc] = lines[the_loc]
-
-    print(str(len(new_lines)) + " | " + str(len(lines)))
+    start = sorted_dict_lines[0][1][0]
+    end = sorted_dict_lines[-1][1][1]
+    new_start = start
+    for entry in sorted_dict:
+        the_range = entry[1][1] - entry[1][0]
+        for i in range(the_range):
+            new_lines[new_start + i] = lines[entry[1][0] + i]
+        new_start += the_range + 1
 
     with open(file_path, "w") as file_back:
         file_back.writelines(new_lines)
@@ -139,6 +143,8 @@ def main():
     loop(file_paths, apply_sorting_includes)
     loop(file_paths, apply_removing_duplicates)
     loop(file_paths, apply_sort_function)
+
+    subprocess.call([f"black {os.path.join(dir_path, '..')} --line-length 120"], shell=True)
 
 
 if __name__ == "__main__":
