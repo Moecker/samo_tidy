@@ -3,15 +3,69 @@ from functools import partial
 import os
 
 
-def get_summary():
-    """Summars is being used as a singleton, returns the singleton instance.
-    Note that there will be a instance per process"""
-    return the_summary
+class Summary:
+    def __init__(self):
+        self.analyzed_file_names = set()
+        self.analyzed_translation_units = set()
+        self.failed_translation_units = set()
+        self.ignored_translation_units = set()
+        self.number_of_violations = defaultdict(set)
+        self.skipped_commands = set()
+        self.skipped_filenames = set()
+        self.number_of_diagnostics = defaultdict(partial(defaultdict, int))
+
+    def add_analyzed_filename(self, file_path):
+        self.analyzed_file_names.add(os.path.basename(file_path))
+
+    def add_analyzed_translation_unit(self, file_path):
+        self.analyzed_translation_units.add(os.path.basename(file_path))
+
+    def add_failed_translation_units(self, file_path):
+        self.failed_translation_units.add(os.path.basename(file_path))
+
+    def add_ignored_translation_unit(self, file_path):
+        self.ignored_translation_units.add(os.path.basename(file_path))
+
+    def add_number_of_diagnostics(self, tu_name, diag_dict):
+        self.number_of_diagnostics[os.path.basename(tu_name)] = diag_dict
+
+    def add_number_of_violations(self, tu_name, violations_tuple):
+        self.number_of_violations[os.path.basename(tu_name)] = violations_tuple
+
+    def add_skipped_commands(self, file_path):
+        self.skipped_commands.add(os.path.basename(file_path))
+
+    def add_skipped_filename(self, file_path):
+        self.skipped_filenames.add(os.path.basename(file_path))
+
+    def comprehend(self, the_dict):
+        if type(the_dict) == defaultdict:
+            return [f"{key}:{self.comprehend(entry)}" for key, entry in the_dict.items()]
+        else:
+            return the_dict
+
+    def present(self):
+        return {
+            "Analyzed Files": limit_display(self.analyzed_file_names),
+            "Analyzed Translation Units": limit_display(self.analyzed_translation_units),
+            "Failed Translation Units with parse errors": limit_display(self.failed_translation_units),
+            "Ignored External Translation Units": limit_display(self.ignored_translation_units),
+            "Skipped Commands from Files Filter": limit_display(self.skipped_commands),
+            "Skipped External Files": limit_display(self.skipped_filenames),
+            "Number of Violations": limit_display(self.comprehend(self.number_of_violations)),
+            "Number of Diagnostics": limit_display(self.comprehend(self.number_of_diagnostics)),
+        }
 
 
 def clear_summary():
     """Clears summary, purpose is testing or multiprocessing"""
     the_summary = Summary()
+
+
+def get_summary():
+    """Summars is being used as a singleton, returns the singleton instance.
+    Note that there will be a instance per process"""
+    return the_summary
 
 
 def limit_display(the_set):
@@ -40,60 +94,6 @@ def merge(list_of_summaries):
         result.number_of_violations.update(a_summary.number_of_violations)
         result.number_of_diagnostics.update(a_summary.number_of_diagnostics)
     return result
-
-
-class Summary:
-    def __init__(self):
-        self.analyzed_file_names = set()
-        self.analyzed_translation_units = set()
-        self.failed_translation_units = set()
-        self.ignored_translation_units = set()
-        self.number_of_violations = defaultdict(set)
-        self.skipped_commands = set()
-        self.skipped_filenames = set()
-        self.number_of_diagnostics = defaultdict(partial(defaultdict, int))
-
-    def present(self):
-        return {
-            "Analyzed Files": limit_display(self.analyzed_file_names),
-            "Analyzed Translation Units": limit_display(self.analyzed_translation_units),
-            "Failed Translation Units with parse errors": limit_display(self.failed_translation_units),
-            "Ignored External Translation Units": limit_display(self.ignored_translation_units),
-            "Skipped Commands from Files Filter": limit_display(self.skipped_commands),
-            "Skipped External Files": limit_display(self.skipped_filenames),
-            "Number of Violations": limit_display(self.comprehend(self.number_of_violations)),
-            "Number of Diagnostics": limit_display(self.comprehend(self.number_of_diagnostics)),
-        }
-
-    def comprehend(self, the_dict):
-        if type(the_dict) == defaultdict:
-            return [f"{key}:{self.comprehend(entry)}" for key, entry in the_dict.items()]
-        else:
-            return the_dict
-
-    def add_analyzed_filename(self, file_path):
-        self.analyzed_file_names.add(os.path.basename(file_path))
-
-    def add_analyzed_translation_unit(self, file_path):
-        self.analyzed_translation_units.add(os.path.basename(file_path))
-
-    def add_ignored_translation_unit(self, file_path):
-        self.ignored_translation_units.add(os.path.basename(file_path))
-
-    def add_skipped_commands(self, file_path):
-        self.skipped_commands.add(os.path.basename(file_path))
-
-    def add_skipped_filename(self, file_path):
-        self.skipped_filenames.add(os.path.basename(file_path))
-
-    def add_failed_translation_units(self, file_path):
-        self.failed_translation_units.add(os.path.basename(file_path))
-
-    def add_number_of_violations(self, tu_name, violations_tuple):
-        self.number_of_violations[os.path.basename(tu_name)] = violations_tuple
-
-    def add_number_of_diagnostics(self, tu_name, diag_dict):
-        self.number_of_diagnostics[os.path.basename(tu_name)] = diag_dict
 
 
 the_summary = Summary()
