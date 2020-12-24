@@ -9,13 +9,6 @@ import samo_tidy.test.test_support as test_support
 
 
 class TestFixit(unittest.TestCase):
-    def assert_fix(self, violation, fixed_line):
-        with open(violation.file_path) as the_file:
-            the_lines = the_file.readlines()
-            desired_line_number = violation.line - 1
-            self.assertGreater(len(the_lines), desired_line_number)
-            self.assertEqual(the_lines[violation.line - 1].strip(), fixed_line)
-
     def test_fixit_template_for_suffix(self):
         filename = test_support.create_tempfile(["std::uint8_t var = 1u;"])
         violation = Violation("TIDY_SAMO_SUFFIX_CASE", "", filename, 1, 20)
@@ -23,6 +16,13 @@ class TestFixit(unittest.TestCase):
         fixed_lines = fixit.fix_violation_per_line(violation, samo_suffix_case_checker.fix_rule)
         self.assertTrue(fixed_lines)
         self.assert_fix(violation, "std::uint8_t var = 1U;")
+
+    def assert_fix(self, violation, fixed_line):
+        with open(violation.file_path) as the_file:
+            the_lines = the_file.readlines()
+            desired_line_number = violation.line - 1
+            self.assertGreater(len(the_lines), desired_line_number)
+            self.assertEqual(the_lines[violation.line - 1].strip(), fixed_line)
 
     def test_fixit_template_for_suffix_invalid(self):
         filename = test_support.create_tempfile(["std::uint8_t var = 1u;"])

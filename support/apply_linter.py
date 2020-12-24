@@ -112,8 +112,12 @@ def apply_sort_function(lines, file_path):
     pprint(functions)
 
     for function, loc in functions.items():
-        for the_loc in range(loc[0], loc[1] + 1):
-            pass
+        for the_loc in range(loc[0], loc[1]):
+            new_lines[the_loc] = "\n"
+
+    for function, loc in sorted_dict.items():
+        for the_loc in range(loc[0], loc[1]):
+            new_lines[the_loc] = lines[the_loc]
 
     print(str(len(new_lines)) + " | " + str(len(lines)))
 
