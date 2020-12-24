@@ -122,7 +122,20 @@ def is_patch_def(line):
 
 
 def is_target_def(line):
-    return line.strip().startswith("py") or line.strip().startswith("sh") or line.strip().startswith("filegroup")
+    return (
+        False
+        or line.strip().startswith("cc_binary")
+        or line.strip().startswith("cc_library")
+        or line.strip().startswith("cc_test")
+        or line.strip().startswith("compilation_database")
+        or line.strip().startswith("filegroup")
+        or line.strip().startswith("py_binary")
+        or line.strip().startswith("py_library")
+        or line.strip().startswith("py_test")
+        or line.strip().startswith("pycoverage")
+        or line.strip().startswith("pylint")
+        or line.strip().startswith("sh_test")
+    )
 
 
 def loop(file_paths, apply_function):
