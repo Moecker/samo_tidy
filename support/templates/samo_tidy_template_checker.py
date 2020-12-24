@@ -6,6 +6,12 @@ ID = "__TIDY_ID__"
 MSG = "__TIDY_MESSAGE__"
 
 
+def fix(lines, violation):
+    if violation.id != ID:
+        return []
+    return lines
+
+
 def token_based_rule(token):
     violation = None
     violation = checker.extract_violation(token, ID, f"{MSG} for {token.spelling}")
@@ -19,9 +25,3 @@ def translation_unit_based_rule(translation_unit):
         if violation:
             violations.append(violation)
     return violations
-
-
-def fix(lines, violation):
-    if violation.id != ID:
-        return []
-    return lines

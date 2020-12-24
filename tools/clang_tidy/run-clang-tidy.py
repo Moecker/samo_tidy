@@ -64,6 +64,30 @@ else:
     import queue as queue
 
 
+def apply_fixes(args, tmpdir):
+    """Calls clang-apply-fixes on a given directory."""
+    invocation = [args.clang_apply_replacements_binary]
+    if args.format:
+        invocation.append("-format")
+    if args.style:
+        invocation.append("-style=" + args.style)
+    invocation.append(tmpdir)
+    subprocess.call(invocation)
+
+
+def check_clang_apply_replacements_binary(args):
+    """Checks if invoking supplied clang-apply-replacements binary works."""
+    try:
+        subprocess.check_call([args.clang_apply_replacements_binary, "--version"])
+    except:
+        print(
+            "Unable to run clang-apply-replacements. Is clang-apply-replacements " "binary correctly specified?",
+            file=sys.stderr,
+        )
+        traceback.print_exc()
+        sys.exit(1)
+
+
 def find_compilation_database(path):
     """Adjusts the directory until a compilation database is found."""
     result = "./"
@@ -73,12 +97,6 @@ def find_compilation_database(path):
             sys.exit(1)
         result += "../"
     return os.path.realpath(result)
-
-
-def make_absolute(f, directory):
-    if os.path.isabs(f):
-        return f
-    return os.path.normpath(os.path.join(directory, f))
 
 
 def get_tidy_invocation(
@@ -120,85 +138,6 @@ def get_tidy_invocation(
         start.append("-config=" + config)
     start.append(f)
     return start
-
-
-def merge_replacement_files(tmpdir, mergefile):
-    """Merge all replacement files in a directory into a single file"""
-    # The fixes suggested by clang-tidy >= 4.0.0 are given under
-    # the top level key 'Diagnostics' in the output yaml files
-    mergekey = "Diagnostics"
-    merged = []
-    for replacefile in glob.iglob(os.path.join(tmpdir, "*.yaml")):
-        content = yaml.safe_load(open(replacefile, "r"))
-        if not content:
-            continue  # Skip empty files.
-        merged.extend(content.get(mergekey, []))
-
-    if merged:
-        # MainSourceFile: The key is required by the definition inside
-        # include/clang/Tooling/ReplacementsYaml.h, but the value
-        # is actually never used inside clang-apply-replacements,
-        # so we set it to '' here.
-        output = {"MainSourceFile": "", mergekey: merged}
-        with open(mergefile, "w") as out:
-            yaml.safe_dump(output, out)
-    else:
-        # Empty the file:
-        open(mergefile, "w").close()
-
-
-def check_clang_apply_replacements_binary(args):
-    """Checks if invoking supplied clang-apply-replacements binary works."""
-    try:
-        subprocess.check_call([args.clang_apply_replacements_binary, "--version"])
-    except:
-        print(
-            "Unable to run clang-apply-replacements. Is clang-apply-replacements " "binary correctly specified?",
-            file=sys.stderr,
-        )
-        traceback.print_exc()
-        sys.exit(1)
-
-
-def apply_fixes(args, tmpdir):
-    """Calls clang-apply-fixes on a given directory."""
-    invocation = [args.clang_apply_replacements_binary]
-    if args.format:
-        invocation.append("-format")
-    if args.style:
-        invocation.append("-style=" + args.style)
-    invocation.append(tmpdir)
-    subprocess.call(invocation)
-
-
-def run_tidy(args, tmpdir, build_path, queue, lock, failed_files):
-    """Takes filenames out of queue and runs clang-tidy on them."""
-    while True:
-        name = queue.get()
-        invocation = get_tidy_invocation(
-            name,
-            args.clang_tidy_binary,
-            args.checks,
-            tmpdir,
-            build_path,
-            args.header_filter,
-            args.allow_enabling_alpha_checkers,
-            args.extra_arg,
-            args.extra_arg_before,
-            args.quiet,
-            args.config,
-        )
-
-        proc = subprocess.Popen(invocation, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        output, err = proc.communicate()
-        if proc.returncode != 0:
-            failed_files.append(name)
-        with lock:
-            sys.stdout.write(" ".join(invocation) + "\n" + output.decode("utf-8"))
-            if len(err) > 0:
-                sys.stdout.flush()
-                sys.stderr.write(err.decode("utf-8"))
-        queue.task_done()
 
 
 def main():
@@ -362,6 +301,67 @@ def main():
     if tmpdir:
         shutil.rmtree(tmpdir)
     sys.exit(return_code)
+
+
+def make_absolute(f, directory):
+    if os.path.isabs(f):
+        return f
+    return os.path.normpath(os.path.join(directory, f))
+
+
+def merge_replacement_files(tmpdir, mergefile):
+    """Merge all replacement files in a directory into a single file"""
+    # The fixes suggested by clang-tidy >= 4.0.0 are given under
+    # the top level key 'Diagnostics' in the output yaml files
+    mergekey = "Diagnostics"
+    merged = []
+    for replacefile in glob.iglob(os.path.join(tmpdir, "*.yaml")):
+        content = yaml.safe_load(open(replacefile, "r"))
+        if not content:
+            continue  # Skip empty files.
+        merged.extend(content.get(mergekey, []))
+
+    if merged:
+        # MainSourceFile: The key is required by the definition inside
+        # include/clang/Tooling/ReplacementsYaml.h, but the value
+        # is actually never used inside clang-apply-replacements,
+        # so we set it to '' here.
+        output = {"MainSourceFile": "", mergekey: merged}
+        with open(mergefile, "w") as out:
+            yaml.safe_dump(output, out)
+    else:
+        # Empty the file:
+        open(mergefile, "w").close()
+
+
+def run_tidy(args, tmpdir, build_path, queue, lock, failed_files):
+    """Takes filenames out of queue and runs clang-tidy on them."""
+    while True:
+        name = queue.get()
+        invocation = get_tidy_invocation(
+            name,
+            args.clang_tidy_binary,
+            args.checks,
+            tmpdir,
+            build_path,
+            args.header_filter,
+            args.allow_enabling_alpha_checkers,
+            args.extra_arg,
+            args.extra_arg_before,
+            args.quiet,
+            args.config,
+        )
+
+        proc = subprocess.Popen(invocation, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output, err = proc.communicate()
+        if proc.returncode != 0:
+            failed_files.append(name)
+        with lock:
+            sys.stdout.write(" ".join(invocation) + "\n" + output.decode("utf-8"))
+            if len(err) > 0:
+                sys.stdout.flush()
+                sys.stderr.write(err.decode("utf-8"))
+        queue.task_done()
 
 
 if __name__ == "__main__":
