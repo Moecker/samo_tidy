@@ -14,6 +14,37 @@ def apply_removing_duplicates(lines, file_path):
 
 def apply_sort_function(lines, file_path):
     new_lines = lines.copy()
+    functions = find_functions(lines)
+
+    sorted_dict = list(sorted(functions.items(), key=lambda item: item[0]))
+    sorted_dict_lines = list(sorted(functions.items(), key=lambda item: item[1][0]))
+
+    for function, loc in functions.items():
+        for the_loc in range(loc[0], loc[1] - 1):
+            new_lines[the_loc] = "\n"
+
+    fill_new_lines(sorted_dict_lines, sorted_dict, lines, new_lines)
+
+    with open(file_path, "w") as file_back:
+        file_back.writelines(new_lines)
+
+
+def apply_sorting_includes(lines, file_path):
+    clusters = get_includes(lines)
+    sorted_clusters = sort_includes(clusters)
+    write_back(sorted_clusters, file_path)
+
+
+def fill_new_lines(sorted_dict_lines, sorted_dict, lines, new_lines):
+    new_start = sorted_dict_lines[0][1][0]
+    for entry in sorted_dict:
+        the_range = entry[1][1] - entry[1][0] - 1
+        for i in range(the_range):
+            new_lines[new_start + i] = lines[entry[1][0] + i]
+        new_start += the_range + 1
+
+
+def find_functions(lines):
     functions = defaultdict(tuple)
 
     for i, line in enumerate(lines):
@@ -26,30 +57,7 @@ def apply_sort_function(lines, file_path):
                 if j == len(lines) - 1:
                     functions[function_line] = (i, len(lines) + 1)
                     break
-    sorted_dict = list(sorted(functions.items(), key=lambda item: item[0]))
-    sorted_dict_lines = list(sorted(functions.items(), key=lambda item: item[1][0]))
-
-    for function, loc in functions.items():
-        for the_loc in range(loc[0], loc[1] - 1):
-            new_lines[the_loc] = "\n"
-
-    start = sorted_dict_lines[0][1][0]
-    end = sorted_dict_lines[-1][1][1]
-    new_start = start
-    for entry in sorted_dict:
-        the_range = entry[1][1] - entry[1][0] - 1
-        for i in range(the_range):
-            new_lines[new_start + i] = lines[entry[1][0] + i]
-        new_start += the_range + 1
-
-    with open(file_path, "w") as file_back:
-        file_back.writelines(new_lines)
-
-
-def apply_sorting_includes(lines, file_path):
-    clusters = get_includes(lines)
-    sorted_clusters = sort_includes(clusters)
-    write_back(sorted_clusters, file_path)
+    return functions
 
 
 def get_includes(lines):
@@ -90,7 +98,8 @@ def loop(file_paths, apply_function):
 def main():
     dir_path = os.path.dirname(os.path.realpath(__file__))
     file_paths = recursive_glob(rootdir=".", suffix=".py")
-    print(f"Using files {file_paths}")
+    print(f"Using files")
+    pprint(file_paths)
 
     print("Sorting imports...")
     loop(file_paths, apply_sorting_includes)
@@ -99,6 +108,7 @@ def main():
     print("Sorting methods...")
     loop(file_paths, apply_sort_function)
 
+    print("Applying black...")
     subprocess.call([f"black {os.path.join(dir_path, '..')} --line-length 120"], shell=True)
 
 
