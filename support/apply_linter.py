@@ -137,7 +137,7 @@ def loop(file_paths, apply_function):
 
 def main():
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    file_paths = recursive_glob(rootdir="samo_tidy/fixit", suffix="test_fixit.py")
+    file_paths = recursive_glob(rootdir="samo_tidy/fixit", suffix=".py")
     print(f"Using files {file_paths}")
 
     loop(file_paths, apply_sorting_includes)
