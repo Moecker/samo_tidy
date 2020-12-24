@@ -47,15 +47,16 @@ def fill_new_lines(sorted_dict_lines, sorted_dict, lines, new_lines):
 def find_functions(lines):
     functions = defaultdict(tuple)
 
-    for i, line in enumerate(lines):
+    for idx, line in enumerate(lines):
         if is_function_def(line):
+            start = idx
             function_line = line
-            for j in range(i + 1, len(lines)):
+            for j in range(start + 1, len(lines)):
                 if is_function_def(lines[j]) or is_main_attribute(lines[j]) or is_class_attribute(lines[j]):
-                    functions[function_line] = (i, j)
+                    functions[function_line] = (start, j)
                     break
                 if j == len(lines) - 1:
-                    functions[function_line] = (i, len(lines) + 1)
+                    functions[function_line] = (start, len(lines) + 1)
                     break
     return functions
 
@@ -87,6 +88,10 @@ def is_import(line):
 
 def is_main_attribute(line):
     return line.strip().startswith("if __name__")
+
+
+def is_patch_def(line):
+    return line.strip().startswith("@patch ")
 
 
 def loop(file_paths, apply_function):
