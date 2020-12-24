@@ -92,10 +92,10 @@ function replace {
     elif [[ "$OSTYPE" == "darwin"* ]]; then
       ARG=""
     fi
-    sed -i "${ARG}" "s/@TIDY_NAME/${NAME_OF_CHECKER}/g" "${1}"
-    sed -i "${ARG}" "s/@TIDY_ID/${NAME_UPPER_CASE}/g" "${1}"
-    sed -i "${ARG}" "s/@TIDY_CAMEL_CASE/${NAME_CAMEL_CASE}/g" "${1}"
-    sed -i "${ARG}" "s/@TIDY_MESSAGE/Violation of ${NAME_UPPER_CASE}/g" "${1}"
+    sed -i "${ARG}" "s/__TIDY_NAME__/${NAME_OF_CHECKER}/g" "${1}"
+    sed -i "${ARG}" "s/__TIDY_ID__/${NAME_UPPER_CASE}/g" "${1}"
+    sed -i "${ARG}" "s/__TIDY_CAMEL_CASE__/${NAME_CAMEL_CASE}/g" "${1}"
+    sed -i "${ARG}" "s/__TIDY_MESSAGE__/Violation of ${NAME_UPPER_CASE}/g" "${1}"
 }
 
 replace "${CHECKER_FILE_LOCATION}"

@@ -1,1 +1,1 @@
-class Token;  // TIDY_@TIDY_ID
+class Token;  // TIDY___TIDY_ID__

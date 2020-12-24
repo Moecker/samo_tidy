@@ -2,8 +2,8 @@ from clang import cindex
 
 import samo_tidy.checker.checker as checker
 
-ID = "__TIDY_ID__"
-MSG = "__TIDY_MESSAGE__"
+ID = "SAMO_GENERATED_CHECKER"
+MSG = "Violation of SAMO_GENERATED_CHECKER"
 
 
 def token_based_rule(token):

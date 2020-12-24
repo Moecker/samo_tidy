@@ -1,7 +1,7 @@
 load("@rules_python//python:defs.bzl", "py_test")
 
 filegroup(
-    name = "__TIDY_NAME___test_sources",
+    name = "samo_generated_checker_test_sources",
     srcs = glob([
         "data/*.cpp",
         "data/*.h",
@@ -10,11 +10,11 @@ filegroup(
 )
 
 py_test(
-    name = "test___TIDY_NAME__",
+    name = "test_samo_generated_checker",
     srcs = glob(["**/*.py"]),
-    data = ["//samo_tidy/checker/__TIDY_NAME__/test:__TIDY_NAME___test_sources"],
+    data = ["//samo_tidy/checker/samo_generated_checker/test:samo_generated_checker_test_sources"],
     deps = [
-        "//samo_tidy/checker/__TIDY_NAME__",
+        "//samo_tidy/checker/samo_generated_checker",
         "//samo_tidy/checker/test:test_checker_lib",
     ],
 )

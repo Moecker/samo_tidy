@@ -2,7 +2,7 @@ load("@rules_python//python:defs.bzl", "py_library")
 load("@pip//:requirements.bzl", "requirement")
 
 py_library(
-    name = "__TIDY_NAME__",
+    name = "samo_generated_checker",
     srcs = glob(["**/*.py"]),
     visibility = [
         "//samo_tidy/checker:__subpackages__",
