@@ -1,0 +1,1 @@
+class Token;  // TIDY_SAMO_MACRO_USAGE_CHECKER
